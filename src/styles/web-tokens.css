@@ -1,0 +1,227 @@
+/*
+  Web-only tokens. These do not exist in the app or the design system export; they
+  exist because a public web page must meet WCAG 2.2 AA where the app deliberately
+  stays exact to its own (known) contrast misses. tokens.css stays a faithful compile
+  of design/tokens.json; everything web-specific lives here and is documented inline.
+
+  Contrast figures are WCAG 2.x ratios computed in sRGB against each theme's --bg
+  (and --bg-secondary where cards use it).
+*/
+
+:root,
+[data-theme="light"] {
+  /* --font-display: wordmark and display headings. On Apple platforms -apple-system /
+     BlinkMacSystemFont resolve to variable SF Pro, so font-stretch: 120% gives the app's
+     wdth-120 navigation-title width. Everyone else gets self-hosted Roboto Flex
+     (wdth 25-151), which honors the same font-stretch. Never name "SF Pro". */
+  --font-display: -apple-system, BlinkMacSystemFont, "Roboto Flex", system-ui, sans-serif;
+
+  /* --accent-fill: fill for buttons that carry a text label. White on the brand
+     #5192ff is only 3.04:1, so labelled fills use #005eff (white on it is 5.19:1).
+     --accent (#5192ff) stays the tint for icons, glyphs and decorative fills. */
+  --accent-fill: #005eff;
+  /* --on-accent-fill: label color on --accent-fill. */
+  --on-accent-fill: #ffffff;
+
+  /* --link: inline links and text-colored accents. Light: #005eff, 5.19:1 on bg,
+     4.65:1 on bg-secondary. */
+  --link: var(--accent-text);
+
+  /* --text-muted: secondary prose. The app's text-secondary in Light is
+     rgba(60,60,67,.6) = 3.44:1 on white, which fails AA for body text. #6a6a70 is
+     5.37:1 on bg and 4.82:1 on bg-secondary. Use this, not --text-secondary, for
+     any web copy. */
+  --text-muted: #6a6a70;
+
+  /* --focus-ring: solid keyboard focus indicator, drawn 2px outside the element so it
+     sits on the page background. Light: #005eff = 5.19:1 on bg, 4.65:1 on bg-secondary. */
+  --focus-ring: #005eff;
+
+  /* --glass-bg: header and floating-CTA glass. Only used inside
+     @supports (backdrop-filter); --surface-opaque is the fallback. */
+  --glass-bg: color-mix(in srgb, var(--bg) 74%, transparent);
+  --glass-stroke: var(--separator);
+  --surface-opaque: var(--bg);
+
+  /* --card-bg: grouped surfaces on the page background (cards, callouts). */
+  --card-bg: var(--bg-secondary);
+
+  /* --hero-gradient: brand art only (plan §2.6: token gradient, 135°, accent to partner). */
+  --hero-gradient: linear-gradient(135deg, var(--accent), var(--accent-gradient-partner));
+
+  /* --like-text / --repost-text: engagement colors when they color TEXT (counts).
+     App Light like #ff3b30 is 3.55:1 and repost #34c759 2.22:1 on white;
+     #d70015 = 5.38:1, #1a7f37 = 5.08:1. Fills and glyphs keep --like / --repost. */
+  --like-text: #d70015;
+  --repost-text: #1a7f37;
+  color-scheme: light;
+}
+
+[data-theme="dim"] {
+  --font-display: -apple-system, BlinkMacSystemFont, "Roboto Flex", system-ui, sans-serif;
+  --accent-fill: #005eff;           /* white on it 5.19:1 */
+  --on-accent-fill: #ffffff;
+  /* App accent-text on Dim is #5192ff = 4.44:1 (fails AA). #7faeff = 6.05:1 on bg,
+     4.61:1 on bg-secondary. */
+  --link: #7faeff;
+  /* App text-secondary #a6a6a6 is 4.23:1 on bg-secondary. #bdbdc2 = 7.22:1 on bg,
+     5.51:1 on bg-secondary, 4.93:1 on elevated-high. */
+  --text-muted: #bdbdc2;
+  --focus-ring: #7faeff;            /* 6.05:1 on bg, 4.61:1 on bg-secondary */
+  --glass-bg: color-mix(in srgb, var(--bg) 74%, transparent);
+  --glass-stroke: var(--separator);
+  --surface-opaque: var(--bg);
+  --card-bg: var(--bg-secondary);
+  --hero-gradient: linear-gradient(135deg, var(--accent), var(--accent-gradient-partner));
+  /* App Dim like #ff453a is 3.96:1 on bg; #ff7a70 = 5.32:1. Repost #30d158 = 6.68:1. */
+  --like-text: #ff7a70;
+  --repost-text: var(--repost);
+  color-scheme: dark;
+}
+
+[data-theme="black"] {
+  --font-display: -apple-system, BlinkMacSystemFont, "Roboto Flex", system-ui, sans-serif;
+  --accent-fill: #005eff;           /* white on it 5.19:1 */
+  --on-accent-fill: #ffffff;
+  --link: var(--accent-text);       /* #5192ff = 6.91:1 on #000, 6.51:1 on bg-secondary */
+  --text-muted: var(--text-secondary); /* #b3b3b3 = 10.0:1 */
+  --focus-ring: #7faeff;            /* 9.40:1 on bg */
+  --glass-bg: color-mix(in srgb, var(--bg) 74%, transparent);
+  --glass-stroke: var(--border-prominent);
+  --surface-opaque: var(--bg);
+  /* Black's bg-secondary (#0a0a0a) is nearly invisible; cards use elevated-popover. */
+  --card-bg: var(--elevated-popover);
+  --hero-gradient: linear-gradient(135deg, var(--accent), var(--accent-gradient-partner));
+  --like-text: var(--like);
+  --repost-text: var(--repost);
+  color-scheme: dark;
+}
+
+[data-theme="hc-light"] {
+  --font-display: -apple-system, BlinkMacSystemFont, "Roboto Flex", system-ui, sans-serif;
+  --accent-fill: var(--accent);     /* #0038b8; white on it 9.30:1 */
+  --on-accent-fill: #ffffff;
+  --link: var(--accent-text);       /* 9.30:1 */
+  --text-muted: var(--text-secondary);
+  --focus-ring: #0038b8;            /* 9.30:1 on bg */
+  --glass-bg: var(--bg);            /* HC themes are always opaque */
+  --glass-stroke: var(--separator);
+  --surface-opaque: var(--bg);
+  --card-bg: var(--bg-secondary);
+  --hero-gradient: linear-gradient(135deg, var(--accent), var(--accent));
+  --like-text: var(--like);
+  --repost-text: var(--repost);
+  color-scheme: light;
+}
+
+[data-theme="hc-dark"] {
+  --font-display: -apple-system, BlinkMacSystemFont, "Roboto Flex", system-ui, sans-serif;
+  --accent-fill: var(--accent);     /* #9cc0ff */
+  --on-accent-fill: var(--on-accent); /* black on #9cc0ff = 11.40:1 */
+  --link: var(--accent-text);       /* #a9c9ff = 10.10:1 */
+  --text-muted: var(--text-secondary);
+  --focus-ring: #a9c9ff;            /* 10.10:1 on bg */
+  --glass-bg: var(--bg);
+  --glass-stroke: var(--separator);
+  --surface-opaque: var(--bg);
+  --card-bg: var(--bg-secondary);
+  --hero-gradient: linear-gradient(135deg, var(--accent), var(--accent));
+  --like-text: var(--like);
+  --repost-text: var(--repost);
+  color-scheme: dark;
+}
+
+[data-theme="cvd-light"] {
+  --font-display: -apple-system, BlinkMacSystemFont, "Roboto Flex", system-ui, sans-serif;
+  --accent-fill: #005eff;
+  --on-accent-fill: #ffffff;
+  --link: var(--accent-text);
+  --text-muted: #6a6a70;
+  --focus-ring: #005eff;
+  --glass-bg: color-mix(in srgb, var(--bg) 74%, transparent);
+  --glass-stroke: var(--separator);
+  --surface-opaque: var(--bg);
+  --card-bg: var(--bg-secondary);
+  --hero-gradient: linear-gradient(135deg, var(--accent), var(--accent-gradient-partner));
+  --like-text: var(--like);
+  --repost-text: var(--repost);
+  color-scheme: light;
+}
+
+[data-theme="cvd-dark"] {
+  --font-display: -apple-system, BlinkMacSystemFont, "Roboto Flex", system-ui, sans-serif;
+  --accent-fill: #005eff;
+  --on-accent-fill: #ffffff;
+  /* cvd-dark shares Dim's bg (#2e2e33), so it gets Dim's AA link color too. */
+  --link: #7faeff;
+  --text-muted: #bdbdc2;
+  --focus-ring: #7faeff;
+  --glass-bg: color-mix(in srgb, var(--bg) 74%, transparent);
+  --glass-stroke: var(--separator);
+  --surface-opaque: var(--bg);
+  --card-bg: var(--bg-secondary);
+  --hero-gradient: linear-gradient(135deg, var(--accent), var(--accent-gradient-partner));
+  --like-text: var(--like);
+  --repost-text: var(--repost);
+  color-scheme: dark;
+}
+
+/* Layout, motion and glass constants (theme-independent). */
+:root {
+  --content-max: 1120px;            /* Section container */
+  --reading-max: 680px;             /* Section reading column (plan §5.4: 600-700px) */
+  --gutter: var(--inset-screen);    /* 16px side gutter on phones */
+  --header-h: 60px;
+
+  /* Motion (docs/brand/05-motion.md via plan §5.4). */
+  --dur-instant: 150ms;
+  --dur-enter: 350ms;
+  --dur-exit: 220ms;
+  --dur-emphasis: 450ms;
+  --ease-enter: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* Glass strength (Pkl web "regular"). */
+  --glass-filter: blur(20px) saturate(1.3);
+}
+
+/* Wide gamut: the app's AccentColor is Display P3. Brand themes only; contrast math
+   above stays in sRGB, and labelled fills use --accent-fill, which is unaffected. */
+@media (color-gamut: p3) {
+  :root:not([data-theme]),
+  [data-theme="light"],
+  [data-theme="dim"],
+  [data-theme="black"] {
+    --accent: color(display-p3 0.318 0.573 1);
+  }
+}
+
+/*
+  App-UI vignettes (.cb-vignette, applied by <PhoneFrame>). The ds-components.css
+  renditions are pixel-faithful to the app, including its contrast misses. Inside a
+  vignette, remap the text roles to their AA web equivalents so the illustrations
+  still pass an audit: secondary text -> --text-muted, text accent -> --link,
+  like/repost -> --like-text/--repost-text (counts are text), and labelled accent
+  fills (Follow, outgoing bubble, send) -> --accent-fill. --danger is NOT remapped:
+  avoid danger-filled labels (LIVE, tab badges) in vignettes in Light and Dim.
+*/
+.cb-vignette {
+  --text-secondary: var(--text-muted);
+  --text-tertiary: var(--text-muted);
+  --accent-text: var(--link);
+  --like: var(--like-text);
+  --repost: var(--repost-text);
+}
+.cb-vignette .cb-btn--follow,
+.cb-vignette .cb-btn--compact.is-follow,
+.cb-vignette .cb-input-bar__send,
+.cb-vignette .cb-navbtn--prominent,
+.cb-vignette .cb-pill {
+  background: var(--accent-fill);
+  color: var(--on-accent-fill);
+}
+.cb-vignette .cb-bubble--out {
+  background: var(--accent-fill);
+  color: var(--on-accent-fill);
+}

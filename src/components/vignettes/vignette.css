@@ -1,0 +1,352 @@
+/*
+  Shared layout for the app-UI vignettes on / and /features.
+  The app components come from ds-components.css (cb-* classes); these vg-* rules only
+  arrange them inside a PhoneFrame screen and add the few app surfaces the design
+  system has no rendition for (grouped settings rows, the translate capsule).
+  Every color is a token. Vignettes are pictures: PhoneFrame exposes each one as a
+  single role="img" with a written description, so nothing in here is interactive.
+*/
+
+.vg {
+  position: relative;
+  height: var(--vg-h, 640px);
+  overflow: hidden;
+  background: var(--bg);
+  font-size: 17px;
+  line-height: 22px;
+  /* Vignettes never inherit the page's link underline or display type. */
+  text-align: left;
+}
+
+.vg .icon {
+  flex: none;
+}
+
+/* ---- Navigation titles (SF expanded, wdth 120, as in the app) ---- */
+.vg__large-title {
+  padding: 6px var(--inset-screen) 6px;
+  color: var(--text-primary);
+}
+
+.vg__inline-nav {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  padding: 2px var(--inset-screen) 6px;
+}
+
+.vg__inline-nav .t-nav-inline-title {
+  text-align: center;
+}
+
+.vg__navbtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--text-primary);
+}
+
+/* ---- Floating controls at the bottom of the screen ---- */
+.vg__bottom {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 4px;
+  isolation: isolate;
+}
+
+/* iOS 26 scroll edge effect: content fades out under the floating controls instead of
+   showing as cut-off lines below the tab bar. */
+.vg__bottom::before {
+  content: "";
+  position: absolute;
+  inset: -16px 0 0 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--bg) 88%, transparent) 45%, var(--bg) 75%);
+}
+
+.vg__bottom .cb-fabs {
+  padding: 0 var(--inset-screen);
+}
+
+.vg__bottom .cb-fab {
+  color: inherit;
+}
+
+.vg__bottom .cb-fab.cb-glass {
+  /* Accent-tinted glass; the glyph is the label, so on-accent is fine here. */
+  color: var(--on-accent);
+}
+
+.vg__bottom .cb-tabbar-wrap {
+  padding-top: 0;
+  padding-bottom: 6px;
+}
+
+/* Selected tab: the glyph carries the tint; the 10px label stays primary text so it
+   holds AA on the glass in every theme. */
+.vg .cb-tab.is-selected {
+  color: var(--text-primary);
+}
+
+.vg .cb-tab.is-selected .icon {
+  color: var(--accent);
+}
+
+.vg .cb-tab-search {
+  color: var(--text-primary);
+}
+
+/* ---- Post bits the bundle leaves to the app ---- */
+/* Avatars are pictures in the app, so they carry no text here: a soft two-stop
+   circle in the avatar's tone stands in for the photo. */
+.vg .cb-avatar {
+  --tone: var(--accent-midnight);
+  background: linear-gradient(145deg, color-mix(in srgb, var(--tone) 70%, #ffffff), var(--tone));
+}
+
+.vg .cb-avatar[data-tone="accent"] { --tone: var(--accent); }
+.vg .cb-avatar[data-tone="aurora"] { --tone: var(--accent-aurora); }
+.vg .cb-avatar[data-tone="dusk"] { --tone: var(--accent-dusk); }
+.vg .cb-avatar[data-tone="twilight"] { --tone: var(--accent-twilight); }
+
+.vg .cb-editor .cb-avatar {
+  width: var(--avatar-reply);
+  height: var(--avatar-reply);
+}
+
+.vg .cb-actions .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.vg .cb-actions.is-big .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.vg .cb-header__more .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.vg .cb-repost-hdr .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.vg__translate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--text-muted) 9%, transparent);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.vg__translate span + span {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.vg__anchor .cb-text {
+  font-size: 19px;
+  line-height: 25px;
+}
+
+.vg__anchor-meta {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--text-secondary);
+}
+
+.vg .cb-thread-gap__label .icon {
+  width: 12px;
+  height: 12px;
+  color: var(--link);
+}
+
+.vg .cb-link-card {
+  margin-top: 8px;
+}
+
+.vg .cb-link-card__media {
+  height: 110px;
+}
+
+/* ---- Grouped settings form (iOS inset grouped list) ---- */
+.vg--grouped {
+  background: var(--bg-grouped);
+}
+
+.vg__group {
+  margin: 0 var(--inset-screen) 18px;
+}
+
+.vg__group-title {
+  padding: 0 4px 6px 16px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.vg__group-body {
+  border-radius: var(--radius-card);
+  background: var(--vg-cell, var(--elevated-high));
+  overflow: hidden;
+}
+
+/* Grouped cells sit one step above the grouped background in every theme. Declared on
+   the theme element itself so a vignette with a fixed theme uses its own value even
+   when the page is in another theme (custom properties resolve at the nearest owner). */
+:root,
+[data-theme] {
+  --vg-cell: var(--elevated-high);
+}
+
+[data-theme="dim"],
+[data-theme="cvd-dark"],
+[data-theme="hc-dark"] {
+  --vg-cell: var(--elevated-low);
+}
+
+[data-theme="black"] {
+  --vg-cell: var(--elevated-popover);
+}
+
+.vg__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-size: 17px;
+  line-height: 22px;
+}
+
+.vg__row {
+  position: relative;
+}
+
+.vg__row + .vg__row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 0;
+  border-top: var(--hairline) solid var(--separator);
+}
+
+.vg__row-value {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+}
+
+.vg__row-value .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.vg__swatches {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px 6px;
+  padding: 14px 10px 12px;
+}
+
+.vg__swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  line-height: 13px;
+  color: var(--text-secondary);
+}
+
+.vg__swatch-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: var(--swatch);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--swatch) 40%, transparent);
+}
+
+.vg__swatch.is-selected {
+  color: var(--link);
+  font-weight: 600;
+}
+
+/* ---- Composer ---- */
+.vg .cb-composer {
+  height: 100%;
+}
+
+.vg .cb-navbtn .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.vg .cb-navbtn.cb-glass--regular {
+  color: var(--text-primary);
+}
+
+.vg .cb-thumb {
+  overflow: hidden;
+}
+
+.vg .cb-thumb__x .icon {
+  width: 11px;
+  height: 11px;
+}
+
+.vg .cb-accessory__plus,
+.vg .cb-accessory__trail {
+  color: var(--text-primary);
+}
+
+.vg .cb-accessory__trail .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.vg__editor-line + .vg__editor-line {
+  margin-top: 10px;
+}
+
+@media (forced-colors: active) {
+  .vg__group-body,
+  .vg__translate {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* On narrow frames the handle truncates before the display name does. */
+.vg .cb-header__name {
+  flex: none;
+  max-width: 62%;
+}
+
+.vg .cb-header__meta {
+  min-width: 0;
+  flex: 1 1 auto;
+}

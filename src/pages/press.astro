@@ -1,0 +1,470 @@
+---
+/**
+ * /press — self-serve press kit (plan §3.2). Boilerplate, fact sheet, downloadable
+ * artwork and brand colors. No quotes and no screenshots exist yet, so neither section
+ * is rendered. Color values are read from design/tokens.json; distribution and contact
+ * details from src/config.ts (null values are omitted, never printed as placeholders).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Icon from '../components/ui/Icon.astro';
+import PageIntro from '../components/support/PageIntro.astro';
+import ContactOptions from '../components/support/ContactOptions.astro';
+import tokens from '../../design/tokens.json';
+import { statSync } from 'node:fs';
+import { join } from 'node:path';
+import {
+  APP_STORE_LIVE,
+  APP_STORE_URL,
+  BLUESKY_HANDLE,
+  BLUESKY_URL,
+  GITHUB_URL,
+  LEGAL,
+  MIN_IOS,
+  SITE_URL,
+  TESTFLIGHT_URL,
+} from '../config';
+
+type ThemeId = 'light' | 'dim' | 'black';
+const tokenValue = (name: string, theme: ThemeId = 'light'): string => {
+  const t = tokens.color.tokens.find((x) => x.name === name);
+  const value = (t?.value as Record<string, string> | undefined)?.[theme];
+  if (!value) throw new Error(`press: token ${name}/${theme} missing`);
+  return value.toUpperCase();
+};
+
+const colors = [
+  { name: 'Catbird Blue', hex: tokenValue('accent'), use: 'The brand color, for tints, icons and fills.' },
+  { name: 'Link Blue', hex: tokenValue('accent-text'), use: 'Text links, and fills behind white text, on light backgrounds.' },
+  { name: 'Gradient Partner', hex: tokenValue('accent-gradient-partner'), use: 'Second stop of the brand gradient.' },
+  { name: 'Icon Navy', hex: tokenValue('icon-gradient-top'), use: 'Top of the app icon’s background.' },
+  { name: 'Icon Sky', hex: tokenValue('icon-gradient-bottom'), use: 'Bottom of the app icon’s background.' },
+  { name: 'White', hex: tokenValue('bg', 'light'), use: 'Background in the Light theme.' },
+  { name: 'Dim', hex: tokenValue('bg', 'dim'), use: 'Background in the Dim dark theme.' },
+  { name: 'Black', hex: tokenValue('bg', 'black'), use: 'Background in the True Black dark theme.' },
+];
+const gradient = `linear-gradient(135deg, ${tokenValue('accent')}, ${tokenValue('accent-gradient-partner')})`;
+
+const siteHost = new URL(SITE_URL).host;
+const githubPath = new URL(GITHUB_URL).pathname.replace(/^\//, '');
+
+const facts: { label: string; value: string; href?: string }[] = [
+  { label: 'Name', value: 'Catbird' },
+  ...(LEGAL.controllerName ? [{ label: 'Developer', value: LEGAL.controllerName }] : []),
+  { label: 'What it is', value: 'An independent app for Bluesky and the AT Protocol' },
+  { label: 'Platforms', value: 'iPhone and iPad' },
+  { label: 'Requirements', value: `iOS ${MIN_IOS} or iPadOS ${MIN_IOS}, or later` },
+  { label: 'Price', value: 'Free' },
+  {
+    label: 'Availability',
+    value: APP_STORE_LIVE ? 'App Store' : 'Beta on TestFlight; not yet on the App Store',
+    href: APP_STORE_LIVE ? APP_STORE_URL : TESTFLIGHT_URL,
+  },
+  { label: 'Language', value: 'English' },
+  { label: 'Built with', value: 'Swift and SwiftUI' },
+  { label: 'Source code', value: `MIT License, ${githubPath} on GitHub`, href: GITHUB_URL },
+  { label: 'Website', value: siteHost, href: SITE_URL },
+  { label: 'Bluesky', value: `@${BLUESKY_HANDLE}`, href: BLUESKY_URL },
+];
+
+/** Human file size of a file in public/, measured at build time (decimal units, like Finder). */
+const fileSize = (publicPath: string): string => {
+  const bytes = statSync(join(process.cwd(), 'public', publicPath)).size;
+  return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.round(bytes / 1e3)} KB`;
+};
+
+const downloadList = [
+  {
+    title: 'App icon, 1024 px',
+    detail: 'PNG, 1024 × 1024, rounded corners, transparent outside the icon shape.',
+    href: '/press/catbird-app-icon-1024.png',
+    preview: '/press/previews/catbird-app-icon-320.png',
+    alt: 'The Catbird app icon: a grey catbird head with a dark beak on a navy-to-blue background.',
+  },
+  {
+    title: 'App icon, 512 px',
+    detail: 'PNG, 512 × 512. The same icon, sized for web and print layouts.',
+    href: '/press/catbird-app-icon-512.png',
+    preview: '/press/previews/catbird-app-icon-320.png',
+    alt: 'The Catbird app icon at a smaller size.',
+  },
+  {
+    title: 'Catbird bird',
+    detail: 'PNG, 1080 × 1080, transparent background. The bird from the icon on its own.',
+    href: '/press/catbird-bird-1080.png',
+    preview: '/press/previews/catbird-bird-320.png',
+    alt: 'The grey catbird head with a black eye and a dark beak, on a transparent background.',
+    checker: true,
+  },
+  {
+    title: 'Brand colors',
+    detail: 'PNG, 1600 × 1169. The colors below on one sheet, with their hex values.',
+    href: '/press/catbird-colors.png',
+    preview: null,
+    alt: '',
+  },
+];
+const downloads = downloadList.map((d) => ({ ...d, size: fileSize(d.href) }));
+---
+<BaseLayout
+  title="Press"
+  description="Press kit for Catbird, the Bluesky app for iPhone and iPad: short and long descriptions, a fact sheet, the app icon and brand colors."
+  path="/press"
+>
+  <PageIntro eyebrow="Press kit" icon="newspaper" title="Press">
+    <p>Descriptions, facts and artwork for writing about Catbird.</p>
+  </PageIntro>
+
+  <Section space="sm" labelledby="about-title">
+    <h2 id="about-title" class="press__h2">About Catbird</h2>
+    <div class="press__copy">
+      <div class="press__block">
+        <h3 class="press__h3">Short description</h3>
+        <p>Catbird is a free, open-source app for Bluesky on iPhone and iPad. It’s a native iOS app with custom feeds, threaded conversations, a composer for photos, video and GIFs, and Bluesky’s moderation tools.</p>
+      </div>
+      <div class="press__block">
+        <h3 class="press__h3">Long description</h3>
+        <p>Catbird is an independent app for Bluesky, the social network built on the AT Protocol. It runs on iPhone and iPad with iOS {MIN_IOS} or later, is written in SwiftUI, and uses Apple’s Liquid Glass design on iOS 26.</p>
+        <p>Catbird supports the home timeline and custom, list and hashtag feeds, with local filters and muted words. Its composer handles threads of posts with up to 10 photos, video with captions, GIFs and alt text. Threads can be read in a tree or a linear layout, and posts can be translated in the app. It also includes Bluesky direct messages, multiple accounts, starter packs, lists, bookmarks, and Bluesky’s reporting, blocking, muting and labeler tools.</p>
+        <p>On iOS 26 devices with Apple Intelligence, Ask Catbird answers questions about posts, threads and profiles using Apple’s on-device model, and any action it suggests runs only after the person confirms it.</p>
+        <p>Catbird is free. Its source code is published on GitHub under the MIT License. {APP_STORE_LIVE ? 'It is available on the App Store.' : 'It is in beta on TestFlight and is not yet on the App Store.'} Catbird is not affiliated with Bluesky Social, PBC.</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section space="sm" labelledby="facts-title">
+    <h2 id="facts-title" class="press__h2">Fact sheet</h2>
+    <div class="press__table-wrap">
+      <table class="press__facts">
+        <caption class="visually-hidden">Catbird fact sheet</caption>
+        <tbody>
+          {facts.map((f) => (
+            <tr>
+              <th scope="row">{f.label}</th>
+              <td>{f.href ? <a href={f.href}>{f.value}</a> : f.value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </Section>
+
+  <Section space="sm" labelledby="assets-title">
+    <h2 id="assets-title" class="press__h2">Artwork</h2>
+    <p class="press__intro muted">Use the icon and the bird as they are. Don’t redraw, recolor, crop or add effects to them, and don’t use Bluesky’s butterfly logo to represent Catbird.</p>
+    <ul class="press__assets" role="list">
+      {downloads.map((d) => (
+        <li class="press__asset">
+          <div class:list={['press__preview', d.checker && 'press__preview--checker', !d.preview && 'press__preview--colors']} aria-hidden={d.preview ? undefined : 'true'}>
+            {d.preview ? (
+              <img src={d.preview} width="160" height="160" alt={d.alt} loading="lazy" decoding="async" />
+            ) : (
+              <div class="press__mini-swatches">
+                {colors.slice(0, 5).map((c) => <span style={`background:${c.hex}`} />)}
+              </div>
+            )}
+          </div>
+          <div class="press__asset-body">
+            <h3 class="press__asset-title">{d.title}</h3>
+            <p class="press__asset-detail">{d.detail}</p>
+            <a class="press__download" href={d.href} download>
+              <Icon name="download" size={18} strokeWidth={2.2} />
+              <span>Download <span class="visually-hidden">{d.title} </span>PNG</span>
+              <span class="press__size">{d.size}</span>
+            </a>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <Section space="sm" labelledby="colors-title">
+    <h2 id="colors-title" class="press__h2">Brand colors</h2>
+    <p class="press__intro muted">Catbird uses one blue. The brand gradient runs at 135° from Catbird Blue to Gradient Partner.</p>
+    <ul class="press__colors" role="list">
+      {colors.map((c) => (
+        <li class="press__color">
+          <span class="press__chip" style={`background:${c.hex}`} aria-hidden="true" />
+          <div>
+            <p class="press__color-name">{c.name}</p>
+            <p class="press__hex"><code>{c.hex}</code></p>
+            <p class="press__color-use">{c.use}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <div class="press__gradient" style={`background:${gradient}`} aria-hidden="true" />
+  </Section>
+
+  <Section space="md" labelledby="press-contact-title">
+    <h2 id="press-contact-title" class="press__h2">Press contact</h2>
+    <p class="press__intro muted">For interviews or questions about the app:</p>
+    <div class="press__contact">
+      <ContactOptions github={false} emailLabel="Email" blueskyText="Send a message to the Catbird account on Bluesky." />
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .press__h2 {
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  .press__h3 {
+    font-family: var(--font-sans);
+    font-stretch: 100%;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 650;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .press__intro {
+    max-width: 65ch;
+    margin-bottom: 20px;
+  }
+  .press__copy {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 1024px) {
+    .press__copy {
+      grid-template-columns: 1fr 2fr;
+      align-items: start;
+    }
+  }
+  .press__block {
+    padding: 24px;
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    border: var(--stroke-1) solid transparent;
+  }
+  .press__block p {
+    max-width: 65ch;
+    line-height: 1.5;
+  }
+  .press__block p + p {
+    margin-top: 0.75em;
+  }
+
+  .press__table-wrap {
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    border: var(--stroke-1) solid transparent;
+    overflow: hidden;
+  }
+  .press__facts {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 17px;
+    line-height: 22px;
+  }
+  .press__facts th,
+  .press__facts td {
+    padding: 14px 20px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .press__facts tr + tr th,
+  .press__facts tr + tr td {
+    border-top: var(--hairline) solid var(--separator);
+  }
+  .press__facts th {
+    width: 34%;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  @media (max-width: 559px) {
+    .press__facts th,
+    .press__facts td {
+      display: block;
+      width: auto;
+    }
+    .press__facts th {
+      padding-bottom: 2px;
+      font-size: 15px;
+      line-height: 20px;
+    }
+    .press__facts td {
+      padding-top: 0;
+      border-top: 0 !important;
+    }
+  }
+
+  .press__assets {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .press__assets {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .press__assets {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .press__asset {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    border: var(--stroke-1) solid transparent;
+    overflow: hidden;
+  }
+  .press__contact {
+    max-width: 560px;
+  }
+  .press__preview {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    background: var(--bg-tertiary);
+  }
+  .press__preview img {
+    width: 45%;
+    max-width: 160px;
+    height: auto;
+  }
+  .press__preview--checker {
+    background-color: #ffffff;
+    background-image:
+      linear-gradient(45deg, #e5e5ea 25%, transparent 25%),
+      linear-gradient(-45deg, #e5e5ea 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #e5e5ea 75%),
+      linear-gradient(-45deg, transparent 75%, #e5e5ea 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+  }
+  .press__mini-swatches {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    width: 70%;
+  }
+  .press__mini-swatches span {
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    forced-color-adjust: none;
+  }
+  .press__asset-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 20px 20px;
+    flex: 1;
+  }
+  .press__asset-title {
+    font-family: var(--font-sans);
+    font-stretch: 100%;
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 650;
+    letter-spacing: 0;
+  }
+  .press__asset-detail {
+    font-size: 15px;
+    line-height: 20px;
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .press__download {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    min-height: 44px;
+    margin-top: 6px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .press__download:hover span:first-of-type {
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+  .press__size {
+    font-weight: 400;
+    font-size: 15px;
+    color: var(--text-muted);
+  }
+
+  .press__colors {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+  .press__color {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px;
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    border: var(--stroke-1) solid transparent;
+  }
+  .press__chip {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-image);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-primary) 16%, transparent);
+    forced-color-adjust: none;
+  }
+  .press__color-name {
+    font-weight: 650;
+  }
+  .press__hex code {
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+  .press__color-use {
+    margin-top: 2px;
+    font-size: 15px;
+    line-height: 20px;
+    color: var(--text-muted);
+  }
+  .press__gradient {
+    margin-top: 16px;
+    height: 72px;
+    border-radius: var(--radius-card);
+    forced-color-adjust: none;
+  }
+
+  :global([data-theme^="hc-"]) .press__block,
+  :global([data-theme^="hc-"]) .press__table-wrap,
+  :global([data-theme^="hc-"]) .press__asset,
+  :global([data-theme^="hc-"]) .press__color {
+    border-color: var(--embed-stroke);
+  }
+  @media (forced-colors: active) {
+    .press__block,
+    .press__table-wrap,
+    .press__asset,
+    .press__color {
+      border: 1px solid CanvasText;
+    }
+  }
+  @media (max-width: 639px) {
+    .press__asset {
+      flex-direction: row;
+      align-items: stretch;
+    }
+    .press__preview {
+      flex: none;
+      width: 112px;
+      aspect-ratio: auto;
+    }
+    .press__preview img {
+      width: 72px;
+    }
+    .press__mini-swatches {
+      grid-template-columns: repeat(3, 1fr);
+      width: 72px;
+      gap: 4px;
+    }
+  }
+</style>

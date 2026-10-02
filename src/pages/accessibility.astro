@@ -1,0 +1,356 @@
+---
+/**
+ * /accessibility — plan §3.2 (small page). Lists only accessibility settings that ship in
+ * the 1.0 build and have a consumer in code (evidence in the comments), plus this site's
+ * own target and theme behavior. Not listed on purpose:
+ *   - "Long Press Duration": no consumer (LITE-010).
+ *   - "Shake to Undo": its only consumer is the invalid-input shake animation
+ *     (Core/Extensions/View+Shake.swift:46); it doesn't control an undo gesture.
+ *   - VoiceOver support: no audit evidence exists, so no claim is made.
+ *   - Full Dynamic Type: support is partial (plan §3, 287 fixed font sizes).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Icon from '../components/ui/Icon.astro';
+import PageIntro from '../components/support/PageIntro.astro';
+import ContactOptions from '../components/support/ContactOptions.astro';
+
+type Setting = { name: string; text: string };
+type Group = { id: string; title: string; icon: string; settings: Setting[]; note?: string };
+
+// Settings → Accessibility (Features/Settings/Views/AccessibilitySettingsView.swift in the 1.0 build).
+const groups: Group[] = [
+  {
+    id: 'alt-text',
+    title: 'Alt text',
+    icon: 'image',
+    settings: [
+      // PostComposerCore.swift:131-137
+      { name: 'Require Alt Text Before Posting', text: 'Catbird won’t post your images or video until each one has a description.' },
+      // ViewImageGridView.swift:213-221
+      { name: 'Display Larger Alt Text Badges', text: 'Makes the ALT badge on described images bigger.' },
+    ],
+    // AltTextEditorView.swift:71-114 (generate: iOS 26 + Apple Intelligence; OCR: all versions).
+    note: 'When you write alt text, you can select text from the image to copy it into the description. On iOS 26 devices with Apple Intelligence, you can also generate a draft description on the device.',
+  },
+  {
+    id: 'motion',
+    title: 'Motion',
+    icon: 'move',
+    settings: [
+      // Core/Utilities/MotionManager.swift:8-30
+      { name: 'Reduce Motion', text: 'Turns off animations in the app.' },
+      // View+Extensions.swift:9-13; enabled only while Reduce Motion is on.
+      { name: 'Prefer Cross-fade Transitions', text: 'With Reduce Motion on, uses short fades instead of sliding transitions.' },
+      // ModernVideoPlayerView.swift:159,315
+      { name: 'Auto-play Videos', text: 'Turn it off and videos wait until you tap play.' },
+    ],
+  },
+  {
+    id: 'display',
+    title: 'Text and display',
+    icon: 'type',
+    settings: [
+      // FontManager.swift:836,900
+      { name: 'Increase Contrast', text: 'Raises the contrast of text.' },
+      // Typography.swift:745,769
+      { name: 'Bold Text', text: 'Uses a heavier weight for text.' },
+      // AccessibilitySettingsView.swift:82-108
+      { name: 'Font Style, Font Size and Line Spacing', text: 'Choose System, Serif, Rounded or Monospace type, a size from Small to Extra Large, and tight, normal or relaxed spacing.' },
+    ],
+    // AccessibilitySettingsView.swift:75,111-128; plan §3 (Dynamic Type is partial).
+    note: 'Catbird follows the text size you set in the iOS Settings app (Accessibility, then Display & Text Size) in most places, and you can cap how large it gets. Some screens still use fixed text sizes and don’t change size yet.',
+  },
+  {
+    id: 'reading',
+    title: 'Reading',
+    icon: 'book-open',
+    settings: [
+      // PostView.swift:403-407
+      { name: 'Show Reading Time Estimates', text: 'Shows how many minutes a longer post takes to read.' },
+      // Post.swift:319,328; AttributedString+AccentText.swift:9-30
+      { name: 'Highlight Links', text: 'Makes links in posts stand out, with color, an underline or both.' },
+    ],
+  },
+  {
+    id: 'interaction',
+    title: 'Interaction',
+    icon: 'hand',
+    settings: [
+      // ProfileHeader.swift:784-786; UnifiedProfileView.swift:555-557; PostView.swift:513-535
+      { name: 'Confirm Before Actions', text: 'Asks before you unfollow someone, mute a person or mute a thread.' },
+      // PlatformHaptics.swift:18; AppSettings.swift:426
+      { name: 'Disable Haptic Feedback', text: 'Turns off the app’s haptic feedback (the small vibrations when you tap).' },
+    ],
+  },
+  {
+    id: 'appearance',
+    title: 'Appearance',
+    icon: 'sun-moon',
+    settings: [
+      // AppearanceSettingsView.swift:68-77 (Settings → Appearance, not Accessibility).
+      { name: 'App Theme', text: 'System, Light or Dark. System follows your device.' },
+      { name: 'Dark Mode Style', text: 'Dim, a soft dark grey, or True Black.' },
+    ],
+    note: 'These two are in Settings, then Appearance.',
+  },
+];
+
+// The site's own display settings (components/site/ThemePicker.astro, scripts/theme-head.js).
+const siteThemes = [
+  {
+    name: 'Appearance',
+    options: 'System, Light, Dim, Black',
+    text: 'System follows your device: Light when it’s light, Dim when it’s dark. Dim and Black match the app’s two dark themes.',
+  },
+  {
+    name: 'Increase Contrast',
+    options: 'System, On',
+    text: 'System switches to a high-contrast theme whenever your device’s increase-contrast setting is on. On uses it all the time. The high-contrast themes include the color-blind safe colors too.',
+  },
+  {
+    name: 'Color-Blind Safe',
+    options: 'Off, On',
+    text: 'Replaces the reds and greens used for likes, reposts, errors and confirmations with colors that stay distinct for common types of color blindness. Every state also has an icon and a word, so color is never the only signal.',
+  },
+];
+
+const siteFeatures = [
+  { icon: 'keyboard', text: 'The site is built for keyboard use: a skip link jumps to the main content, and the focused control always has a visible outline.' },
+  { icon: 'zap-off', text: 'If you turn on Reduce Motion on your device, the site drops movement and uses fades instead.' },
+  { icon: 'layers', text: 'If you turn on Reduce Transparency, the see-through header becomes solid.' },
+  { icon: 'monitor', text: 'Windows contrast themes are supported: the site switches to your system colors.' },
+  { icon: 'smartphone', text: 'Pages fit screens as narrow as 320 pixels without sideways scrolling, and text can be zoomed.' },
+];
+---
+<BaseLayout
+  title="Accessibility"
+  description="The accessibility settings in Catbird for iPhone and iPad, the accessibility target for catbird.blue, and how to report an accessibility problem."
+  path="/accessibility"
+>
+  <PageIntro eyebrow="Help" icon="accessibility" title="Accessibility">
+    <p>The accessibility settings in the Catbird app, how this website is built for accessibility, and how to report a problem.</p>
+  </PageIntro>
+
+  <Section space="sm" labelledby="app-title">
+    <h2 id="app-title" class="a11y__h2">In the app</h2>
+    <p class="a11y__intro muted">In Catbird, most of these are in Settings, then Accessibility.</p>
+    <div class="a11y__groups">
+      {groups.map((g) => (
+        <section class="a11y__group" aria-labelledby={`a11y-${g.id}`}>
+          <h3 id={`a11y-${g.id}`} class="a11y__group-title">
+            <span class="a11y__tile"><Icon name={g.icon} size={18} strokeWidth={2.2} /></span>
+            {g.title}
+          </h3>
+          <dl class="a11y__settings">
+            {g.settings.map((s) => (
+              <div class="a11y__setting">
+                <dt>{s.name}</dt>
+                <dd>{s.text}</dd>
+              </div>
+            ))}
+          </dl>
+          {g.note && <p class="a11y__note">{g.note}</p>}
+        </section>
+      ))}
+    </div>
+  </Section>
+
+  <Section space="md" tone="secondary" labelledby="site-title">
+    <h2 id="site-title" class="a11y__h2">This website</h2>
+    <div class="a11y__site">
+      <div class="a11y__site-text">
+        <p>catbird.blue aims to meet the <a href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines (WCAG) 2.2</a> at Level AA. Each of the site’s main pages is checked with automated accessibility tests in all seven of its color themes. Automated tests can’t catch everything, so reports from people who use the site are the best way to find what they miss.</p>
+        <ul class="a11y__features" role="list">
+          {siteFeatures.map((f) => (
+            <li>
+              <span class="a11y__feature-icon"><Icon name={f.icon} size={20} /></span>
+              <span>{f.text}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="a11y__themes">
+        <h3 class="a11y__h3">Display settings</h3>
+        <p class="muted">At the bottom of every page, under Display:</p>
+        <dl class="a11y__theme-list">
+          {siteThemes.map((t) => (
+            <div class="a11y__theme">
+              <dt>
+                <span class="a11y__theme-name">{t.name}</span>
+                <span class="a11y__theme-options">{t.options}</span>
+              </dt>
+              <dd>{t.text}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="a11y__fine fine">Your choice is saved in this browser only. The display settings need JavaScript; without it, the site uses the Light theme. High Contrast and Color-Blind Safe are themes of this website; in the app, use Increase Contrast in Settings, then Accessibility.</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section space="md" labelledby="report-title">
+    <h2 id="report-title" class="a11y__h2">Report a problem</h2>
+    <p class="a11y__intro muted">If something in the app or on this site is hard or impossible to use, including with VoiceOver, Voice Control, Switch Control or another assistive technology, please report it. Say which screen or page, your device and iOS or browser version, and what you use to get around.</p>
+    <ContactOptions
+      blueskyText="Send a message to the Catbird account on Bluesky, or mention it in a post."
+      githubText="Open a public issue. Leave out anything private."
+    />
+  </Section>
+</BaseLayout>
+
+<style>
+  .a11y__h2 {
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .a11y__h3 {
+    font-size: 1.3125rem;
+    line-height: 25px;
+  }
+  .a11y__intro {
+    max-width: 65ch;
+    margin-bottom: 24px;
+  }
+  .a11y__groups {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .a11y__groups {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .a11y__groups {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .a11y__group {
+    padding: 20px 22px 22px;
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    border: var(--stroke-1) solid transparent;
+  }
+  .a11y__group-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1875rem;
+    line-height: 24px;
+    margin-bottom: 14px;
+  }
+  .a11y__tile {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-image);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--link);
+  }
+  .a11y__settings {
+    display: grid;
+    gap: 12px;
+  }
+  .a11y__setting dt {
+    font-weight: 650;
+  }
+  .a11y__setting dd {
+    margin: 2px 0 0;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 20px;
+  }
+  .a11y__note {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: var(--hairline) solid var(--separator);
+    font-size: 15px;
+    line-height: 20px;
+    color: var(--text-muted);
+  }
+
+  .a11y__site {
+    display: grid;
+    gap: 32px;
+  }
+  @media (min-width: 1024px) {
+    .a11y__site {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+  }
+  .a11y__site-text > p {
+    max-width: 65ch;
+    line-height: 1.5;
+  }
+  .a11y__features {
+    display: grid;
+    gap: 14px;
+    margin-top: 24px;
+  }
+  .a11y__features li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    line-height: 1.45;
+  }
+  .a11y__feature-icon {
+    flex: none;
+    color: var(--link);
+    margin-top: 1px;
+  }
+  .a11y__themes {
+    padding: 22px;
+    border-radius: var(--radius-card);
+    background: var(--bg);
+    border: var(--stroke-1) solid var(--embed-stroke);
+  }
+  .a11y__themes > .muted {
+    margin-top: 4px;
+  }
+  .a11y__theme-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .a11y__theme dt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 10px;
+  }
+  .a11y__theme-name {
+    font-weight: 650;
+  }
+  .a11y__theme-options {
+    font-size: 15px;
+    line-height: 20px;
+    color: var(--text-muted);
+  }
+  .a11y__theme dd {
+    margin: 4px 0 0;
+    font-size: 15px;
+    line-height: 20px;
+    color: var(--text-muted);
+  }
+  .a11y__fine {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: var(--hairline) solid var(--separator);
+  }
+  :global([data-theme^="hc-"]) .a11y__group {
+    border-color: var(--embed-stroke);
+  }
+  @media (forced-colors: active) {
+    .a11y__group,
+    .a11y__themes {
+      border: 1px solid CanvasText;
+    }
+  }
+</style>

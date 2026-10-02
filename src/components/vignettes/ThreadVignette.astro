@@ -1,0 +1,104 @@
+---
+/**
+ * Illustration of a thread: the focused post with the large action row, a reply in
+ * Spanish with the app's Translate capsule, a reply chain on the thread line, and the
+ * "Show 2 more replies" row. Fictional people, .test handles.
+ *
+ * Props: theme?, width?, height? (default 600), class?
+ */
+import PhoneFrame from '../ui/PhoneFrame.astro';
+import Icon from '../ui/Icon.astro';
+import './vignette.css';
+
+type Theme = 'light' | 'dim' | 'black' | 'hc-light' | 'hc-dark' | 'cvd-light' | 'cvd-dark';
+interface Props {
+  theme?: Theme;
+  width?: number;
+  height?: number;
+  class?: string;
+}
+const { theme, width, height = 600, class: className } = Astro.props;
+---
+<PhoneFrame
+  label="Illustration of a Catbird thread: the main post, a reply in Spanish with a Translate button, two replies joined by a thread line, and a row to show more replies."
+  theme={theme}
+  width={width}
+  class={className}
+>
+  <div class="vg" style={`--vg-h:${height}px`}>
+    <div class="vg__inline-nav">
+      <span class="vg__navbtn"><Icon name="chevron-left" size={22} strokeWidth={2.4} /></span>
+      <span class="t-nav-inline-title">Thread</span>
+      <span class="vg__navbtn"><Icon name="ellipsis" size={20} /></span>
+    </div>
+
+    <div class="cb-post vg__anchor">
+      <div class="cb-post__col">
+        <span class="cb-avatar" style="width:var(--avatar-lg);height:var(--avatar-lg)" data-tone="accent"></span>
+      </div>
+      <div class="cb-post__body">
+        <div class="cb-header">
+          <span class="cb-header__name">Ines Alvarez</span>
+          <span class="cb-header__meta">@ines.test</span>
+        </div>
+        <p class="cb-text">Book swap at the library on Saturday, ten until noon. Bring one, take one.</p>
+        <div class="vg__anchor-meta">9:41 AM</div>
+        <div class="cb-actions is-big">
+          <span class="cb-action"><Icon name="message-circle" /><span class="cb-count">3</span></span>
+          <span class="cb-action"><Icon name="repeat-2" /><span class="cb-count">12</span></span>
+          <span class="cb-action is-liked"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 20.5S3.5 15.4 3.5 9.4A4.4 4.4 0 0 1 12 7.1a4.4 4.4 0 0 1 8.5 2.3c0 6-8.5 11.1-8.5 11.1z"/></svg><span class="cb-count">48</span></span>
+          <span class="cb-action"><Icon name="share" /></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cb-post">
+      <div class="cb-post__col">
+        <span class="cb-avatar" style="width:var(--avatar-lg);height:var(--avatar-lg)" data-tone="aurora"></span>
+        <div class="cb-post__thread"></div>
+      </div>
+      <div class="cb-post__body">
+        <div class="cb-header">
+          <span class="cb-header__name">Marta Sol</span>
+          <span class="cb-header__meta">@marta.test · 1h</span>
+        </div>
+        <p class="cb-text">¡Qué buena idea! Llevo dos novelas y un libro de cocina.</p>
+        <span class="vg__translate"><Icon name="globe" size={12} strokeWidth={2.2} /><span>Translate</span><span>(es → en)</span></span>
+        <div class="cb-actions">
+          <span class="cb-action"><Icon name="message-circle" /><span class="cb-count">1</span></span>
+          <span class="cb-action"><Icon name="repeat-2" /></span>
+          <span class="cb-action"><Icon name="heart" /><span class="cb-count">6</span></span>
+          <span class="cb-action"><Icon name="share" /></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cb-post">
+      <div class="cb-post__col">
+        <span class="cb-avatar" style="width:var(--avatar-lg);height:var(--avatar-lg)" data-tone="dusk"></span>
+      </div>
+      <div class="cb-post__body">
+        <div class="cb-header">
+          <span class="cb-header__name">Kai Oduya</span>
+          <span class="cb-header__meta">@kai.test · 45m</span>
+        </div>
+        <p class="cb-text">Good timing. I have a stack of paperbacks to pass on.</p>
+        <div class="cb-actions">
+          <span class="cb-action"><Icon name="message-circle" /></span>
+          <span class="cb-action"><Icon name="repeat-2" /></span>
+          <span class="cb-action"><Icon name="heart" /><span class="cb-count">2</span></span>
+          <span class="cb-action"><Icon name="share" /></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cb-thread-gap">
+      <div class="cb-thread-gap__col">
+        <span class="cb-thread-gap__dot"></span>
+        <span class="cb-thread-gap__dot"></span>
+        <span class="cb-thread-gap__dot"></span>
+      </div>
+      <span class="cb-thread-gap__label">Show 2 more replies <Icon name="chevron-down" size={12} strokeWidth={2.6} /></span>
+    </div>
+  </div>
+</PhoneFrame>

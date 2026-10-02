@@ -1,0 +1,625 @@
+---
+/**
+ * /features (plan §3.2): the home-page groups in depth, the accessibility settings list
+ * (Long Press Duration omitted: it has no effect), and the Requirements block.
+ * Only shipped 1.0 facts. Evidence for each group is noted beside it, as paths in the
+ * Lite workspace relative to .workspaces/catbird-lite/Catbird/Catbird/.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import Icon from '../components/ui/Icon.astro';
+import Badge from '../components/ui/Badge.astro';
+import ComposerVignette from '../components/vignettes/ComposerVignette.astro';
+import ThreadVignette from '../components/vignettes/ThreadVignette.astro';
+import AppearanceVignette from '../components/vignettes/AppearanceVignette.astro';
+import { TESTFLIGHT_URL, MIN_IOS, APP_STORE_LIVE, APP_STORE_URL } from '../config';
+
+interface Group {
+  id: string;
+  icon: string;
+  title: string;
+  intro: string;
+  items: string[];
+  note?: string;
+  badge?: string;
+  vignette?: 'composer' | 'thread' | 'appearance';
+}
+
+const groups: Group[] = [
+  {
+    // App/ContentView.swift:365 (Home), :504-515 (drawer: Bookmarks, My Lists);
+    // Features/Feed/Views/FeedsStartPage.swift:378,1449,1460-1466;
+    // Features/Feed/Models/FeedFilterSettings.swift:95-262.
+    id: 'feeds',
+    icon: 'grid-3x3',
+    title: 'Feeds',
+    intro: 'Your timeline and every feed you follow live in one drawer.',
+    items: [
+      'Your home timeline, custom feeds, list feeds and hashtag feeds.',
+      'Pinned and saved feeds, shown as a grid or a list, which you can edit, reorder and remove.',
+      'Add Feed and Discover more feeds, right in the drawer.',
+      'Local filters: hide reposts, replies, quote posts, duplicates or posts with links, or show only text or only media posts.',
+      'Filter posts by language.',
+      'Muted words and tags.',
+      'Bookmarks for posts you want to come back to.',
+    ],
+  },
+  {
+    // Features/Feed/Views/Components/PostComposer/PostComposerViewModel.swift:161,167;
+    // Components/ComposerAccessoryBar.swift:134-158; Components/LanguagePickerSheet.swift;
+    // Components/LabelSelectorView.swift; Components/UserMentionSuggestionView.swift;
+    // Components/OutlineTagsView.swift; Media/MediaItemView.swift:119-122;
+    // Media/PhotoEditorSheet.swift; DraftsListView.swift:6; Features/Feed/Posting/ComposerOutbox.swift.
+    id: 'composer',
+    icon: 'pen-line',
+    title: 'Composer',
+    intro: 'Write a single post or a whole thread, with everything attached in one place.',
+    items: [
+      'Posts of up to 300 characters, with a ring that shows how much room is left.',
+      'Threads: add another post without leaving the composer.',
+      'Up to 10 photos per post, with a crop editor.',
+      'Video, with a caption (subtitle) editor.',
+      'GIF search.',
+      'Alt text for every photo and video, and an optional setting that requires it before you post.',
+      'In the alt text editor, Select Text from Image picks up text in a photo on every supported iOS version, and Generate Alt Text drafts a description on iOS 26 with Apple Intelligence.',
+      'Post language, who can reply, whether others can quote you, and content labels.',
+      'Mention suggestions, hashtags and link previews.',
+      'Drafts saved on your device, and posts that failed to send are kept and retried.',
+    ],
+    vignette: 'composer',
+  },
+  {
+    // Features/Feed/Models/ThreadReplyLayout.swift:12-17; Features/Feed/Views/Post.swift:10,346-375;
+    // Core/Navigation/NavigationHandler.swift (liked by, reposted by, quotes);
+    // Features/Settings/Models/ExternalMediaPreferences.swift:18-31.
+    id: 'threads',
+    icon: 'list-tree',
+    title: 'Threads and posts',
+    intro: 'Read conversations the way you like, in any language.',
+    items: [
+      'Tree layout, where replies indent under their parent, or a linear layout.',
+      'Translate posts written in other languages, using Apple’s Translation framework.',
+      'See who liked, reposted or quoted a post.',
+      'Picture in picture for full-screen video.',
+      'Embeds from other services, including YouTube, Vimeo, Spotify, Apple Music, SoundCloud, Flickr and Bandcamp, load only for the providers you allow.',
+    ],
+    vignette: 'thread',
+  },
+  {
+    // App/ContentView.swift:379 (Search tab); Features/Search/Views/Sections/*;
+    // Features/Search/Views/FilterViews/SearchFiltersSheet.swift;
+    // Features/StarterPack/Views/StarterPackWizardView.swift, StarterPackQRCodeCard.swift;
+    // Features/Search/Views/MainViews/DiscoveryView.swift:187-188 ("Scan QR").
+    id: 'search',
+    icon: 'search',
+    title: 'Search and discovery',
+    intro: 'Find people, posts and feeds, and help friends find their way in.',
+    items: [
+      'Search posts, profiles and feeds, with filters.',
+      'Saved and recent searches, suggested profiles and Explore Interests.',
+      'Trending topics.',
+      'Starter packs: view, create and edit them, and share them with a QR code.',
+      'Scan a profile’s QR code to open it.',
+    ],
+  },
+  {
+    // App/ContentView.swift:390-399; Features/Settings/Views/NotificationSettingsView.swift:208-336.
+    id: 'notifications',
+    icon: 'bell',
+    title: 'Notifications',
+    intro: 'A Notifications tab with an unread badge, and push alerts you can tune by type.',
+    items: [
+      'Push notifications for mentions, replies, likes, new followers, reposts and quotes.',
+      'Separate switches for likes of your reposts, reposts of your reposts, and activity from others.',
+      'Activity subscriptions for accounts you want to hear from.',
+    ],
+    note: 'Push notifications are delivered through Catbird’s own server.',
+  },
+  {
+    // Core/Navigation/ProfileTab.swift:5-25; Features/Profile/Views/KnownFollowersView.swift;
+    // Core/Navigation/NavigationHandler.swift:187-227 (lists).
+    id: 'profiles',
+    icon: 'user-round',
+    title: 'Profiles and lists',
+    intro: 'Everything on a profile, plus lists you can build and share.',
+    items: [
+      'Profile tabs for Posts, Replies, Media, Likes, Lists, Starter Packs and Feeds, and Labels for labeler accounts.',
+      'Edit your profile, and see followers, following and the followers you know.',
+      'Create and edit lists, manage members, and read a list as a feed.',
+      'Moderation lists.',
+    ],
+  },
+  {
+    // Features/Settings/Views/ModerationSettingsView.swift (report, block, mute, labelers,
+    // adult content); Features/Moderation/Views/ReportFormView.swift;
+    // Features/Moderation/Views/VerificationSettingsView.swift:26-27.
+    id: 'safety',
+    icon: 'shield-check',
+    title: 'Moderation and safety',
+    intro: 'Tools to control what you see and who can reach you.',
+    items: [
+      'Report posts, accounts, lists, feeds and messages.',
+      'Block and mute accounts, and review your muted and blocked lists.',
+      'Subscribe to labelers, adjust each one’s settings, or add one by its DID (its account ID).',
+      'Verification badges, which you can show or hide.',
+      'Adult content can only be turned on through Bluesky itself, and you can turn it off in Catbird.',
+    ],
+  },
+  {
+    // App/ContentView.swift:427-436 (Messages tab); Features/Chat/Views/ChatTabView.swift:161;
+    // Features/Chat/Views/Components/MessageReactionsView.swift.
+    id: 'messages',
+    icon: 'mail',
+    title: 'Direct messages',
+    intro: 'Your Bluesky direct messages, in their own tab.',
+    items: [
+      'One-to-one Bluesky conversations.',
+      'Message requests.',
+      'Reactions to messages.',
+    ],
+  },
+  {
+    // Features/Auth/Views/LoginView.swift:1382 (browser sign-up); no SecureField anywhere in the app;
+    // Features/Auth/Views/AccountSwitcherView.swift:224,233;
+    // Features/Settings/Views/PrivacySecuritySettingsView.swift:73-101;
+    // Features/Settings/Views/AccountSettingsView.swift (handle, email, deactivate, CAR export).
+    id: 'accounts',
+    icon: 'key-round',
+    title: 'Accounts and security',
+    intro: 'Sign in through your browser, and keep more than one account close at hand.',
+    items: [
+      'Sign in or create an account on Bluesky or on another AT Protocol server, in your browser.',
+      'Multiple accounts, with quick switching and drag to reorder.',
+      'Lock the app with Face ID or Touch ID.',
+      'Change your handle, verify your email, or deactivate your account.',
+      'Export your account’s public repository (your posts, likes, follows and profile) as a CAR file.',
+    ],
+  },
+  {
+    // Features/Settings/Views/AppearanceSettingsView.swift:67-152; Core/State/ThemeManager.swift:29-47;
+    // App/ContentView.swift:448 (GlassEffectContainer); AppIconSettingsView (CatbirdClassic).
+    id: 'appearance',
+    icon: 'palette',
+    title: 'Appearance',
+    intro: 'Make Catbird look the way you want.',
+    items: [
+      'System, Light or Dark theme, with Dim or True Black for dark mode.',
+      'Seven accent colors: Catbird, Twilight, Lavender, Sunrise, Aurora, Dusk and Midnight.',
+      'Font style (System, Serif, Rounded or Monospaced), font size and line spacing.',
+      'A maximum Dynamic Type size.',
+      'An alternate Classic app icon.',
+      'Liquid Glass on iOS 26.',
+    ],
+    vignette: 'appearance',
+  },
+  {
+    // AppIntents/Support/CatbirdShortcuts.swift:16-110.
+    id: 'shortcuts',
+    icon: 'audio-lines',
+    title: 'Siri and Shortcuts',
+    intro: 'Ask Siri or build a shortcut for common actions.',
+    items: [
+      'Create a post or open your timeline.',
+      'Search posts or profiles.',
+      'Check unread notifications or unread messages.',
+      'Send a message.',
+      'Like a post, repost, or block a profile.',
+    ],
+  },
+  {
+    // Core/Services/BlueskyIntelligenceAgent.swift:78-83 (@available iOS 26; SystemLanguageModel);
+    // Core/Models/CopilotContracts.swift:51-76 (inline confirmation; proposed actions);
+    // entry points: Features/Profile/Views/Unified/UnifiedProfileView.swift:885,
+    // Features/Feed/Views/FeedDiscoveryHeaderView.swift:147, Features/Search/Views/RefinedSearchView.swift:406,
+    // Features/Search/Views/Sections/TrendingTopicsSection.swift:269, Features/Feed/Views/PostView.swift (post menu).
+    id: 'ask-catbird',
+    icon: 'sparkles',
+    title: 'Ask Catbird',
+    intro: 'An assistant built on Apple’s on-device language model.',
+    items: [
+      'Ask about a post, a thread, a profile, a feed, a search or a trending topic.',
+      'Answers draw on Bluesky posts and profiles and point to where they came from.',
+      'It can suggest actions such as following, liking, reposting, bookmarking, muting, blocking, reporting, or drafting a reply or quote.',
+      'Nothing it suggests happens until you confirm it.',
+      'The language model runs on your device. Catbird doesn’t use any third-party AI service.',
+    ],
+    badge: 'Requires iOS 26 and Apple Intelligence',
+  },
+];
+
+// Features/Settings/Views/AccessibilitySettingsView.swift:9-255. Omitted on purpose:
+// "Long Press Duration" has no effect (LITE-010), and "Shake to Undo" only gates the
+// invalid-input shake animation (Core/Extensions/View+Shake.swift:46); it has no undo gesture.
+const accessibility = [
+  'Require Alt Text Before Posting',
+  'Display Larger Alt Text Badges',
+  'Reduce Motion',
+  'Auto-play Videos',
+  'Prefer Cross-fade Transitions',
+  'Increase Contrast',
+  'Bold Text',
+  'Show Reading Time Estimates',
+  'Highlight Links',
+  'Confirm Before Actions',
+  'Disable Haptic Feedback',
+];
+
+const navItems = [
+  ...groups.slice(0, 10).map((g) => ({ id: g.id, title: g.title })),
+  { id: 'accessibility', title: 'Accessibility' },
+  ...groups.slice(10).map((g) => ({ id: g.id, title: g.title })),
+  { id: 'requirements', title: 'Requirements' },
+];
+
+const ctaHref = APP_STORE_LIVE ? APP_STORE_URL : TESTFLIGHT_URL;
+const ctaLabel = APP_STORE_LIVE ? 'Get Catbird' : 'Join the Beta';
+---
+<BaseLayout
+  title="Features"
+  description="Everything in Catbird for iPhone and iPad: feeds and filters, the composer, threads and translation, search, moderation, messages, appearance, accessibility and Ask Catbird."
+  path="/features"
+>
+  <Section space="md" class="fx-hero" labelledby="fx-title">
+    <p class="eyebrow">Features</p>
+    <h1 id="fx-title">Everything in Catbird</h1>
+    <p class="lead fx-hero__lead">
+      What you get in Catbird for iPhone and iPad, grouped the way the app is. You need iOS&nbsp;{MIN_IOS} or
+      later.
+    </p>
+  </Section>
+
+  <Section space="none" class="fx">
+    <div class="fx__layout">
+      <nav class="fx__toc" aria-labelledby="fx-toc-title">
+        <h2 id="fx-toc-title" class="fx__toc-title">On this page</h2>
+        <ul role="list">
+          {navItems.map((n) => (
+            <li><a href={`#${n.id}`}>{n.title}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="fx__content">
+        {groups.map((g, i) => (
+          <>
+            {i === 10 && (
+              <section id="accessibility" class="fx-group" aria-labelledby="accessibility-title">
+                <div class="fx-group__head">
+                  <span class="fx-group__icon"><Icon name="accessibility" size={22} /></span>
+                  <h2 id="accessibility-title">Accessibility</h2>
+                </div>
+                <p class="fx-group__intro">
+                  Catbird has its own accessibility settings, alongside the ones iOS already provides.
+                </p>
+                <ul class="fx-a11y" role="list">
+                  {accessibility.map((a) => (
+                    <li><Icon name="check" size={18} strokeWidth={2.4} /><span>{a}</span></li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            <section
+              id={g.id}
+              class:list={['fx-group', g.vignette && 'fx-group--with-art']}
+              aria-labelledby={`${g.id}-title`}
+            >
+              <div class="fx-group__text">
+                <div class="fx-group__head">
+                  <span class="fx-group__icon"><Icon name={g.icon} size={22} /></span>
+                  <h2 id={`${g.id}-title`}>{g.title}</h2>
+                </div>
+                {g.badge && <p class="fx-group__badge"><Badge tone="accent" icon="info">{g.badge}</Badge></p>}
+                <p class="fx-group__intro">{g.intro}</p>
+                <ul class="fx-list">
+                  {g.items.map((item) => <li>{item}</li>)}
+                </ul>
+                {g.note && <p class="fx-group__note">{g.note}</p>}
+              </div>
+              {g.vignette === 'composer' && <div class="fx-group__art"><ComposerVignette width={300} height={520} /></div>}
+              {g.vignette === 'thread' && <div class="fx-group__art"><ThreadVignette width={300} height={560} /></div>}
+              {g.vignette === 'appearance' && <div class="fx-group__art"><AppearanceVignette width={300} height={540} /></div>}
+            </section>
+          </>
+        ))}
+
+        <section id="requirements" class="fx-req" aria-labelledby="requirements-title">
+          <h2 id="requirements-title">Requirements</h2>
+          <dl class="fx-req__list">
+            <div>
+              <dt><Icon name="tablet-smartphone" size={20} />Devices</dt>
+              <dd>iPhone and iPad with iOS {MIN_IOS} or later.</dd>
+            </div>
+            <div>
+              <dt><Icon name="sparkles" size={20} />Ask Catbird and Generate Alt Text</dt>
+              <dd>iOS 26 or later on a device with Apple Intelligence turned on.</dd>
+            </div>
+            <div>
+              <dt><Icon name="scan-text" size={20} />Select Text from Image</dt>
+              <dd>Works on every iOS version Catbird supports.</dd>
+            </div>
+            <div>
+              <dt><Icon name="languages" size={20} />Language</dt>
+              <dd>The app’s interface is in English.</dd>
+            </div>
+            <div>
+              <dt><Icon name="user-round" size={20} />Account</dt>
+              <dd>A Bluesky account, or an account on another AT Protocol server. You can create one in the app.</dd>
+            </div>
+          </dl>
+          <div class="cluster fx-req__actions">
+            <Button href={ctaHref} iconEnd="arrow-up-right">{ctaLabel}</Button>
+            <Button href="/support" variant="secondary">Get Support</Button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  :global(.fx-hero .section__inner) {
+    display: grid;
+    gap: 12px;
+  }
+
+  .fx-hero__lead {
+    max-width: 44ch;
+  }
+
+
+  .fx__layout {
+    display: grid;
+    gap: 32px;
+  }
+
+  /* ---- In-page navigation: chips on small screens, sticky column on desktop ---- */
+  .fx__toc {
+    padding: 16px 0 20px;
+    border-bottom: var(--stroke-1) solid var(--separator);
+  }
+
+  .fx__toc-title {
+    font-family: var(--font-sans);
+    font-stretch: 100%;
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .fx__toc ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+  }
+
+  .fx__toc a {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 20px;
+    text-decoration: none;
+  }
+
+  .fx__toc a:hover {
+    color: var(--link);
+  }
+
+  @media (min-width: 1024px) {
+    .fx__layout {
+      grid-template-columns: 200px minmax(0, 1fr);
+      gap: 64px;
+      align-items: start;
+    }
+
+    .fx__toc {
+      position: sticky;
+      top: calc(var(--header-h) + 24px);
+      padding: 0;
+      border: 0;
+      max-height: calc(100vh - var(--header-h) - 48px);
+      overflow-y: auto;
+    }
+
+    .fx__toc ul {
+      display: grid;
+      gap: 2px;
+    }
+
+    .fx__toc a {
+      display: block;
+      padding: 6px 12px;
+      margin-left: -12px;
+      background: none;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+    }
+
+    .fx__toc a:hover {
+      color: var(--text-primary);
+      background: var(--card-bg);
+    }
+  }
+
+  /* ---- Groups ---- */
+  .fx__content {
+    display: grid;
+  }
+
+  .fx-group {
+    padding-block: 40px;
+    border-bottom: var(--stroke-1) solid var(--separator);
+    display: grid;
+    gap: 32px;
+  }
+
+  .fx-group:first-child {
+    padding-top: 8px;
+  }
+
+  .fx-group__text {
+    display: grid;
+    align-content: start;
+    gap: 14px;
+  }
+
+  .fx-group__head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .fx-group__head h2 {
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+    line-height: 1.15;
+  }
+
+  .fx-group__icon {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    color: var(--link);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+
+  .fx-group__intro {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    max-width: 52ch;
+  }
+
+  .fx-group__badge {
+    margin: 0;
+  }
+
+  .fx-list {
+    display: grid;
+    gap: 10px;
+    padding-left: 1.2em;
+    margin: 4px 0 0;
+    max-width: 62ch;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .fx-list li::marker {
+    color: var(--link);
+  }
+
+  .fx-group__note {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text-muted);
+  }
+
+  .fx-group__art {
+    justify-self: center;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  @media (min-width: 1200px) {
+    .fx-group--with-art {
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 48px;
+      align-items: start;
+    }
+  }
+
+  .fx-a11y {
+    display: grid;
+    gap: 10px 24px;
+    margin: 6px 0 0;
+  }
+
+  @media (min-width: 640px) {
+    .fx-a11y {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .fx-a11y li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 17px;
+    line-height: 1.4;
+  }
+
+  .fx-a11y :global(.icon) {
+    color: var(--link);
+    margin-top: 2px;
+  }
+
+  #accessibility {
+    gap: 14px;
+  }
+
+  /* ---- Requirements ---- */
+  .fx-req {
+    margin-block: 48px 80px;
+    padding: 32px 24px;
+    border-radius: 28px;
+    background: var(--card-bg);
+    display: grid;
+    gap: 24px;
+  }
+
+  :global([data-theme^="hc-"]) .fx-req {
+    border: var(--stroke-1) solid var(--embed-stroke);
+  }
+
+  .fx-req h2 {
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+  }
+
+  .fx-req__list {
+    display: grid;
+    gap: 20px 32px;
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .fx-req {
+      padding: 40px;
+    }
+    .fx-req__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .fx-req__list dt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 650;
+  }
+
+  .fx-req__list dt :global(.icon) {
+    color: var(--link);
+  }
+
+  .fx-req__list dd {
+    margin: 4px 0 0 28px;
+    color: var(--text-muted);
+    line-height: 1.45;
+  }
+
+  @media (forced-colors: active) {
+    .fx-req,
+    .fx__toc a {
+      border: 1px solid CanvasText;
+    }
+  }
+</style>

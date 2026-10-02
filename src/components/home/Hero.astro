@@ -1,0 +1,271 @@
+---
+/**
+ * Home hero: app icon + wordmark lockup, headline, subhead, Join the Beta (TestFlight)
+ * with requirements, View Source (GitHub), and the timeline vignette on a brand-gradient
+ * stage with the catbird head artwork. No App Store badge until APP_STORE_LIVE.
+ */
+import Button from '../ui/Button.astro';
+import Wordmark from '../site/Wordmark.astro';
+import TimelineVignette from '../vignettes/TimelineVignette.astro';
+import { TESTFLIGHT_URL, GITHUB_URL, MIN_IOS, APP_STORE_LIVE, APP_STORE_URL } from '../../config';
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <div class="hero__lockup">
+        <img
+          class="hero__icon"
+          src="/images/app-icon-128.png"
+          srcset="/images/app-icon-128.png 1x, /images/app-icon-256.png 2x"
+          width="56"
+          height="56"
+          alt=""
+          decoding="async"
+        />
+        <Wordmark size={34} />
+      </div>
+
+      <h1 id="hero-title" class="hero__title">A Bluesky client for iPhone and iPad</h1>
+
+      <p class="hero__lead">
+        Catbird is a native SwiftUI app for Bluesky, with Liquid Glass on iOS&nbsp;26. It’s free,
+        and its source code is open under the MIT license.
+      </p>
+
+      <div class="hero__actions">
+        <div class="hero__primary">
+          {APP_STORE_LIVE ? (
+            <Button href={APP_STORE_URL} size="lg" iconEnd="arrow-up-right">Get Catbird</Button>
+          ) : (
+            <Button href={TESTFLIGHT_URL} size="lg" iconEnd="arrow-up-right">Join the Beta</Button>
+          )}
+          <p class="hero__req">iPhone and iPad · iOS {MIN_IOS} or later</p>
+        </div>
+        <Button href={GITHUB_URL} variant="secondary" size="lg" icon="code-xml">View Source</Button>
+      </div>
+    </div>
+
+    <div class="hero__stage">
+      <div class="hero__stage-bg" aria-hidden="true">
+        <picture>
+          <source
+            type="image/webp"
+            srcset="/images/home/catbird-head-480.webp 480w, /images/home/catbird-head-960.webp 960w"
+            sizes="(min-width: 1024px) 420px, 70vw"
+          />
+          <img
+            class="hero__bird"
+            src="/images/home/catbird-head-480.webp"
+            width="480"
+            height="339"
+            alt=""
+            decoding="async"
+            fetchpriority="low"
+          />
+        </picture>
+      </div>
+      <TimelineVignette class="hero__phone" width={350} height={600} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: 40px var(--gutter) 56px;
+    overflow: hidden;
+  }
+
+  /* On phones the timeline is shorter so the whole frame fits on screen. */
+  @media (max-width: 559px) {
+    .hero__stage :global(.hero__phone .vg) {
+      height: 500px;
+    }
+  }
+
+  /* Below 360px the frame is too narrow for the app's 17px text, so the whole picture is
+     drawn smaller instead of reflowing (names and handles were being cut off). */
+  @media (max-width: 359.98px) {
+    .hero .hero__stage {
+      padding-inline: 8px;
+    }
+    .hero__stage :global(.hero__phone) {
+      zoom: 0.8;
+    }
+  }
+
+  .hero__inner {
+    max-width: var(--content-max);
+    margin-inline: auto;
+    display: grid;
+    gap: 40px;
+  }
+
+  .hero__copy {
+    display: grid;
+    justify-items: start;
+    align-content: center;
+    gap: 20px;
+  }
+
+  .hero__lockup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero__icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 13px;
+  }
+
+  .hero__title {
+    font-size: clamp(2.5rem, 1.55rem + 4vw, 4.25rem);
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    max-width: 12ch;
+  }
+
+  .hero__lead {
+    font-size: 1.25rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+    max-width: 34ch;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px 16px;
+    margin-top: 8px;
+  }
+
+  .hero__primary {
+    display: grid;
+    justify-items: start;
+    gap: 8px;
+  }
+
+  .hero__req {
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--text-muted);
+  }
+
+  /* ---- Stage: brand gradient (brand art only), bird artwork, phone vignette ---- */
+  .hero__stage {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    padding: 32px 16px;
+    border-radius: 32px;
+    overflow: hidden;
+  }
+
+  .hero__stage-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--hero-gradient);
+  }
+
+  /* The bird peeks out from behind the phone's right edge, facing right as the brand requires
+     (docs/brand/08-components/app-icon.md: never mirror or rotate it). Its eye starts at 26% of
+     the artwork's width, so the width is sized for the visible 74% to fill the gap beside the
+     phone. Hidden where that gap is too narrow to show the eye and beak. */
+  .hero__bird {
+    display: none;
+    position: absolute;
+    left: auto;
+    right: 8px;
+    height: auto;
+    max-width: 240px;
+    filter: drop-shadow(0 18px 30px rgb(0 0 0 / 0.18));
+  }
+
+  .hero__stage :global(.hero__phone) {
+    position: relative;
+    z-index: 1;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  /* Same side padding as .section and the header from 768px up, so edges line up. */
+  @media (min-width: 768px) {
+    .hero {
+      padding-inline: 32px;
+    }
+  }
+
+  @media (min-width: 560px) {
+    .hero__stage {
+      padding-block: 48px;
+    }
+    .hero__stage :global(.hero__phone) {
+      margin-inline: auto;
+      transform: translateX(-14%);
+    }
+    /* Phone is 350px wide, centred and shifted 49px left: its right edge is at 50% + 126px. */
+    .hero__bird {
+      display: block;
+      top: 34%;
+      width: calc((50% - 126px - 8px) / 0.74);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero {
+      padding-block: 56px 80px;
+    }
+    .hero__inner {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 48px;
+      align-items: center;
+    }
+    .hero__copy {
+      gap: 24px;
+    }
+    .hero__stage {
+      padding: 48px 32px;
+    }
+    /* Two columns: the stage is narrower, so the phone sits against the right padding
+       instead of being nudged sideways (which clipped it at 1024px). */
+    .hero__stage :global(.hero__phone) {
+      margin-inline: 0 auto;
+      transform: none;
+    }
+    /* Phone sits against the left padding (32px), so its right edge is at 382px. */
+    .hero__bird {
+      top: 36%;
+      width: calc((100% - 382px - 8px) / 0.74);
+    }
+  }
+
+  @media (min-width: 1024px) and (max-width: 1179.98px) {
+    .hero__bird {
+      display: none;
+    }
+  }
+
+  /* High Contrast and forced colors: the gradient becomes flat, the artwork stays out of the way. */
+  :global([data-theme^="hc-"]) .hero__bird {
+    filter: none;
+  }
+
+  :global([data-theme="black"]) .hero__bird {
+    filter: none;
+  }
+
+  @media (forced-colors: active) {
+    .hero__stage {
+      border: 1px solid CanvasText;
+    }
+    .hero__stage-bg {
+      background: Canvas;
+    }
+  }
+</style>

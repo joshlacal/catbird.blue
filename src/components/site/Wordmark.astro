@@ -1,0 +1,42 @@
+---
+/**
+ * The "catbird" wordmark as live text (docs/brand/08-components/wordmark.md):
+ * lowercase always, weight 900, tracking -0.02em, display width. The brand doc says
+ * width 125; the site uses 120 to match the app's navigation titles (wdth 120).
+ * Clear space on all sides = the wordmark's x-height (~0.53em), provided by padding.
+ *
+ * Props:
+ *   size     Font size in px. Default 22.
+ *   tone     'accent' (brand blue, default) | 'primary' (text-primary) | 'reverse' (white, for the gradient).
+ *   as       Element. Default 'span'.
+ */
+interface Props {
+  size?: number;
+  tone?: 'accent' | 'primary' | 'reverse';
+  as?: 'span' | 'p' | 'div';
+  class?: string;
+}
+const { size = 22, tone = 'accent', as: Tag = 'span', class: className } = Astro.props;
+---
+<Tag class:list={['wordmark', `wordmark--${tone}`, className]} style={`--wm-size:${size}px`}>catbird</Tag>
+
+<style is:global>
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: var(--wm-size, 22px);
+    line-height: 1;
+    font-weight: 900;
+    font-stretch: 120%;
+    letter-spacing: -0.02em;
+    text-transform: lowercase;
+    white-space: nowrap;
+  }
+  .wordmark--accent { color: var(--accent); }
+  [data-theme="hc-light"] .wordmark--accent,
+  [data-theme="hc-dark"] .wordmark--accent { color: var(--accent-text); }
+  .wordmark--primary { color: var(--text-primary); }
+  .wordmark--reverse { color: #ffffff; }
+  @media (forced-colors: active) {
+    .wordmark { color: CanvasText !important; }
+  }
+</style>

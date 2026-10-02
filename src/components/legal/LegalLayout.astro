@@ -1,0 +1,244 @@
+---
+/**
+ * Shell for the legal pages: draft banner (via BaseLayout), title block with the
+ * effective date, the "to be completed" notice, a table of contents (sticky beside the
+ * text on wide screens, a compact list above it on narrow ones) and the prose body.
+ *
+ * Props:
+ *   kind         'privacy' | 'terms' (drives which missing details are listed).
+ *   title        <title> and <h1>.
+ *   description  Meta description.
+ *   path         Canonical path.
+ *   lede         One-sentence intro under the heading.
+ *   toc          Section anchors, in order. Each id must match an <h2 id> in the slot.
+ *   extras       Page-specific open facts for the notice (optional).
+ *   draftDetail  Second sentence of the draft banner.
+ * Slot: the page body (sections with <h2 id>).
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Pending from './Pending.astro';
+import PendingNotice from './PendingNotice.astro';
+import { LEGAL } from '../../config';
+import { effectiveDate, missingLegalItems, type LegalPageKind, type TocEntry } from './legal';
+
+interface Props {
+  kind: LegalPageKind;
+  title: string;
+  description: string;
+  path: string;
+  lede: string;
+  toc: TocEntry[];
+  extras?: string[];
+  draftDetail: string;
+}
+
+const { kind, title, description, path, lede, toc, extras = [], draftDetail } = Astro.props;
+const missing = missingLegalItems(kind);
+---
+<BaseLayout title={title} description={description} path={path} noindex draft draftDetail={draftDetail}>
+  <div class="legal">
+    <header class="legal__header">
+      <p class="eyebrow">Draft for review</p>
+      <h1>{title}</h1>
+      <p class="lead">{lede}</p>
+      <p class="legal__date">
+        <span class="legal__date-label">Effective date:</span>{' '}
+        {effectiveDate ? <time datetime={LEGAL.effectiveDate ?? undefined}>{effectiveDate}</time> : <Pending label="effective date" />}
+      </p>
+      <PendingNotice items={missing} extras={extras} />
+    </header>
+
+    <div class="legal__body">
+      <nav class="legal__toc" aria-label="On this page">
+        <p class="legal__toc-title" aria-hidden="true">On this page</p>
+        <ol role="list">
+          {toc.map((entry) => (
+            <li><a href={`#${entry.id}`}>{entry.label}</a></li>
+          ))}
+        </ol>
+      </nav>
+
+      <article class="legal__article prose">
+        <slot />
+      </article>
+    </div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  .legal {
+    max-width: calc(var(--content-max) + 2 * var(--gutter));
+    margin-inline: auto;
+    padding: 40px var(--gutter) 88px;
+  }
+  @media (min-width: 768px) {
+    /* Same content edge as .section: 32px padding around a --content-max column. */
+    .legal { max-width: calc(var(--content-max) + 64px); padding: 64px 32px 112px; }
+  }
+
+  .legal__header { max-width: 65ch; }
+  .legal__header h1 { margin-top: 6px; }
+  .legal__header .lead { margin-top: 14px; }
+  .legal__date {
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--text-muted);
+  }
+  .legal__date-label { font-weight: 600; color: var(--text-primary); }
+
+  .legal__body { margin-top: 40px; }
+
+  /* Table of contents: a compact card above the text on narrow screens. */
+  .legal__toc {
+    padding: 18px 20px;
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    font-size: 15px;
+    line-height: 20px;
+  }
+  [data-theme^="hc-"] .legal__toc { border: var(--stroke-1) solid var(--embed-stroke); }
+  .legal__toc-title {
+    font-weight: 650;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+  .legal__toc ol {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .legal__toc a {
+    display: block;
+    padding: 6px 8px;
+    margin-inline: -8px;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    text-decoration: none;
+    min-height: 24px;
+  }
+  .legal__toc a:hover { color: var(--link); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  @media (min-width: 560px) {
+    .legal__toc ol { grid-template-columns: 1fr 1fr; column-gap: 24px; }
+  }
+
+  .legal__article { margin-top: 40px; }
+  .legal__article h2 { scroll-margin-top: calc(var(--header-h) + 20px); }
+  .legal__article h3 { scroll-margin-top: calc(var(--header-h) + 20px); }
+
+  /* Wide screens: sticky contents column beside the text. */
+  @media (min-width: 1060px) {
+    .legal__body {
+      display: grid;
+      grid-template-columns: 232px minmax(0, 1fr);
+      gap: 64px;
+      align-items: start;
+    }
+    .legal__toc {
+      position: sticky;
+      top: calc(var(--header-h) + 24px);
+      max-height: calc(100vh - var(--header-h) - 48px);
+      overflow-y: auto;
+      padding: 2px 8px 8px;
+      margin-left: -8px;
+      background: none;
+      border: 0;
+    }
+    [data-theme^="hc-"] .legal__toc { border: 0; }
+    .legal__toc ol { grid-template-columns: 1fr; }
+    .legal__article { margin-top: 0; }
+    .legal__article > h2:first-child { margin-top: 0; }
+  }
+
+  /* Summary box */
+  .legal-summary {
+    padding: 20px 22px;
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    border: var(--stroke-1) solid var(--separator);
+  }
+  .legal-summary h2 {
+    margin-top: 0;
+    font-size: 1.25rem;
+  }
+  .legal-summary ul { margin-top: 10px; }
+  .prose .legal-summary + h2 { margin-top: 2em; }
+
+  .prose .legal__article > h2:first-of-type { margin-top: 0; }
+
+  /* Tables: real tables on wide screens, stacked rows on narrow ones. */
+  .prose table.legal-table {
+    display: table;
+    overflow: visible;
+    width: 100%;
+    margin-top: 1.25em;
+  }
+  .legal-table caption {
+    text-align: left;
+    font-weight: 650;
+    font-size: 15px;
+    padding-bottom: 6px;
+    color: var(--text-primary);
+  }
+  .legal-table td { color: var(--text-primary); }
+  .legal-table .legal-table__note { color: var(--text-muted); }
+  @media (max-width: 639.98px) {
+    .prose table.legal-table,
+    .legal-table tbody,
+    .legal-table tr,
+    .legal-table td,
+    .legal-table th[scope="row"] {
+      display: block;
+      width: 100%;
+    }
+    .legal-table caption { display: block; }
+    .legal-table thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    .legal-table tr {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--separator);
+    }
+    .prose .legal-table th,
+    .prose .legal-table td {
+      padding: 2px 0;
+      border: 0;
+    }
+    .legal-table th[scope="row"] { font-size: 16px; padding-bottom: 4px; }
+    .legal-table td[data-label]::before {
+      content: attr(data-label) ": ";
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+  }
+
+  .prose details.legal-license {
+    border-radius: var(--radius-image);
+    background: var(--card-bg);
+    padding: 12px 16px;
+  }
+  .legal-license summary {
+    cursor: pointer;
+    font-weight: 600;
+    min-height: 24px;
+  }
+  .legal-license pre {
+    margin-top: 12px;
+    padding: 0;
+    background: none;
+    white-space: pre-wrap;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  @media print {
+    .legal__toc { display: none; }
+    .legal__body { display: block; }
+  }
+</style>

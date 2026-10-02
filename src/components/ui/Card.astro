@@ -1,0 +1,56 @@
+---
+/**
+ * Surface for grouped content (feature tiles, FAQ groups, fact sheets).
+ *
+ * Props:
+ *   as       Element. Default 'div' ('article' | 'li' | 'section' also allowed).
+ *   href     If set, the whole card is a link (the slot must not contain other links).
+ *   variant  'filled' (--card-bg) | 'outline' (embed-stroke border on --bg). Default 'filled'.
+ *   padding  'sm' (16px) | 'md' (24px) | 'lg' (32px). Default 'md'.
+ *   class    Extra classes.
+ * Slot: card content. Use an <h3> for the title.
+ */
+interface Props {
+  as?: 'div' | 'article' | 'li' | 'section';
+  href?: string;
+  variant?: 'filled' | 'outline';
+  padding?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { as = 'div', href, variant = 'filled', padding = 'md', class: className } = Astro.props;
+const Tag = href ? 'a' : as;
+---
+<Tag
+  href={href}
+  class:list={['card', `card--${variant}`, `card--pad-${padding}`, href && 'card--link', className]}
+>
+  <slot />
+</Tag>
+
+<style is:global>
+  .card {
+    display: block;
+    border-radius: var(--radius-card);
+    color: var(--text-primary);
+    border: var(--stroke-1) solid transparent;
+  }
+  .card--filled { background: var(--card-bg); }
+  .card--outline { background: var(--bg); border-color: var(--embed-stroke); }
+  [data-theme^="hc-"] .card--filled { border-color: var(--embed-stroke); }
+  .card--pad-sm { padding: 16px; }
+  .card--pad-md { padding: 24px; }
+  .card--pad-lg { padding: 32px; }
+  .card > * + * { margin-top: 8px; }
+  .card h3 { font-size: 20px; line-height: 25px; }
+  .card p { color: var(--text-muted); }
+  .card--link {
+    text-decoration: none;
+    transition: transform var(--dur-instant) var(--ease-out), border-color var(--dur-instant) var(--ease-out);
+  }
+  .card--link:hover { border-color: var(--border-prominent); }
+  .card--link:active { transform: scale(0.99); }
+  @media (forced-colors: active) {
+    .card { border: 1px solid CanvasText; }
+  }
+</style>

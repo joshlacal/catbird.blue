@@ -1,0 +1,42 @@
+---
+/**
+ * Inline marker for a legal detail that is not decided yet. Pairs the warning glyph
+ * with words, so it never relies on color alone.
+ *
+ * Props:
+ *   label  What is missing, in sentence case, e.g. "effective date".
+ */
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+<span class="legal-pending"><Icon name="triangle-alert" size={15} strokeWidth={2.2} class="legal-pending__icon" /><span>To be completed: {label}</span></span>
+
+<style is:global>
+  .legal-pending {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 1px 8px;
+    border-radius: var(--radius-label);
+    border: var(--stroke-1) dashed color-mix(in srgb, var(--warning) 70%, var(--text-primary));
+    background: color-mix(in srgb, var(--warning) 14%, var(--bg));
+    color: var(--text-primary);
+    font-size: 0.88em;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: normal;
+  }
+  .legal-pending__icon {
+    flex: none;
+    align-self: center;
+    color: var(--text-primary);
+  }
+  @media (forced-colors: active) {
+    .legal-pending { border: 1px dashed CanvasText; background: Canvas; }
+  }
+</style>

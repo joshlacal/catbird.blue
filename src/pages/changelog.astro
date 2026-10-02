@@ -1,0 +1,91 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import EmptyState from '../components/news/EmptyState.astro';
+import PostMeta from '../components/news/PostMeta.astro';
+import { getReleasePosts, postUrl } from '../components/news/posts';
+
+const releases = await Promise.all(
+  (await getReleasePosts()).map(async (post) => ({ post, Content: (await render(post)).Content })),
+);
+---
+<BaseLayout
+  title="Changelog"
+  description="Release notes for each version of Catbird, a Bluesky client for iPhone and iPad."
+  path="/changelog"
+  ogImage="/og/changelog.png"
+  ogImageAlt="Catbird card: “Changelog” beside the Catbird bird."
+>
+  <Section width="reading" space="lg" labelledby="changelog-title" class="changelog">
+    <header class="changelog__header">
+      <h1 id="changelog-title">Changelog</h1>
+      <p class="lead">What changed in each release of Catbird.</p>
+      <div class="cluster">
+        <Button href="/news" variant="secondary" size="sm" icon="newspaper">All News</Button>
+        <Button href="/rss.xml" variant="plain" size="sm" icon="rss">RSS Feed</Button>
+      </div>
+    </header>
+
+    {releases.length === 0 ? (
+      <EmptyState message="No release notes yet." />
+    ) : (
+      <ol class="changelog__list" role="list">
+        {releases.map(({ post, Content }) => (
+          <li class="changelog__entry">
+            <article aria-labelledby={`release-${post.id}`}>
+              <h2 class="changelog__title" id={`release-${post.id}`}>
+                <a href={postUrl(post)}>{post.data.title}</a>
+              </h2>
+              <PostMeta post={post} />
+              <div class="prose changelog__body">
+                <Content />
+              </div>
+            </article>
+          </li>
+        ))}
+      </ol>
+    )}
+  </Section>
+</BaseLayout>
+
+<style>
+  .changelog__header {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .changelog__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .changelog__entry {
+    padding-block: 32px;
+    border-top: var(--hairline) solid var(--separator);
+  }
+  .changelog__title {
+    font-size: 1.625rem;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .changelog__title a {
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+  .changelog__title a:hover {
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+  .changelog__body {
+    margin-top: 20px;
+  }
+  /* Post bodies start at h2; inside an entry they sit one level down visually. */
+  .changelog__body :global(h2) {
+    font-size: 1.25rem;
+    margin-top: 1.6em;
+  }
+</style>

@@ -1,0 +1,208 @@
+---
+/**
+ * Sticky glass header: app icon + wordmark, primary nav, "Join the Beta".
+ * Below 768px the nav collapses behind a Menu button (aria-expanded) when JS runs;
+ * without JS the nav stays visible as a row under the brand.
+ */
+import { NAV, TESTFLIGHT_URL } from '../../config';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import Wordmark from './Wordmark.astro';
+
+interface Props {
+  path: string;
+}
+const { path } = Astro.props;
+const norm = (p: string) => (p.replace(/\/+$/, '') || '/');
+const current = norm(path);
+const isCurrent = (href: string) => current === href || current.startsWith(href + '/');
+---
+<header class="site-header glass" data-site-header>
+  <div class="site-header__inner">
+    <a class="brand" href="/" aria-label="Catbird home">
+      <img
+        class="brand__icon"
+        src="/images/app-icon-64.png"
+        srcset="/images/app-icon-64.png 1x, /images/app-icon-128.png 2x"
+        width="28"
+        height="28"
+        alt=""
+        decoding="async"
+      />
+      <Wordmark size={22} />
+    </a>
+
+    <button
+      class="menu-btn"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-menu-button
+    >
+      <span class="menu-btn__open"><Icon name="menu" size={22} /></span>
+      <span class="menu-btn__close"><Icon name="x" size={22} /></span>
+      <span class="visually-hidden">Menu</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Primary" data-site-nav>
+      <ul class="site-nav__list" role="list">
+        {NAV.map((item) => (
+          <li>
+            <a
+              class="site-nav__link"
+              href={item.href}
+              aria-current={isCurrent(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <Button href={TESTFLIGHT_URL} size="sm" class="site-nav__cta">Join the Beta</Button>
+    </nav>
+  </div>
+</header>
+
+<script is:inline>
+  (function () {
+    var btn = document.querySelector('[data-menu-button]');
+    var nav = document.getElementById('site-nav');
+    var header = document.querySelector('[data-site-header]');
+    if (!btn || !nav || !header) return;
+    var mq = window.matchMedia('(min-width: 768px)');
+    function set(open) {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      header.toggleAttribute('data-open', open);
+    }
+    btn.addEventListener('click', function () {
+      set(btn.getAttribute('aria-expanded') !== 'true');
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+        set(false);
+        btn.focus();
+      }
+    });
+    document.addEventListener('click', function (e) {
+      if (btn.getAttribute('aria-expanded') === 'true' && !header.contains(e.target)) set(false);
+    });
+    var onWide = function () { if (mq.matches) set(false); };
+    if (mq.addEventListener) mq.addEventListener('change', onWide); else mq.addListener(onWide);
+  })();
+</script>
+
+<style is:global>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: var(--hairline) solid var(--glass-stroke);
+  }
+  [data-theme^="hc-"] .site-header { border-bottom-width: var(--stroke-1); }
+  .site-header__inner {
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding: 0 var(--gutter);
+    min-height: var(--header-h);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+  @media (min-width: 768px) {
+    /* Same content edge as .section (32px padding around a --content-max column). */
+    .site-header__inner {
+      max-width: calc(var(--content-max) + 64px);
+      padding-inline: 32px;
+      flex-wrap: nowrap;
+    }
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 4px;
+    margin-left: -4px;
+    text-decoration: none;
+    border-radius: 10px;
+    min-height: 44px;
+  }
+  .brand__icon { width: 28px; height: 28px; border-radius: 7px; flex: none; }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px 20px;
+    margin-left: auto;
+  }
+  .site-nav__list {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .site-nav__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: var(--radius-full);
+    color: var(--text-primary);
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .site-nav__link:hover { background: color-mix(in srgb, var(--text-primary) 7%, transparent); }
+  .site-nav__link[aria-current="page"] { color: var(--link); font-weight: 600; }
+
+  .menu-btn {
+    margin-left: auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 0;
+    background: transparent;
+    color: var(--text-primary);
+    display: none;
+    place-items: center;
+  }
+  .menu-btn:hover { background: color-mix(in srgb, var(--text-primary) 7%, transparent); }
+  .menu-btn__close { display: none; }
+  [data-open] .menu-btn__open { display: none; }
+  [data-open] .menu-btn__close { display: inline; }
+
+  /* Phones, no JS: nav wraps to its own row under the brand. */
+  @media (max-width: 767.98px) {
+    .site-nav {
+      width: 100%;
+      margin-left: 0;
+      padding-bottom: 8px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .site-nav__link { padding: 0 10px; }
+    .site-nav__list { margin-left: -10px; }
+
+    /* Phones, JS: collapse behind the menu button. */
+    html.js .menu-btn { display: grid !important; }
+    html.js .site-nav { display: none; }
+    html.js [data-open] .site-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      padding: 8px 0 20px;
+    }
+    html.js [data-open] .site-nav__list { flex-direction: column; align-items: stretch; margin: 0; }
+    html.js [data-open] .site-nav__link { font-size: 19px; min-height: 48px; padding: 0 4px; }
+    html.js [data-open] .site-nav__cta { width: 100%; --btn-h: 48px; font-size: 17px; }
+  }
+
+  @media (forced-colors: active) {
+    .site-header { border-bottom: 1px solid CanvasText; }
+    .site-nav__link[aria-current="page"] { text-decoration: underline; }
+  }
+</style>

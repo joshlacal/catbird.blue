@@ -1,0 +1,333 @@
+---
+/**
+ * QA styleguide. noindex, excluded from the sitemap. Renders every shared component,
+ * the type ramp, and a live 7-theme color matrix with computed WCAG contrast.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import Icon from '../components/ui/Icon.astro';
+import PhoneFrame from '../components/ui/PhoneFrame.astro';
+import DraftBanner from '../components/ui/DraftBanner.astro';
+import Wordmark from '../components/site/Wordmark.astro';
+import tokens from '../../design/tokens.json';
+
+const themes = tokens.color.themes as { id: string; name: string }[];
+const typeStyles = tokens.type.groups.flatMap((g) =>
+  g.styles.map((s) => ({ ...s, group: g.name, sample: (s as { sample?: string }).sample })),
+);
+
+const swatches = [
+  'bg', 'bg-secondary', 'card-bg', 'elevated-popover',
+  'text-primary', 'text-muted', 'link', 'accent',
+  'accent-fill', 'focus-ring', 'separator', 'border-prominent',
+  'like', 'repost', 'danger', 'success', 'warning', 'verified',
+];
+
+// [foreground, background, minimum ratio, kind]
+const pairs: [string, string, number, string][] = [
+  ['text-primary', 'bg', 4.5, 'text'],
+  ['text-muted', 'bg', 4.5, 'text'],
+  ['text-muted', 'card-bg', 4.5, 'text'],
+  ['link', 'bg', 4.5, 'text'],
+  ['link', 'card-bg', 4.5, 'text'],
+  ['on-accent-fill', 'accent-fill', 4.5, 'text'],
+  ['focus-ring', 'bg', 3, 'ui'],
+  ['focus-ring', 'card-bg', 3, 'ui'],
+  ['accent', 'bg', 3, 'ui'],
+  ['text-secondary', 'bg', 4.5, 'app'],
+  ['accent-text', 'bg', 4.5, 'app'],
+  ['on-accent', 'accent', 4.5, 'app'],
+];
+
+const icons = ['house', 'search', 'bell', 'mail', 'user', 'message-circle', 'repeat-2', 'heart', 'share', 'shield-check', 'triangle-alert', 'pencil'];
+---
+<BaseLayout
+  title="Styleguide"
+  description="Internal QA page for the catbird.blue design tokens and components."
+  path="/styleguide"
+  noindex
+>
+  <Section space="sm">
+    <p class="eyebrow">Internal QA</p>
+    <h1>Styleguide</h1>
+    <p class="lead sg-lead">Components, type and the seven color themes as the site renders them. Contrast figures are computed live in your browser from the CSS variables.</p>
+  </Section>
+
+  <Section space="sm" labelledby="sg-type">
+    <h2 id="sg-type">Type</h2>
+    <div class="sg-stack">
+      <div class="sg-wordmarks">
+        <Wordmark size={64} />
+        <Wordmark size={34} tone="primary" />
+        <Wordmark size={22} />
+      </div>
+      <p class="h1 display">Display heading one</p>
+      <p class="h2 display">Display heading two</p>
+      <p class="h3 display">Display heading three</p>
+      <p class="lead">Lead paragraph in text-muted at 20px. Sentence case, addressed to you.</p>
+      <p>Body copy at 17/22 in the system font. <a href="/styleguide#sg-type">An inline link</a> uses the AA link color.</p>
+      <p class="fine">Fine print at 13/18 in text-muted.</p>
+    </div>
+    <div class="sg-table-wrap" tabindex="0" role="region" aria-label="Type styles">
+    <table class="sg-table">
+      <caption class="visually-hidden">Design system type styles</caption>
+      <thead><tr><th scope="col">Style</th><th scope="col">Spec</th><th scope="col">Sample</th></tr></thead>
+      <tbody>
+        {typeStyles.map((s) => (
+          <tr>
+            <th scope="row"><code>.t-{s.name}</code></th>
+            <td class="muted">{s.fontSize} / {s.lineHeight} · {s.fontWeight}</td>
+            <td><span class={`t-${s.name}`}>{s.sample ?? 'The quick brown fox'}</span></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    </div>
+  </Section>
+
+  <Section space="sm" labelledby="sg-buttons">
+    <h2 id="sg-buttons">Buttons</h2>
+    <div class="sg-stack">
+      <div class="cluster">
+        <Button href="/styleguide#sg-buttons" size="lg" icon="download">Join the Beta</Button>
+        <Button href="/styleguide#sg-buttons" size="lg" variant="secondary" icon="code">View Source</Button>
+        <Button href="/styleguide#sg-buttons" size="lg" variant="plain" iconEnd="arrow-right">Read More</Button>
+      </div>
+      <div class="cluster">
+        <Button>Primary</Button>
+        <Button variant="secondary">Secondary</Button>
+        <Button variant="plain">Plain</Button>
+      </div>
+      <div class="cluster">
+        <Button size="sm">Small</Button>
+        <Button size="sm" variant="secondary">Small Secondary</Button>
+        <Button size="sm" variant="plain">Small Plain</Button>
+      </div>
+    </div>
+  </Section>
+
+  <Section space="sm" labelledby="sg-badges">
+    <h2 id="sg-badges">Badges and icons</h2>
+    <div class="sg-stack">
+      <div class="cluster">
+        <Badge>Neutral</Badge>
+        <Badge tone="accent">Beta</Badge>
+        <Badge tone="success">Encrypted</Badge>
+        <Badge tone="warning">Draft</Badge>
+        <Badge tone="danger">Offline</Badge>
+        <Badge tone="accent" icon="smartphone">iPhone and iPad</Badge>
+      </div>
+      <div class="cluster sg-icons">
+        {icons.map((n) => (
+          <span class="sg-icon"><Icon name={n} size={24} /><code>{n}</code></span>
+        ))}
+      </div>
+    </div>
+  </Section>
+
+  <Section space="sm" labelledby="sg-cards">
+    <h2 id="sg-cards">Cards</h2>
+    <div class="sg-grid">
+      <Card>
+        <Icon name="rows-3" size={28} class="sg-card-icon" />
+        <h3>Filled card</h3>
+        <p>Grouped surface on the page background using card-bg.</p>
+      </Card>
+      <Card variant="outline">
+        <Icon name="square-dashed" size={28} class="sg-card-icon" />
+        <h3>Outline card</h3>
+        <p>An embed-stroke outline instead of a shadow.</p>
+      </Card>
+      <Card href="/styleguide#sg-cards">
+        <Icon name="arrow-up-right" size={28} class="sg-card-icon" />
+        <h3>Link card</h3>
+        <p>The whole card is one link target.</p>
+      </Card>
+    </div>
+  </Section>
+
+  <Section space="sm" labelledby="sg-banner">
+    <h2 id="sg-banner">Draft banner</h2>
+    <div class="sg-banner-demo">
+      <DraftBanner detail="Shown on legal pages until their effective date is set." />
+    </div>
+  </Section>
+
+  <Section space="sm" labelledby="sg-frame">
+    <h2 id="sg-frame">Phone frame</h2>
+    <div class="sg-frames">
+      <PhoneFrame label="A Catbird post row: author name, handle and time, post text, and the reply, repost, like and share actions." width={360}>
+        <div class="cb-post">
+          <div class="cb-post__col">
+            <span class="cb-avatar" style="width:var(--avatar-lg);height:var(--avatar-lg)" data-tone="accent">C</span>
+          </div>
+          <div class="cb-post__body">
+            <div class="cb-header">
+              <span class="cb-header__name">Catbird</span>
+              <span class="cb-header__meta">@catbird.blue · 2h</span>
+            </div>
+            <p class="cb-text">Post text uses the body style. Links like <span class="cb-link">#catbird</span> use the text accent.</p>
+            <div class="cb-actions">
+              <span class="cb-action"><Icon name="message-circle" size={18} /><span class="cb-count">4</span></span>
+              <span class="cb-action is-reposted"><Icon name="repeat-2" size={18} strokeWidth={2.8} /><span class="cb-count">2</span></span>
+              <span class="cb-action is-liked"><Icon name="heart" size={18} /><span class="cb-count">16</span></span>
+              <span class="cb-action"><Icon name="share" size={18} /></span>
+            </div>
+          </div>
+        </div>
+        <div class="sg-frame-pad">
+          <span class="cb-btn cb-btn--follow">Follow</span>
+          <span class="cb-btn cb-btn--following">Following</span>
+        </div>
+      </PhoneFrame>
+    </div>
+  </Section>
+
+  <Section space="sm" labelledby="sg-themes">
+    <h2 id="sg-themes">Themes</h2>
+    <p class="muted sg-note">Each panel re-declares every token for its theme. Rows marked "app" are the app's own pairs, shown for reference; the site uses the web pairs above them.</p>
+    <div class="sg-themes">
+      {themes.map((th) => (
+        <section class="sg-theme" data-theme={th.id} aria-label={`${th.name} theme`}>
+          <h3 class="sg-theme__name">{th.name} <code>{th.id}</code></h3>
+          <ul class="sg-swatches" role="list">
+            {swatches.map((name) => (
+              <li class="sg-swatch">
+                <span class="sg-swatch__chip" style={`background:var(--${name})`}></span>
+                <code>--{name}</code>
+              </li>
+            ))}
+          </ul>
+          <table class="sg-pairs">
+            <caption class="visually-hidden">{th.name} contrast pairs</caption>
+            <thead><tr><th scope="col">Pair</th><th scope="col">Ratio</th><th scope="col">Result</th></tr></thead>
+            <tbody>
+              {pairs.map(([fg, bg, min, kind]) => (
+                <tr data-pair data-fg={fg} data-bg={bg} data-min={min}>
+                  <td>
+                    <span class="sg-pair__demo" style={`color:var(--${fg});background:var(--${bg})`}>Aa</span>
+                    <code>{fg}</code> on <code>{bg}</code>
+                    {kind === 'app' && <span class="sg-app"> (app)</span>}
+                    {kind === 'ui' && <span class="sg-app"> (non-text)</span>}
+                  </td>
+                  <td class="sg-ratio" data-ratio>…</td>
+                  <td data-result>…</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      ))}
+    </div>
+  </Section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    function parse(str) {
+      var m = str.match(/^rgba?\(([^)]+)\)$/);
+      if (m) {
+        var p = m[1].split(/[\s,/]+/).filter(Boolean).map(parseFloat);
+        return [p[0] / 255, p[1] / 255, p[2] / 255, p.length > 3 ? p[3] : 1];
+      }
+      m = str.match(/^color\((srgb|display-p3)\s+([^)]+)\)$/);
+      if (m) {
+        var q = m[2].split(/[\s/]+/).filter(Boolean).map(parseFloat);
+        var rgb = [q[0], q[1], q[2]];
+        if (m[1] === 'display-p3') rgb = p3ToSrgb(rgb);
+        return [rgb[0], rgb[1], rgb[2], q.length > 3 ? q[3] : 1];
+      }
+      return null;
+    }
+    function lin(v) { return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
+    function gam(v) { v = Math.min(1, Math.max(0, v)); return v <= 0.0031308 ? v * 12.92 : 1.055 * Math.pow(v, 1 / 2.4) - 0.055; }
+    function p3ToSrgb(c) {
+      var r = lin(c[0]), g = lin(c[1]), b = lin(c[2]);
+      var x = 0.4865709 * r + 0.2656677 * g + 0.1982173 * b;
+      var y = 0.2289746 * r + 0.6917385 * g + 0.0792869 * b;
+      var z = 0.0000000 * r + 0.0451134 * g + 1.0439444 * b;
+      return [gam(3.2409699 * x - 1.5373832 * y - 0.4986108 * z), gam(-0.9692436 * x + 1.8759675 * y + 0.0415551 * z), gam(0.0556301 * x - 0.2039770 * y + 1.0569715 * z)];
+    }
+    function L(c) { return 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]); }
+    function over(f, b) { var a = f[3]; return [f[0] * a + b[0] * (1 - a), f[1] * a + b[1] * (1 - a), f[2] * a + b[2] * (1 - a), 1]; }
+    var probe = document.createElement('span');
+    probe.style.display = 'none';
+    function resolve(scope, name) {
+      scope.appendChild(probe);
+      probe.style.color = 'var(--' + name + ')';
+      var v = getComputedStyle(probe).color;
+      scope.removeChild(probe);
+      return parse(v);
+    }
+    function run() {
+      document.querySelectorAll('.sg-theme').forEach(function (scope) {
+        var page = resolve(scope, 'bg');
+        scope.querySelectorAll('[data-pair]').forEach(function (row) {
+          var bg = resolve(scope, row.getAttribute('data-bg'));
+          var fg = resolve(scope, row.getAttribute('data-fg'));
+          var ratioCell = row.querySelector('[data-ratio]');
+          var resCell = row.querySelector('[data-result]');
+          if (!bg || !fg || !page) { ratioCell.textContent = 'n/a'; resCell.textContent = ''; return; }
+          bg = over(bg, page);
+          fg = over(fg, bg);
+          var a = L(fg), b = L(bg);
+          var r = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+          var min = parseFloat(row.getAttribute('data-min'));
+          ratioCell.textContent = r.toFixed(2) + ':1';
+          var ok = r >= min;
+          resCell.textContent = (ok ? '✓ Pass ' : '✕ Below ') + min + ':1';
+          resCell.className = ok ? 'sg-pass' : 'sg-fail';
+        });
+      });
+    }
+    run();
+    new MutationObserver(run).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  })();
+</script>
+
+<style>
+  .sg-lead { margin-top: 12px; max-width: 60ch; }
+  .sg-stack { display: grid; gap: 16px; margin-top: 20px; }
+  .sg-wordmarks { display: flex; flex-wrap: wrap; align-items: baseline; gap: 24px 40px; }
+  .sg-table { width: 100%; margin-top: 28px; border-collapse: collapse; font-size: 15px; min-width: 560px; }
+  .sg-table-wrap { overflow-x: auto; margin-top: 28px; }
+  .sg-table-wrap .sg-table { margin-top: 0; }
+  .sg-table th, .sg-table td { text-align: left; padding: 10px 12px 10px 0; border-bottom: var(--hairline) solid var(--separator); vertical-align: baseline; }
+  .sg-table thead th { font-weight: 600; color: var(--text-muted); font-size: 13px; }
+  .sg-table td:first-child, .sg-table th[scope="row"] { white-space: nowrap; font-weight: 400; }
+  .sg-icons { gap: 12px 20px; }
+  .sg-icon { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: var(--text-muted); }
+  .sg-icon :global(svg) { color: var(--text-primary); }
+  .sg-grid { display: grid; gap: 16px; margin-top: 20px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .sg-grid :global(.sg-card-icon) { color: var(--accent); }
+  .sg-banner-demo { margin-top: 20px; border-radius: var(--radius-base); overflow: hidden; }
+  .sg-frames { margin-top: 24px; }
+  .sg-frame-pad { display: flex; gap: 8px; padding: 12px 16px 20px; }
+  .sg-note { margin-top: 8px; max-width: 70ch; }
+  .sg-themes { display: grid; gap: 20px; margin-top: 24px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 500px), 1fr)); }
+  .sg-theme {
+    background: var(--bg);
+    color: var(--text-primary);
+    border: var(--stroke-1) solid var(--border-prominent);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    min-width: 0;
+  }
+  .sg-theme__name { font-size: 19px; line-height: 24px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .sg-theme__name code { font-family: var(--font-mono); font-stretch: 100%; font-size: 13px; font-weight: 400; color: var(--text-muted); }
+  .sg-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; margin: 16px 0 0; padding: 0; }
+  .sg-swatch { display: grid; gap: 4px; font-size: 11px; line-height: 14px; color: var(--text-primary); min-width: 0; }
+  .sg-swatch code { overflow-wrap: anywhere; }
+  .sg-swatch__chip { display: block; height: 36px; border-radius: 8px; box-shadow: inset 0 0 0 1px var(--border-prominent); }
+  .sg-pairs { width: 100%; margin-top: 16px; border-collapse: collapse; font-size: 13px; line-height: 18px; }
+  .sg-pairs th { text-align: left; font-weight: 600; color: var(--text-muted); padding: 6px 8px 6px 0; }
+  .sg-pairs td { padding: 6px 8px 6px 0; border-top: var(--hairline) solid var(--separator); vertical-align: middle; }
+  .sg-pair__demo { display: inline-grid; place-items: center; width: 30px; height: 22px; border-radius: 6px; margin-right: 8px; font-weight: 600; box-shadow: inset 0 0 0 1px var(--border-prominent); }
+  .sg-ratio { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .sg-app { color: var(--text-muted); }
+  :global(.sg-pass) { color: var(--text-primary); white-space: nowrap; }
+  :global(.sg-fail) { color: var(--text-primary); font-weight: 650; white-space: nowrap; }
+</style>

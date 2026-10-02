@@ -1,0 +1,60 @@
+---
+/**
+ * Inlines a Lucide icon (lucide-static, ISC) at build time. No client JS, no request.
+ *
+ * Props:
+ *   name        Lucide icon name, e.g. "heart", "shield-check" (see lucide.dev/icons). Required.
+ *   size        Pixel size (width = height). Default 20.
+ *   strokeWidth Stroke width. Default 2.
+ *   label       If set, the icon is meaningful: role="img" + aria-label. Otherwise aria-hidden.
+ *   class       Extra classes.
+ */
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
+
+interface Props {
+  name: string;
+  size?: number | string;
+  strokeWidth?: number;
+  label?: string;
+  class?: string;
+}
+
+const { name, size = 20, strokeWidth = 2, label, class: className } = Astro.props;
+
+const require = createRequire(import.meta.url);
+const iconsDir = join(dirname(require.resolve('lucide-static/package.json')), 'icons');
+
+if (!/^[a-z0-9-]+$/.test(name)) throw new Error(`Icon: invalid icon name "${name}"`);
+
+let raw: string;
+try {
+  raw = readFileSync(join(iconsDir, `${name}.svg`), 'utf8');
+} catch {
+  throw new Error(`Icon: lucide-static has no icon named "${name}"`);
+}
+
+const inner = raw
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/^[\s\S]*?<svg[^>]*>/, '')
+  .replace(/<\/svg>\s*$/, '')
+  .trim();
+
+const a11y = label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': 'true' };
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  focusable="false"
+  class:list={['icon', className]}
+  {...a11y}
+  set:html={inner}
+/>

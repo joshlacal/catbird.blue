@@ -1,0 +1,179 @@
+---
+/**
+ * /terms — DRAFT terms of use for Catbird 1.0 (iPhone and iPad) and catbird.blue.
+ *
+ * Grounded in docs/execution-plans/2026-10-02-catbird-website-plan.md §4.2 and the
+ * research report. Undecided details (identity, jurisdiction, contact email, effective
+ * date) come from src/config.ts and render as "to be completed" markers. No in-app
+ * purchase section: whether purchases ship in 1.0 is unknown (see
+ * website/docs/legal-open-questions.md).
+ */
+import LegalLayout from '../components/legal/LegalLayout.astro';
+import Pending from '../components/legal/Pending.astro';
+import { termsContactEmail, type TocEntry } from '../components/legal/legal';
+import { LEGAL, GITHUB_URL, BLUESKY_URL, BLUESKY_HANDLE } from '../config';
+
+const email = termsContactEmail;
+
+const toc: TocEntry[] = [
+  { id: 'acceptance', label: 'Accepting these terms' },
+  { id: 'bluesky', label: 'Catbird and Bluesky' },
+  { id: 'acceptable-use', label: 'Acceptable use' },
+  { id: 'reporting', label: 'Reporting and blocking' },
+  { id: 'services', label: 'Catbird’s services' },
+  { id: 'ask-catbird', label: 'Ask Catbird and AI features' },
+  { id: 'license', label: 'Open-source license' },
+  { id: 'disclaimers', label: 'Disclaimers' },
+  { id: 'liability', label: 'Limitation of liability' },
+  { id: 'termination', label: 'Ending your use' },
+  { id: 'governing-law', label: 'Governing law' },
+  { id: 'changes', label: 'Changes to these terms' },
+  { id: 'contact', label: 'Contact' },
+];
+
+const BSKY_TOS = 'https://bsky.social/about/support/tos';
+const BSKY_GUIDELINES = 'https://bsky.social/about/support/community-guidelines';
+
+const MIT_TEXT = `MIT License
+
+Copyright (c) 2025 Josh LaCal
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.`;
+---
+<LegalLayout
+  kind="terms"
+  title="Terms of Use"
+  description="The terms for using the Catbird app and catbird.blue: acceptable use, reporting and blocking, Catbird’s services and their limits, and the open-source license."
+  path="/terms"
+  lede="The rules for using the Catbird app, the services Catbird runs for it, and this website."
+  toc={toc}
+  draftDetail="These terms are being reviewed and do not apply yet."
+>
+  <h2 id="acceptance">Accepting these terms</h2>
+  <p>
+    These terms apply when you use the Catbird app for iPhone and iPad, the servers Catbird runs for the app, and this website. By using them, you agree to these terms and to the <a href="/privacy">Privacy Policy</a>. If you don’t agree, please don’t use Catbird.
+  </p>
+  <p>
+    “Catbird”, “we” and “us” mean{' '}
+    {LEGAL.controllerName ? <strong>{LEGAL.controllerName}</strong> : <Pending label="legal name" />}, the person responsible for Catbird.
+  </p>
+  <p>
+    You must meet the minimum age to hold an account on your account server. For accounts hosted by Bluesky, that’s set in <a href={BSKY_TOS}>Bluesky’s Terms of Service</a>. Catbird doesn’t ask for your age.
+  </p>
+
+  <h2 id="bluesky">Catbird, Bluesky and the AT Protocol</h2>
+  <p>
+    Catbird is an independent app for the AT Protocol, the open network Bluesky runs on. Catbird is not affiliated with, endorsed by, or officially connected to Bluesky Social, PBC.
+  </p>
+  <p>
+    Your account, and everything you post with it, lives on your account server, which for most people is run by Bluesky. Its terms govern your account and your content. For accounts hosted by Bluesky, those are <a href={BSKY_TOS}>Bluesky’s Terms of Service</a> and <a href={BSKY_GUIDELINES}>Community Guidelines</a>, and you must follow them when you use Catbird. You keep whatever rights you have in your content; these terms don’t give Catbird any rights to it beyond what’s needed to send it where you ask.
+  </p>
+
+  <h2 id="acceptable-use">Acceptable use</h2>
+  <p>
+    Catbird has zero tolerance for objectionable content and abusive users. When you use Catbird, you must not post, send or promote:
+  </p>
+  <ul>
+    <li>content that is illegal, or that sexualizes or endangers minors;</li>
+    <li>harassment, threats, bullying, or encouragement of self-harm or violence;</li>
+    <li>hateful content that attacks people for who they are;</li>
+    <li>sexual or graphic content that isn’t labeled as your account server requires;</li>
+    <li>spam, scams, impersonation, or content that misleads people about who you are;</li>
+    <li>content that infringes someone else’s rights, or shares another person’s private information without permission.</li>
+  </ul>
+  <p>You also must not:</p>
+  <ul>
+    <li>interfere with, overload or attack Catbird’s servers, or try to get around their limits;</li>
+    <li>use Catbird’s servers to collect data in bulk or to automate accounts;</li>
+    <li>use Catbird to break the law or your account server’s terms.</li>
+  </ul>
+
+  <h2 id="reporting">Reporting and blocking</h2>
+  <p>
+    You can report posts, accounts, lists, feeds and direct messages from their menus in Catbird. Reports go to Bluesky’s moderation service, or to a labeler (a moderation service you subscribe to) if you choose one. You can also block and mute accounts and mute words, so you don’t see content you don’t want to see.
+  </p>
+  <p>
+    You can also report objectionable content or abusive users to Catbird directly by emailing{' '}
+    {email ? <a href={`mailto:${email}`}>{email}</a> : <Pending label="contact email" />}.
+    We review reports sent to Catbird promptly. When we find objectionable content or abuse, we act on it, which can include ending the user’s access to Catbird’s services and passing the report to Bluesky’s moderation service or the user’s account server.
+  </p>
+
+  <h2 id="services">Catbird’s services and their limits</h2>
+  <p>To make the app work, Catbird runs these services:</p>
+  <ul>
+    <li><strong>Nest</strong>, which handles sign-in and relays the app’s requests to your account server;</li>
+    <li><strong>push notifications</strong>, which turn activity on the network into alerts on your device;</li>
+    <li><strong>GIF search</strong>, which passes your searches to Klipy;</li>
+    <li><strong>a YouTube player page</strong>, which plays YouTube videos you’ve allowed.</li>
+  </ul>
+  <p>
+    We work to keep these services running, but they’re provided without any guarantee of availability. They may be slow, interrupted, rate-limited, changed or discontinued. Notifications may arrive late or not at all. If Nest is unavailable, the app can’t reach your account until it’s back, but your account and posts stay safe on your account server. We may limit or suspend access to these services to protect them or other users, or if you break these terms.
+  </p>
+
+  <h2 id="ask-catbird">Ask Catbird and other AI features</h2>
+  <p>
+    Ask Catbird, Generate Alt Text and other AI features use Apple’s on-device language model. Their output can be wrong, incomplete or inappropriate. Check it before you rely on it or post it. Ask Catbird only proposes actions; nothing happens until you confirm, and you’re responsible for what you post, send or change with it.
+  </p>
+
+  <h2 id="license">Open-source license</h2>
+  <p>
+    The source code of the Catbird app is published on <a href={GITHUB_URL}>GitHub</a> under the MIT License. That license governs what you may do with the source code: copy, change and share it under its conditions. These terms govern your use of the Catbird app as we distribute it, the services Catbird runs, and this website. Catbird’s server software isn’t published under this license.
+  </p>
+  <details class="legal-license">
+    <summary>Read the MIT License</summary>
+    <pre><code>{MIT_TEXT}</code></pre>
+  </details>
+
+  <h2 id="disclaimers">Disclaimers</h2>
+  <p>
+    To the extent the law allows, Catbird and its services are provided “as is” and “as available”, without warranties of any kind, including warranties of merchantability, fitness for a particular purpose and non-infringement. Content on the network comes from other people and services we don’t control, and we aren’t responsible for it. Services run by others, such as your account server, Bluesky, Apple, Klipy and embedded media providers, are governed by their own terms.
+  </p>
+
+  <h2 id="liability">Limitation of liability</h2>
+  <p>
+    To the extent the law allows, Catbird isn’t liable for any indirect, incidental, special, consequential or punitive damages, or for lost data, content, profits or goodwill, arising from your use of Catbird, its services or this website, or from content or services provided by others. Nothing in these terms limits liability that can’t be limited under the law that applies to you.
+  </p>
+
+  <h2 id="termination">Ending your use</h2>
+  <p>
+    You can stop using Catbird at any time: sign out and delete the app. Signing out ends your session on Nest. To have Catbird’s servers delete the rest of your data, follow <a href="/privacy#deletion">Deleting your data</a> in the Privacy Policy. Deleting your Bluesky account is done with your account server, not with Catbird.
+  </p>
+  <p>
+    We may suspend or end your access to Catbird’s services if you break these terms, if your use puts the services or other people at risk, or if we stop offering the services. Sections that by their nature should continue, such as disclaimers and limitation of liability, still apply after your use ends.
+  </p>
+
+  <h2 id="governing-law">Governing law</h2>
+  <p>
+    These terms are governed by the laws of{' '}
+    {LEGAL.jurisdiction ? <strong>{LEGAL.jurisdiction}</strong> : <Pending label="governing-law jurisdiction" />}.
+    If you’re a consumer, you keep any protections the law where you live gives you that can’t be waived by agreement.
+  </p>
+
+  <h2 id="changes">Changes to these terms</h2>
+  <p>
+    When these terms change, we’ll publish the new version on this page with a new effective date, and announce significant changes in the app or on Bluesky at <a href={BLUESKY_URL}>@{BLUESKY_HANDLE}</a> before they take effect. If you keep using Catbird after a change takes effect, the new terms apply. If you don’t agree to them, stop using Catbird.
+  </p>
+
+  <h2 id="contact">Contact</h2>
+  <ul>
+    <li>Email: {email ? <a href={`mailto:${email}`}>{email}</a> : <Pending label="contact email" />}</li>
+    <li>Post: {LEGAL.controllerName && LEGAL.postalAddress ? <>{LEGAL.controllerName}, {LEGAL.postalAddress}</> : <Pending label="legal name and postal address" />}</li>
+    <li>Bluesky: <a href={BLUESKY_URL}>@{BLUESKY_HANDLE}</a></li>
+  </ul>
+</LegalLayout>

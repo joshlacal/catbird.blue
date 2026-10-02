@@ -1,0 +1,55 @@
+---
+/**
+ * Visible "this is a draft" notice for legal pages that are not in effect yet.
+ * BaseLayout renders it automatically when `draft` is true; pages can also place it.
+ *
+ * Props:
+ *   message  Headline. Default "Draft — not yet in effect".
+ *   detail   Optional second sentence (sentence case).
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  message?: string;
+  detail?: string;
+}
+
+const { message = 'Draft — not yet in effect', detail } = Astro.props;
+---
+<aside class="draft-banner" aria-label="Draft notice">
+  <div class="draft-banner__inner">
+    <Icon name="triangle-alert" size={20} strokeWidth={2.2} class="draft-banner__icon" />
+    <p>
+      <strong>{message}</strong>
+      {detail && <span class="draft-banner__detail"> {detail}</span>}
+    </p>
+  </div>
+</aside>
+
+<style is:global>
+  .draft-banner {
+    padding: 12px var(--gutter);
+    background: color-mix(in srgb, var(--warning) 16%, var(--bg));
+    border-bottom: var(--stroke-1) solid color-mix(in srgb, var(--warning) 55%, var(--bg));
+    color: var(--text-primary);
+  }
+  @media (min-width: 768px) {
+    .draft-banner { padding-inline: 32px; }
+  }
+  .draft-banner__inner {
+    max-width: var(--content-max);
+    margin-inline: auto;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 15px;
+    line-height: 20px;
+  }
+  .draft-banner__icon { color: var(--warning); flex: none; margin-top: 0; }
+  [data-theme="light"] .draft-banner__icon,
+  :root:not([data-theme]) .draft-banner__icon { color: var(--text-primary); }
+  @media (forced-colors: active) {
+    .draft-banner { border-bottom: 1px solid CanvasText; }
+    .draft-banner__icon { color: CanvasText; }
+  }
+</style>

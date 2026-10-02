@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/ui/Section.astro';
+import Button from '../../components/ui/Button.astro';
+import EmptyState from '../../components/news/EmptyState.astro';
+import PostMeta from '../../components/news/PostMeta.astro';
+import { getPublishedPosts, postUrl } from '../../components/news/posts';
+
+const posts = await getPublishedPosts();
+---
+<BaseLayout
+  title="News"
+  description="Updates and announcements about Catbird, a Bluesky client for iPhone and iPad."
+  path="/news"
+  ogImage="/og/news.png"
+  ogImageAlt="Catbird card: “News” beside the Catbird bird."
+>
+  <Section width="reading" space="lg" labelledby="news-title" class="news-page">
+    <header class="news-page__header">
+      <h1 id="news-title">News</h1>
+      <p class="lead">Updates and announcements about Catbird.</p>
+      <div class="cluster">
+        <Button href="/changelog" variant="secondary" size="sm" icon="list">Changelog</Button>
+        <Button href="/rss.xml" variant="plain" size="sm" icon="rss">RSS Feed</Button>
+      </div>
+    </header>
+
+    {posts.length === 0 ? (
+      <EmptyState />
+    ) : (
+      <ol class="news-list" role="list">
+        {posts.map((post) => (
+          <li class="news-list__item">
+            <article aria-labelledby={`post-${post.id}`}>
+              <PostMeta post={post} />
+              <h2 class="news-list__title" id={`post-${post.id}`}>
+                <a href={postUrl(post)}>{post.data.title}</a>
+              </h2>
+              <p class="news-list__summary">{post.data.summary}</p>
+            </article>
+          </li>
+        ))}
+      </ol>
+    )}
+  </Section>
+</BaseLayout>
+
+<style>
+  .news-page__header {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .news-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: var(--hairline) solid var(--separator);
+  }
+  .news-list__item {
+    padding-block: 28px;
+    border-bottom: var(--hairline) solid var(--separator);
+  }
+  .news-list__title {
+    margin-top: 8px;
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+  .news-list__title a {
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+  .news-list__title a:hover {
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+  .news-list__summary {
+    margin-top: 8px;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    max-width: 65ch;
+  }
+</style>

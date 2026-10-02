@@ -1,0 +1,136 @@
+---
+/**
+ * /support — the App Store Support URL (Info.plist SupportURL, Settings → Help →
+ * Contact Catbird Support). Plan §3.2: contact block plus FAQ. Contact channels and
+ * distribution links come from src/config.ts; the FAQ lives in components/support/faq.ts.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Icon from '../components/ui/Icon.astro';
+import PageIntro from '../components/support/PageIntro.astro';
+import ContactOptions from '../components/support/ContactOptions.astro';
+import FaqList from '../components/support/FaqList.astro';
+import { FAQ, faqJsonLd } from '../components/support/faq';
+import { LEGAL } from '../config';
+
+const jsonLd = JSON.stringify(faqJsonLd(FAQ)).replace(/</g, '\\u003c');
+const trader = LEGAL.controllerName && LEGAL.postalAddress ? LEGAL : null;
+---
+<BaseLayout
+  title="Support"
+  description="Get help with Catbird, the Bluesky app for iPhone and iPad: how to reach support, answers to common questions, and known issues."
+  path="/support"
+>
+  <script slot="head" type="application/ld+json" set:html={jsonLd} />
+
+  <PageIntro eyebrow="Help" icon="life-buoy" title="Support">
+    <p>Answers to common questions about Catbird, and how to get in touch when something isn’t working.</p>
+  </PageIntro>
+
+  <Section space="sm" labelledby="contact-title">
+    <h2 id="contact-title" class="support__h2">Get in touch</h2>
+    <ContactOptions />
+    <p class="support__note fine">
+      For problems with a Bluesky account itself, such as a suspended account or a lost password for an account hosted by Bluesky, contact <a href="https://bsky.social/about/support">Bluesky Support</a>.
+    </p>
+    {trader && (
+      <div class="support__trader">
+        <h3 class="support__h3">Developer</h3>
+        <p>{trader.controllerName}</p>
+        <p class="support__address">{trader.postalAddress}</p>
+      </div>
+    )}
+  </Section>
+
+  <Section space="md" labelledby="faq-title">
+    <div class="support__faq-head">
+      <h2 id="faq-title" class="support__h2">Frequently asked questions</h2>
+      <nav class="support__jump" aria-label="FAQ topics">
+        <ul class="cluster" role="list">
+          {FAQ.map((g) => (
+            <li><a href={`#faq-group-${g.id}`}>{g.title}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+    <FaqList />
+  </Section>
+
+  <Section space="md" tone="secondary" width="reading" labelledby="still-title">
+    <div class="support__still">
+      <span class="support__still-icon"><Icon name="message-circle" size={24} /></span>
+      <div>
+        <h2 id="still-title" class="support__h3">Still need help?</h2>
+        <p class="muted">Use one of the options under <a href="#contact-title">Get in touch</a>. If it’s about a problem, include your device, your iOS version and what you were doing when it happened.</p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .support__h2 {
+    font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.875rem);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  .support__h3 {
+    font-size: 1.3125rem;
+    line-height: 25px;
+  }
+  .support__note {
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 20px;
+  }
+  .support__trader {
+    margin-top: 24px;
+  }
+  .support__trader p {
+    color: var(--text-muted);
+  }
+  .support__address {
+    white-space: pre-line;
+  }
+  .support__faq-head {
+    margin-bottom: 28px;
+  }
+  .support__faq-head .support__h2 {
+    margin-bottom: 12px;
+  }
+  .support__jump ul {
+    --cluster-gap: 8px;
+  }
+  .support__jump a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: var(--radius-full);
+    border: var(--stroke-1) solid var(--border);
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .support__jump a:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+  .support__still {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .support__still-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--link);
+  }
+  .support__still p {
+    margin-top: 6px;
+  }
+</style>

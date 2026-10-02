@@ -1,0 +1,97 @@
+---
+/**
+ * Illustration of Settings > Appearance: the Theme section (App Theme, Dark Mode Style),
+ * the seven accent colors, and the Typography pickers. Labels and option names are the
+ * app's own (Catbird/Features/Settings/Views/AppearanceSettingsView.swift:67-127,
+ * Core/State/ThemeManager.swift:29-47).
+ *
+ * Props: theme? (default 'dim', since the Dark Mode Style row is what this shows off),
+ *        width?, height? (default 600), class?
+ */
+import PhoneFrame from '../ui/PhoneFrame.astro';
+import Icon from '../ui/Icon.astro';
+import './vignette.css';
+
+type Theme = 'light' | 'dim' | 'black' | 'hc-light' | 'hc-dark' | 'cvd-light' | 'cvd-dark';
+interface Props {
+  theme?: Theme;
+  width?: number;
+  height?: number;
+  class?: string;
+}
+const { theme = 'dim', width, height = 600, class: className } = Astro.props;
+
+const accents = [
+  { name: 'Catbird', token: '--accent', selected: true },
+  { name: 'Twilight', token: '--accent-twilight' },
+  { name: 'Lavender', token: '--accent-lavender' },
+  { name: 'Sunrise', token: '--accent-sunrise' },
+  { name: 'Aurora', token: '--accent-aurora' },
+  { name: 'Dusk', token: '--accent-dusk' },
+  { name: 'Midnight', token: '--accent-midnight' },
+];
+
+const themeRows: [string, string][] = [
+  ['App Theme', 'System'],
+  ['Dark Mode Style', 'Dim'],
+];
+const typeRows: [string, string][] = [
+  ['Font Style', 'System'],
+  ['Font Size', 'Default'],
+  ['Line Spacing', 'Normal'],
+];
+---
+<PhoneFrame
+  label="Illustration of Catbird's Appearance settings in the Dim theme: App Theme set to System, Dark Mode Style set to Dim, seven accent colors from Catbird to Midnight, and font style, size and line spacing options."
+  theme={theme}
+  width={width}
+  class={className}
+>
+  <div class="vg vg--grouped" style={`--vg-h:${height}px`}>
+    <div class="vg__inline-nav">
+      <span class="vg__navbtn"><Icon name="chevron-left" size={22} strokeWidth={2.4} /></span>
+      <span class="t-nav-inline-title">Appearance</span>
+      <span></span>
+    </div>
+
+    <div class="vg__group">
+      <div class="vg__group-title">Theme</div>
+      <div class="vg__group-body">
+        {themeRows.map(([label, value]) => (
+          <div class="vg__row">
+            <span>{label}</span>
+            <span class="vg__row-value">{value}<Icon name="chevrons-up-down" size={14} strokeWidth={2.2} /></span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="vg__group">
+      <div class="vg__group-title">Accent Color</div>
+      <div class="vg__group-body">
+        <div class="vg__swatches">
+          {accents.map((a) => (
+            <span class:list={['vg__swatch', a.selected && 'is-selected']}>
+              <span class="vg__swatch-dot" style={`--swatch:var(${a.token})`}>
+                {a.selected && <Icon name="check" size={16} strokeWidth={3} />}
+              </span>
+              {a.name}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="vg__group">
+      <div class="vg__group-title">Typography</div>
+      <div class="vg__group-body">
+        {typeRows.map(([label, value]) => (
+          <div class="vg__row">
+            <span>{label}</span>
+            <span class="vg__row-value">{value}<Icon name="chevrons-up-down" size={14} strokeWidth={2.2} /></span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</PhoneFrame>

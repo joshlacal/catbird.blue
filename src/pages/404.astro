@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/ui/Section.astro';
+import Button from '../components/ui/Button.astro';
+---
+<BaseLayout
+  title="Page Not Found"
+  description="This page doesn't exist on catbird.blue."
+  path="/404"
+  noindex
+>
+  <Section space="lg" width="reading" class="not-found">
+    <img class="not-found__icon" src="/images/app-icon-256.png" width="96" height="96" alt="" />
+    <p class="eyebrow">Error 404</p>
+    <h1>This page doesn’t exist</h1>
+    <p class="lead">The link may be broken, or the page may have moved. Start again from the home page, or get help on the support page.</p>
+    <div class="cluster not-found__actions">
+      <Button href="/" icon="house">Go Home</Button>
+      <Button href="/support" variant="secondary" icon="life-buoy">Get Support</Button>
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  /* .not-found sits on the Section component's root, which doesn't carry this page's
+     scope attribute, so the selectors that start from it are global. */
+  :global(.not-found .section__inner) {
+    display: grid;
+    justify-items: start;
+    gap: 16px;
+  }
+  .not-found__icon {
+    width: 96px;
+    height: 96px;
+    border-radius: 22px;
+    margin-bottom: 12px;
+  }
+  :global(.not-found .eyebrow) { margin-bottom: -8px; }
+  :global(.not-found .lead) { margin-top: 4px; }
+  .not-found__actions { margin-top: 16px; }
+</style>

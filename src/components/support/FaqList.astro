@@ -1,0 +1,137 @@
+---
+/**
+ * FAQ as native <details> disclosures, grouped under h2 headings. Works without JS;
+ * a tiny inline script only opens the item named in the URL hash (#faq-<id>).
+ *
+ * Props:
+ *   groups  FaqGroup[] (default: FAQ from ./faq).
+ */
+import Icon from '../ui/Icon.astro';
+import { FAQ, type FaqGroup } from './faq';
+
+interface Props {
+  groups?: FaqGroup[];
+}
+
+const { groups = FAQ } = Astro.props;
+---
+<div class="faq">
+  {groups.map((group) => (
+    <section class="faq__group" aria-labelledby={`faq-group-${group.id}`}>
+      <h2 id={`faq-group-${group.id}`} class="faq__group-title">{group.title}</h2>
+      <div class="faq__items">
+        {group.items.map((item) => (
+          <details class="faq__item" id={`faq-${item.id}`}>
+            <summary class="faq__q">
+              <span class="faq__q-text">{item.question}</span>
+              <span class="faq__chevron"><Icon name="chevron-down" size={20} strokeWidth={2.2} /></span>
+            </summary>
+            <div class="faq__a" set:html={item.answer} />
+          </details>
+        ))}
+      </div>
+    </section>
+  ))}
+</div>
+
+<script is:inline>
+  (function () {
+    function openFromHash() {
+      var id = decodeURIComponent((location.hash || '').slice(1));
+      if (id.indexOf('faq-') !== 0) return;
+      var el = document.getElementById(id);
+      if (el && el.tagName === 'DETAILS') el.open = true;
+    }
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
+  })();
+</script>
+
+<style>
+  .faq {
+    display: grid;
+    gap: 40px;
+  }
+  .faq__group-title {
+    font-size: 1.3125rem;
+    line-height: 25px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .faq__items {
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    border: var(--stroke-1) solid transparent;
+    overflow: hidden;
+  }
+  :global([data-theme^="hc-"]) .faq__items {
+    border-color: var(--embed-stroke);
+  }
+  .faq__item + .faq__item {
+    border-top: var(--hairline) solid var(--separator);
+  }
+  .faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 56px;
+    padding: 14px 20px;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 22px;
+    color: var(--text-primary);
+    border-radius: var(--radius-card);
+  }
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+  .faq__q::marker {
+    content: '';
+  }
+  .faq__q:hover .faq__q-text {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  }
+  .faq__q:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: -4px;
+  }
+  .faq__chevron {
+    flex: none;
+    display: grid;
+    place-items: center;
+    color: var(--text-muted);
+    transition: transform var(--dur-instant) var(--ease-out);
+  }
+  .faq__item[open] .faq__chevron {
+    transform: rotate(180deg);
+  }
+  .faq__a {
+    padding: 0 20px 20px;
+    max-width: 65ch;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--text-primary);
+  }
+  .faq__a :global(p + p) {
+    margin-top: 0.75em;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq__item[open] .faq__chevron {
+      transform: rotate(180deg) !important;
+    }
+  }
+  @media (forced-colors: active) {
+    .faq__items {
+      border: 1px solid CanvasText;
+    }
+    .faq__item + .faq__item {
+      border-top-color: CanvasText;
+    }
+  }
+</style>

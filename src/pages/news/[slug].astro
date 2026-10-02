@@ -1,0 +1,57 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/ui/Section.astro';
+import Button from '../../components/ui/Button.astro';
+import PostMeta from '../../components/news/PostMeta.astro';
+import { getPublishedPosts, isoDate, type NewsPost } from '../../components/news/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+interface Props {
+  post: NewsPost;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const isRelease = post.data.tags.includes('release');
+---
+<BaseLayout
+  title={post.data.title}
+  description={post.data.summary}
+  path={`/news/${post.id}`}
+  ogType="article"
+  ogImage={isRelease ? '/og/changelog.png' : '/og/news.png'}
+  ogImageAlt={isRelease ? 'Catbird card: “Changelog” beside the Catbird bird.' : 'Catbird card: “News” beside the Catbird bird.'}
+>
+  <meta slot="head" property="article:published_time" content={isoDate(post.data.date)} />
+  <Section as="article" width="reading" space="lg" labelledby="post-title" class="news-post">
+    <Button href={isRelease ? '/changelog' : '/news'} variant="plain" size="sm" icon="arrow-left" class="news-post__back">
+      {isRelease ? 'Changelog' : 'All News'}
+    </Button>
+    <header class="news-post__header">
+      <h1 id="post-title">{post.data.title}</h1>
+      <PostMeta post={post} />
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  :global(.news-post .news-post__back) {
+    margin-left: -12px;
+    margin-bottom: 16px;
+  }
+  .news-post__header {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: var(--hairline) solid var(--separator);
+  }
+</style>

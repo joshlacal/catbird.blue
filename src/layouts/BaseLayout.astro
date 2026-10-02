@@ -1,0 +1,104 @@
+---
+/**
+ * Base page shell.
+ *
+ * Props:
+ *   title        Page title. " · Catbird" is appended unless the title already contains "Catbird".
+ *   description  Meta description and og:description (1-2 sentences). Required.
+ *   path         Canonical path, e.g. "/privacy". Default: the current URL path.
+ *   ogImage      Absolute-path OG image (1200x630). Default "/og/default.png".
+ *   ogImageAlt   Alt text for the OG image. Default describes the default card.
+ *   ogType       'website' | 'article'. Default 'website'.
+ *   noindex      Adds <meta name="robots" content="noindex">. Default false.
+ *   draft        Shows the DraftBanner ("Draft — not yet in effect") above <main>. Default false.
+ *   draftDetail  Optional extra sentence for the banner.
+ * Slots: default (inside <main id="main">), "head" (extra <head> tags).
+ */
+import '../styles/tokens.css';
+import '../styles/web-tokens.css';
+import '../styles/global.css';
+import '../styles/ds-components.css';
+import themeHead from '../scripts/theme-head.js?raw';
+import SiteHeader from '../components/site/SiteHeader.astro';
+import SiteFooter from '../components/site/SiteFooter.astro';
+import DraftBanner from '../components/ui/DraftBanner.astro';
+import { SITE_URL, SITE_NAME } from '../config';
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  draft?: boolean;
+  draftDetail?: string;
+}
+
+const {
+  title,
+  description,
+  path = Astro.url.pathname,
+  ogImage = '/og/default.png',
+  ogImageAlt = 'The Catbird app icon and the catbird wordmark on a blue gradient.',
+  ogType = 'website',
+  noindex = false,
+  draft = false,
+  draftDetail,
+} = Astro.props;
+
+const cleanPath = path === '/' ? '/' : path.replace(/\/+$/, '');
+const canonical = new URL(cleanPath, SITE_URL).href;
+const fullTitle = /catbird/i.test(title) ? title : `${title} · ${SITE_NAME}`;
+const ogImageUrl = new URL(ogImage, SITE_URL).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" data-default="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#2e2e33" data-default="#2e2e33" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline set:html={themeHead} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title="Catbird News" href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader path={cleanPath} />
+    {draft && <DraftBanner detail={draftDetail} />}
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

@@ -1,0 +1,63 @@
+---
+/**
+ * Page section with a centered container.
+ *
+ * Props:
+ *   as         Element to render. Default 'section'.
+ *   width      'content' (max 1120px) | 'reading' (max 680px) | 'full'. Default 'content'.
+ *   tone       'default' (--bg) | 'secondary' (--bg-grouped band). Default 'default'.
+ *   space      Vertical padding: 'none' | 'sm' | 'md' | 'lg'. Default 'md'.
+ *   id         Optional id (anchor target).
+ *   labelledby id of the heading that names this section (sets aria-labelledby).
+ *   class      Extra classes on the outer element.
+ * Slot: section content.
+ */
+interface Props {
+  as?: 'section' | 'div' | 'header' | 'footer' | 'article' | 'aside';
+  width?: 'content' | 'reading' | 'full';
+  tone?: 'default' | 'secondary';
+  space?: 'none' | 'sm' | 'md' | 'lg';
+  id?: string;
+  labelledby?: string;
+  class?: string;
+}
+
+const {
+  as: Tag = 'section',
+  width = 'content',
+  tone = 'default',
+  space = 'md',
+  id,
+  labelledby,
+  class: className,
+} = Astro.props;
+---
+<Tag
+  id={id}
+  aria-labelledby={labelledby}
+  class:list={['section', `section--${tone}`, `section--space-${space}`, className]}
+>
+  <div class:list={['section__inner', `section__inner--${width}`]}>
+    <slot />
+  </div>
+</Tag>
+
+<style is:global>
+  .section { padding-inline: var(--gutter); }
+  .section--space-none { padding-block: 0; }
+  .section--space-sm { padding-block: 32px; }
+  .section--space-md { padding-block: 56px; }
+  .section--space-lg { padding-block: 72px; }
+  @media (min-width: 768px) {
+    .section { padding-inline: 32px; }
+    .section--space-sm { padding-block: 40px; }
+    .section--space-md { padding-block: 80px; }
+    .section--space-lg { padding-block: 112px; }
+  }
+  .section--secondary { background: var(--bg-grouped); }
+  [data-theme="black"] .section--secondary { background: var(--elevated-low); }
+  .section__inner { margin-inline: auto; width: 100%; }
+  .section__inner--content { max-width: var(--content-max); }
+  .section__inner--reading { max-width: var(--reading-max); }
+  .section__inner--full { max-width: none; }
+</style>

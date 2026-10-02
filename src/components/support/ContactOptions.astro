@@ -1,0 +1,149 @@
+---
+/**
+ * Ways to reach Catbird. Every channel comes from src/config.ts:
+ *   - SUPPORT_EMAIL: shown first when set; omitted while it is null.
+ *   - BLUESKY_URL / BLUESKY_HANDLE: always shown.
+ *   - GITHUB_URL + /issues: shown unless `github` is false.
+ *
+ * Props:
+ *   headingLevel  2 | 3 for the card titles. Default 3.
+ *   github        Show the GitHub issues card. Default true.
+ *   emailLabel    Card title for the email option. Default "Email Support".
+ *   blueskyText   Body copy for the Bluesky card.
+ *   githubText    Body copy for the GitHub card.
+ */
+import Icon from '../ui/Icon.astro';
+import { BLUESKY_HANDLE, BLUESKY_URL, GITHUB_URL, SUPPORT_EMAIL } from '../../config';
+
+interface Props {
+  headingLevel?: 2 | 3;
+  github?: boolean;
+  emailLabel?: string;
+  blueskyText?: string;
+  githubText?: string;
+}
+
+const {
+  headingLevel = 3,
+  github = true,
+  emailLabel = 'Email Support',
+  blueskyText = 'Send a message to the Catbird account on Bluesky, or mention it in a post.',
+  githubText = 'Report a bug or suggest a change in Catbird’s public issue tracker.',
+} = Astro.props;
+
+const H = `h${headingLevel}` as 'h2' | 'h3';
+
+type Option = { icon: string; title: string; text: string; href: string; cta: string };
+const options: Option[] = [];
+if (SUPPORT_EMAIL) {
+  options.push({
+    icon: 'mail',
+    title: emailLabel,
+    text: 'Write to a monitored inbox. Include your handle and your device if it’s about a problem.',
+    href: `mailto:${SUPPORT_EMAIL}`,
+    cta: SUPPORT_EMAIL,
+  });
+}
+options.push({
+  icon: 'at-sign',
+  title: `Message @${BLUESKY_HANDLE}`,
+  text: blueskyText,
+  href: BLUESKY_URL,
+  cta: `@${BLUESKY_HANDLE} on Bluesky`,
+});
+if (github) {
+  options.push({
+    icon: 'bug',
+    title: 'Open a GitHub Issue',
+    text: githubText,
+    href: `${GITHUB_URL}/issues`,
+    cta: 'Catbird issues on GitHub',
+  });
+}
+---
+<ul class="contact" role="list">
+  {options.map((o) => (
+    <li class="contact__item">
+      <span class="contact__icon"><Icon name={o.icon} size={22} strokeWidth={2} /></span>
+      <div class="contact__body">
+        <H class="contact__title">{o.title}</H>
+        <p class="contact__text">{o.text}</p>
+        <a class="contact__link" href={o.href}>
+          {o.cta}
+          <Icon name="arrow-up-right" size={16} strokeWidth={2.2} />
+        </a>
+      </div>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .contact {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .contact {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+  }
+  .contact__item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 20px;
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    border: var(--stroke-1) solid transparent;
+  }
+  :global([data-theme^="hc-"]) .contact__item {
+    border-color: var(--embed-stroke);
+  }
+  .contact__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--link);
+  }
+  .contact__body {
+    min-width: 0;
+  }
+  .contact__title {
+    font-family: var(--font-sans);
+    font-stretch: 100%;
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 650;
+    letter-spacing: 0;
+  }
+  .contact__text {
+    margin-top: 4px;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 20px;
+  }
+  .contact__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 20px;
+    overflow-wrap: anywhere;
+  }
+  .contact__link :global(.icon) {
+    flex: none;
+  }
+  @media (forced-colors: active) {
+    .contact__item {
+      border: 1px solid CanvasText;
+    }
+  }
+</style>

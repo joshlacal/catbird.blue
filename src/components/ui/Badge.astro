@@ -1,0 +1,63 @@
+---
+/**
+ * Small capsule label. State tones always pair a glyph with a word (never color alone):
+ * pass `icon` for success / warning / danger, or the default glyph for the tone is used.
+ *
+ * Props:
+ *   tone   'neutral' | 'accent' | 'success' | 'warning' | 'danger'. Default 'neutral'.
+ *   icon   Lucide icon name. Defaults: success "shield-check", warning "triangle-alert",
+ *          danger "circle-alert"; none for neutral/accent. Pass icon="" to force none.
+ * Slot: the word(s), e.g. "Beta", "Encrypted", "Draft".
+ */
+import Icon from './Icon.astro';
+
+type Tone = 'neutral' | 'accent' | 'success' | 'warning' | 'danger';
+interface Props {
+  tone?: Tone;
+  icon?: string;
+  class?: string;
+}
+
+const { tone = 'neutral', icon, class: className } = Astro.props;
+const defaults: Record<Tone, string> = {
+  neutral: '',
+  accent: '',
+  success: 'shield-check',
+  warning: 'triangle-alert',
+  danger: 'circle-alert',
+};
+const glyph = icon === undefined ? defaults[tone] : icon;
+---
+<span class:list={['badge', `badge--${tone}`, className]}>
+  {glyph && <Icon name={glyph} size={14} strokeWidth={2.4} />}
+  <span><slot /></span>
+</span>
+
+<style is:global>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    line-height: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--text-primary) 8%, transparent);
+    border: var(--stroke-1) solid transparent;
+    white-space: nowrap;
+  }
+  .badge .icon { flex: none; }
+  .badge--accent { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--link); }
+  .badge--success { background: color-mix(in srgb, var(--success) 16%, transparent); }
+  .badge--success .icon { color: var(--success); }
+  .badge--warning { background: color-mix(in srgb, var(--warning) 18%, transparent); }
+  .badge--warning .icon { color: var(--warning); }
+  .badge--danger { background: color-mix(in srgb, var(--danger) 14%, transparent); }
+  .badge--danger .icon { color: var(--danger); }
+  [data-theme^="hc-"] .badge { border-color: var(--border); }
+  @media (forced-colors: active) {
+    .badge { border-color: CanvasText; }
+  }
+</style>

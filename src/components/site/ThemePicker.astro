@@ -1,0 +1,166 @@
+---
+/**
+ * Footer display settings for this site. Three labelled radio groups that mirror the app:
+ * Appearance (System, Light, Dim, Black), Increase Contrast (System, On),
+ * Color-Blind Safe (Off, On). Stored in localStorage "catbird-theme" via window.CatbirdTheme
+ * (src/scripts/theme-head.js). Hidden when JS is off, since it cannot work without it.
+ */
+const groups = [
+  {
+    key: 'scheme',
+    legend: 'Appearance',
+    options: [
+      { value: 'system', label: 'System' },
+      { value: 'light', label: 'Light' },
+      { value: 'dim', label: 'Dim' },
+      { value: 'black', label: 'Black' },
+    ],
+  },
+  {
+    key: 'contrast',
+    legend: 'Increase Contrast',
+    options: [
+      { value: 'system', label: 'System' },
+      { value: 'more', label: 'On' },
+    ],
+  },
+  {
+    key: 'cvd',
+    legend: 'Color-Blind Safe',
+    options: [
+      { value: 'off', label: 'Off' },
+      { value: 'on', label: 'On' },
+    ],
+  },
+] as const;
+const defaults = { scheme: 'system', contrast: 'system', cvd: 'off' } as const;
+---
+<section class="theme-picker js-only" aria-labelledby="theme-picker-title" data-theme-picker>
+  <h2 id="theme-picker-title" class="theme-picker__title">Display</h2>
+  <div class="theme-picker__groups">
+    {groups.map((g) => (
+      <fieldset class="seg-group">
+        <legend class="seg-group__legend">{g.legend}</legend>
+        <div class="seg">
+          {g.options.map((o) => (
+            <label class="seg__option">
+              <input
+                class="seg__input"
+                type="radio"
+                name={`cb-${g.key}`}
+                value={o.value}
+                data-pref={g.key}
+                checked={defaults[g.key] === o.value}
+              />
+              <span class="seg__label">{o.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    var root = document.querySelector('[data-theme-picker]');
+    var api = window.CatbirdTheme;
+    if (!root || !api) return;
+    var inputs = root.querySelectorAll('input[data-pref]');
+    function sync() {
+      var p = api.read();
+      for (var i = 0; i < inputs.length; i++) {
+        inputs[i].checked = p[inputs[i].getAttribute('data-pref')] === inputs[i].value;
+      }
+    }
+    sync();
+    root.addEventListener('change', function (e) {
+      var t = e.target;
+      if (!t || !t.getAttribute || !t.getAttribute('data-pref')) return;
+      var p = api.read();
+      p[t.getAttribute('data-pref')] = t.value;
+      var d = document.documentElement;
+      d.classList.add('theme-transition');
+      api.write(p);
+      window.setTimeout(function () { d.classList.remove('theme-transition'); }, 320);
+    });
+    window.addEventListener('storage', sync);
+  })();
+</script>
+
+<style is:global>
+  .theme-picker__title {
+    font-family: var(--font-sans);
+    font-stretch: 100%;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 600;
+    letter-spacing: 0;
+    margin-bottom: 12px;
+  }
+  .theme-picker__groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 28px;
+  }
+  .seg-group {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  .seg-group__legend {
+    padding: 0;
+    margin-bottom: 6px;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--text-muted);
+  }
+  .seg {
+    display: inline-flex;
+    padding: 3px;
+    gap: 2px;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--text-primary) 7%, transparent);
+    border: var(--stroke-1) solid transparent;
+  }
+  [data-theme^="hc-"] .seg { border-color: var(--border); }
+  .seg__option { position: relative; display: inline-flex; }
+  .seg__input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .seg__label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: var(--radius-full);
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    color: var(--text-primary);
+    pointer-events: none;
+  }
+  .seg__input:checked + .seg__label {
+    background: var(--bg);
+    font-weight: 650;
+    box-shadow: 0 0 0 var(--stroke-1) var(--border-prominent), var(--shadow-subtle);
+  }
+  [data-theme="black"] .seg__input:checked + .seg__label { background: var(--elevated-popover); }
+  .seg__input:focus-visible + .seg__label {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  @media (forced-colors: active) {
+    .seg { border-color: CanvasText; }
+    .seg__input:checked + .seg__label {
+      background: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+    }
+  }
+</style>

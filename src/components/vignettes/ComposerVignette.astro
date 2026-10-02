@@ -1,0 +1,82 @@
+---
+/**
+ * Illustration of the iPhone composer (iOS 26): close and Post buttons, the editor with
+ * a mention and a hashtag, two attached photos with the "Edit alt" control, and the
+ * accessory bar (plus menu button, "add another post to thread", character ring).
+ * The plus menu is shown closed on purpose: its Audio item is not wired up for 1.0.
+ *
+ * Props: theme?, width?, height? (default 560), class?
+ */
+import PhoneFrame from '../ui/PhoneFrame.astro';
+import Icon from '../ui/Icon.astro';
+import './vignette.css';
+
+type Theme = 'light' | 'dim' | 'black' | 'hc-light' | 'hc-dark' | 'cvd-light' | 'cvd-dark';
+interface Props {
+  theme?: Theme;
+  width?: number;
+  height?: number;
+  class?: string;
+}
+const { theme, width, height = 560, class: className } = Astro.props;
+
+// Character ring: 300-character limit, about a third used. No numeral is shown until
+// the post is close to the limit, as in the app.
+const r = 14.75;
+const circumference = 2 * Math.PI * r;
+const used = 104 / 300;
+---
+<PhoneFrame
+  label="Illustration of the Catbird composer: post text with a mention and a hashtag, two attached photos each with an Edit alt button, and a bar with an add-to-thread button and a character-count ring."
+  theme={theme}
+  width={width}
+  class={className}
+>
+  <div class="vg" style={`--vg-h:${height}px`}>
+    <div class="cb-composer">
+      <div class="cb-composer__nav">
+        <span class="cb-navbtn cb-glass--regular"><Icon name="x" size={20} strokeWidth={2.2} /></span>
+        <span class="cb-composer__title">Post</span>
+        <span class="cb-navbtn cb-navbtn--prominent"><Icon name="arrow-up" size={20} strokeWidth={2.4} /></span>
+      </div>
+
+      <div class="cb-editor">
+        <span class="cb-avatar" data-tone="dusk"></span>
+        <div class="cb-editor__text">
+          <p class="vg__editor-line">Saturday market haul, thanks to <span class="cb-link">@ines.test</span> for the tip about the early stalls.</p>
+          <p class="vg__editor-line">Plum jam is already half gone. <span class="cb-link">#market</span></p>
+        </div>
+      </div>
+
+      <div class="cb-media">
+        <div class="cb-thumb">
+          <span class="cb-thumb__x"><Icon name="x" size={11} strokeWidth={3} /></span>
+          <span class="cb-thumb__alt">Edit alt</span>
+        </div>
+        <div class="cb-thumb" style="background:linear-gradient(135deg,var(--accent-sunrise),var(--accent-dusk))">
+          <span class="cb-thumb__x"><Icon name="x" size={11} strokeWidth={3} /></span>
+          <span class="cb-thumb__alt">Edit alt</span>
+        </div>
+      </div>
+
+      <div class="cb-accessory">
+        <span class="cb-accessory__plus cb-glass--regular"><Icon name="plus" size={20} strokeWidth={2.4} /></span>
+        <span class="cb-accessory__trail cb-glass--regular">
+          <Icon name="copy-plus" size={18} />
+          <span class="cb-ring">
+            <svg viewBox="0 0 32 32" aria-hidden="true">
+              <circle cx="16" cy="16" r={r} style="stroke:var(--text-secondary);opacity:.2" />
+              <circle
+                cx="16"
+                cy="16"
+                r={r}
+                style="stroke:var(--text-secondary)"
+                stroke-dasharray={`${(circumference * used).toFixed(1)} ${circumference.toFixed(1)}`}
+              />
+            </svg>
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</PhoneFrame>

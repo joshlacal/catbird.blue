@@ -1,0 +1,53 @@
+---
+/**
+ * Shown on /news and /changelog when there is nothing to list.
+ *
+ * Props:
+ *   message  First sentence, e.g. "No posts yet." Default "No posts yet."
+ */
+import Icon from '../ui/Icon.astro';
+import { BLUESKY_HANDLE, BLUESKY_URL } from '../../config';
+
+interface Props {
+  message?: string;
+}
+
+const { message = 'No posts yet.' } = Astro.props;
+---
+<div class="news-empty">
+  <span class="news-empty__icon"><Icon name="newspaper" size={24} /></span>
+  <p class="news-empty__text">
+    {message} Follow <a href={BLUESKY_URL}>@{BLUESKY_HANDLE}</a> on Bluesky for updates.
+  </p>
+</div>
+
+<style>
+  .news-empty {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px;
+    border: var(--stroke-1) solid var(--embed-stroke);
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+  }
+  .news-empty__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: var(--bg);
+    color: var(--link);
+  }
+  .news-empty__text {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    padding-top: 10px;
+  }
+  @media (forced-colors: active) {
+    .news-empty { border-color: CanvasText; }
+  }
+</style>

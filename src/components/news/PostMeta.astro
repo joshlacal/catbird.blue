@@ -1,0 +1,40 @@
+---
+/**
+ * Date, version and tags line for a news post.
+ *
+ * Props:
+ *   post  A news collection entry.
+ */
+import Badge from '../ui/Badge.astro';
+import { formatDate, isoDate, TAG_LABELS, type NewsPost } from './posts';
+
+interface Props {
+  post: NewsPost;
+}
+
+const { post } = Astro.props;
+const { date, tags, version } = post.data;
+---
+<p class="post-meta">
+  <time datetime={isoDate(date)}>{formatDate(date)}</time>
+  {version && <span class="post-meta__version">Version {version}</span>}
+  {tags.length > 0 && (
+    <span class="post-meta__tags">
+      {tags.map((tag) => <Badge tone={tag === 'release' ? 'accent' : 'neutral'}>{TAG_LABELS[tag] ?? tag}</Badge>)}
+    </span>
+  )}
+</p>
+
+<style>
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    font-size: 15px;
+    line-height: 20px;
+    color: var(--text-muted);
+  }
+  .post-meta__version { font-weight: 600; color: var(--text-primary); }
+  .post-meta__tags { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+</style>

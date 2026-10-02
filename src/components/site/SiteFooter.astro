@@ -1,0 +1,101 @@
+---
+/** Site footer: links, display settings, non-affiliation and trademark lines. */
+import { FOOTER_LINKS } from '../../config';
+import ThemePicker from './ThemePicker.astro';
+import Wordmark from './Wordmark.astro';
+---
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__top">
+      <a class="site-footer__brand" href="/" aria-label="Catbird home">
+        <img src="/images/app-icon-64.png" srcset="/images/app-icon-64.png 1x, /images/app-icon-128.png 2x" width="24" height="24" alt="" loading="lazy" decoding="async" />
+        <Wordmark size={19} tone="primary" />
+      </a>
+      <nav aria-label="Footer">
+        <ul class="site-footer__links" role="list">
+          {FOOTER_LINKS.map((l) => (
+            <li><a href={l.href}>{l.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+
+    <ThemePicker />
+
+    <div class="site-footer__legal">
+      <p>Catbird is not affiliated with, endorsed by, or officially connected to Bluesky Social, PBC.</p>
+      <p>iPhone, iPad and App Store are trademarks of Apple Inc., registered in the U.S. and other countries.</p>
+      <p>© 2026 Catbird</p>
+    </div>
+  </div>
+</footer>
+
+<style is:global>
+  .site-footer {
+    margin-top: auto;
+    border-top: var(--hairline) solid var(--separator);
+    background: var(--bg-grouped);
+    padding: 40px var(--gutter) 48px;
+    font-size: 15px;
+    line-height: 20px;
+  }
+  [data-theme="black"] .site-footer { background: var(--bg); border-top-color: var(--border-prominent); }
+  [data-theme^="hc-"] .site-footer { border-top-width: var(--stroke-1); }
+  @media (min-width: 768px) {
+    .site-footer { padding-inline: 32px; }
+  }
+  .site-footer__inner {
+    max-width: var(--content-max);
+    margin-inline: auto;
+    display: grid;
+    gap: 32px;
+  }
+  .site-footer__top {
+    display: grid;
+    gap: 20px;
+  }
+  @media (min-width: 768px) {
+    .site-footer__top { grid-template-columns: auto 1fr; align-items: start; gap: 48px; }
+  }
+  .site-footer__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    min-height: 44px;
+    align-self: start;
+    justify-self: start;
+  }
+  .site-footer__brand img { border-radius: 6px; }
+  .site-footer__links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  @media (min-width: 560px) {
+    .site-footer__links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1024px) {
+    .site-footer__links { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  }
+  .site-footer__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+  .site-footer__links a:hover { color: var(--link); text-decoration: underline; }
+  .site-footer__legal {
+    display: grid;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--text-muted);
+    padding-top: 24px;
+    border-top: var(--hairline) solid var(--separator);
+  }
+</style>

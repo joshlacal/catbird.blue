@@ -1,0 +1,28 @@
+{
+  "name": "catbird-website",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "catbird.blue: the public website for Catbird, a Bluesky client for iPhone and iPad.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "node scripts/build-tokens.mjs && astro dev",
+    "build": "node scripts/build-tokens.mjs && astro build",
+    "preview": "astro preview",
+    "tokens": "node scripts/build-tokens.mjs",
+    "test": "playwright test",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "~7.3.5",
+    "lucide-static": "^1.50.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0"
+  }
+}

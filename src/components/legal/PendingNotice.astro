@@ -1,0 +1,77 @@
+---
+/**
+ * Block notice listing every detail that must be filled in before a legal page is
+ * published. Renders nothing when nothing is missing.
+ *
+ * Props:
+ *   items   Config-driven missing items (from missingLegalItems()).
+ *   extras  Page-specific open facts that are not config values (optional).
+ */
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  items: string[];
+  extras?: string[];
+}
+
+const { items, extras = [] } = Astro.props;
+const hasAny = items.length > 0 || extras.length > 0;
+---
+{hasAny && (
+  <aside class="legal-notice" aria-labelledby="legal-notice-title">
+    <div class="legal-notice__head">
+      <Icon name="triangle-alert" size={22} strokeWidth={2.2} class="legal-notice__icon" />
+      <h2 id="legal-notice-title" class="legal-notice__title">To be completed before publication</h2>
+    </div>
+    {items.length > 0 && (
+      <>
+        <p>This draft can’t be published until these details are added:</p>
+        <ul>
+          {items.map((item) => <li>{item}</li>)}
+        </ul>
+      </>
+    )}
+    {extras.length > 0 && (
+      <>
+        <p>These facts are still being confirmed and are marked in the text:</p>
+        <ul>
+          {extras.map((item) => <li>{item}</li>)}
+        </ul>
+      </>
+    )}
+  </aside>
+)}
+
+<style is:global>
+  .legal-notice {
+    margin-top: 28px;
+    padding: 20px 22px;
+    border-radius: var(--radius-card);
+    border: var(--stroke-1-5) dashed color-mix(in srgb, var(--warning) 70%, var(--text-primary));
+    background: color-mix(in srgb, var(--warning) 10%, var(--bg));
+    color: var(--text-primary);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .legal-notice__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .legal-notice__icon { flex: none; color: var(--text-primary); }
+  .legal-notice__title {
+    font-family: var(--font-sans);
+    font-stretch: normal;
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 650;
+    letter-spacing: 0;
+    margin: 0;
+  }
+  .legal-notice p { margin-top: 10px; }
+  .legal-notice ul { margin-top: 6px; padding-left: 1.3em; }
+  .legal-notice li + li { margin-top: 4px; }
+  @media (forced-colors: active) {
+    .legal-notice { border: 2px dashed CanvasText; background: Canvas; }
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+/**
+ * Neutral device-shaped frame for app-UI vignettes built from ds-components.css (cb-* classes).
+ * Not an Apple bezel: a plain rounded rectangle with a hairline edge.
+ *
+ * The frame is a picture of the app, so it is exposed as one image (role="img") with
+ * `label` as its accessible name; the cb-* markup inside is presentational. It also applies
+ * .cb-vignette, which remaps the app's sub-AA text roles to their web AA equivalents.
+ *
+ * Props:
+ *   label    Accessible description of what the vignette shows. Required.
+ *   device   'phone' (default, 375 wide) | 'tablet' (720 wide).
+ *   width    Override max width in px.
+ *   theme    Optional fixed theme id for the vignette ("light", "dim", ...). Default: follows the page.
+ *   bleed    true = content touches the screen edges (no status-bar inset). Default false
+ *            (22px top inset, 12px bottom, so content clears the rounded corners).
+ *   class    Extra classes.
+ * Slot: the vignette markup (cb-* classes).
+ */
+interface Props {
+  label: string;
+  device?: 'phone' | 'tablet';
+  width?: number;
+  theme?: 'light' | 'dim' | 'black' | 'hc-light' | 'hc-dark' | 'cvd-light' | 'cvd-dark';
+  bleed?: boolean;
+  class?: string;
+}
+
+const { label, device = 'phone', width, theme, bleed = false, class: className } = Astro.props;
+const maxW = width ?? (device === 'tablet' ? 720 : 375);
+---
+<figure
+  class:list={['phone-frame', `phone-frame--${device}`, className]}
+  style={`--frame-max:${maxW}px`}
+>
+  <div class:list={['phone-frame__screen', 'cb-root', 'cb-vignette', bleed && 'phone-frame__screen--bleed']} role="img" aria-label={label} data-theme={theme}>
+    <slot />
+  </div>
+</figure>
+
+<style is:global>
+  .phone-frame {
+    width: 100%;
+    max-width: var(--frame-max);
+    margin-inline: auto;
+    padding: 10px;
+    border-radius: 48px;
+    background: var(--elevated-popover);
+    border: var(--stroke-1) solid var(--border-prominent);
+    box-shadow: var(--shadow-strong);
+  }
+  [data-theme="black"] .phone-frame { box-shadow: none; }
+  .phone-frame--tablet { border-radius: 32px; padding: 14px; }
+  .phone-frame__screen {
+    position: relative;
+    overflow: hidden;
+    border-radius: 38px;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 120px;
+    padding: 22px 0 12px;
+    isolation: isolate;
+  }
+  .phone-frame__screen--bleed { padding: 0; }
+  .phone-frame--tablet .phone-frame__screen { border-radius: 20px; }
+  @media (forced-colors: active) {
+    .phone-frame { border-color: CanvasText; }
+  }
+</style>

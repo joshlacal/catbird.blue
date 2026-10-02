@@ -1,0 +1,125 @@
+---
+/**
+ * Button or link styled as a button.
+ *
+ * Props:
+ *   href       If set, renders <a>; otherwise <button>.
+ *   variant    'primary' (accent-fill + on-accent-fill) | 'secondary' (accent outline, --link text)
+ *              | 'plain' (text only, --link). Default 'primary'.
+ *   size       'sm' | 'md' | 'lg'. Default 'md'.
+ *   icon       Leading Lucide icon name (optional).
+ *   iconEnd    Trailing Lucide icon name (optional), e.g. "arrow-right".
+ *   type       Button type when rendering <button>. Default 'button'.
+ *   block      Full-width on narrow screens. Default false.
+ *   class      Extra classes. Any other attribute (aria-*, data-*, rel, target, id) is passed through.
+ * Slot: the label (Title Case, e.g. "Join the Beta").
+ */
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+
+type Variant = 'primary' | 'secondary' | 'plain';
+type Size = 'sm' | 'md' | 'lg';
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'type'> {
+  href?: string;
+  variant?: Variant;
+  size?: Size;
+  icon?: string;
+  iconEnd?: string;
+  type?: 'button' | 'submit' | 'reset';
+  block?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconEnd,
+  type = 'button',
+  block = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const iconSize = size === 'lg' ? 20 : size === 'sm' ? 16 : 18;
+const classes = ['btn', `btn--${variant}`, `btn--${size}`, block && 'btn--block', className];
+const Tag = href ? 'a' : 'button';
+const tagProps = href ? { href } : { type };
+---
+<Tag class:list={classes} {...tagProps} {...rest}>
+  {icon && <Icon name={icon} size={iconSize} strokeWidth={2.2} />}
+  <span class="btn__label"><slot /></span>
+  {iconEnd && <Icon name={iconEnd} size={iconSize} strokeWidth={2.2} />}
+</Tag>
+
+<style is:global>
+  .btn {
+    --btn-h: 44px;
+    --btn-px: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: var(--btn-h);
+    padding: 0 var(--btn-px);
+    border-radius: var(--radius-full);
+    border: var(--stroke-1-5) solid transparent;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform var(--dur-instant) var(--ease-out),
+      opacity var(--dur-instant) var(--ease-out),
+      background-color var(--dur-instant) var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active {
+    transform: scale(0.98);
+    opacity: var(--opacity-pressed);
+  }
+  .btn--sm { --btn-h: 36px; --btn-px: 14px; font-size: 15px; line-height: 20px; }
+  .btn--lg { --btn-h: 52px; --btn-px: 26px; font-size: 18px; }
+  .btn--block { width: 100%; }
+  @media (min-width: 768px) { .btn--block { width: auto; } }
+
+  .btn--primary {
+    background: var(--accent-fill);
+    color: var(--on-accent-fill);
+  }
+  .btn--primary:hover {
+    background: color-mix(in srgb, var(--accent-fill) 88%, var(--text-primary));
+  }
+  .btn--secondary {
+    border-color: var(--accent);
+    color: var(--link);
+    background: transparent;
+  }
+  .btn--secondary:hover {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+  .btn--plain {
+    color: var(--link);
+    background: transparent;
+    padding: 0 6px;
+  }
+  .btn--plain:hover .btn__label {
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+  .btn .icon { flex: none; }
+
+  @media (forced-colors: active) {
+    .btn {
+      border: 1px solid ButtonText;
+      background: ButtonFace;
+      color: ButtonText;
+    }
+    a.btn { color: LinkText; border-color: LinkText; }
+    .btn--plain { border-color: transparent; }
+  }
+</style>

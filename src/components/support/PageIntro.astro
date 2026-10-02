@@ -1,0 +1,73 @@
+---
+/**
+ * Page header for the small utility pages (/support, /press, /accessibility).
+ *
+ * Props:
+ *   eyebrow  Optional short label above the title.
+ *   title    The page's h1.
+ *   icon     Optional Lucide icon shown in a tinted tile beside the eyebrow.
+ * Slot: the lead paragraph(s).
+ */
+import Section from '../ui/Section.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  icon?: string;
+}
+
+const { eyebrow, title, icon } = Astro.props;
+---
+<Section as="header" space="sm" class="page-intro">
+  {(eyebrow || icon) && (
+    <p class="page-intro__eyebrow eyebrow">
+      {icon && (
+        <span class="page-intro__tile">
+          <Icon name={icon} size={18} strokeWidth={2.2} />
+        </span>
+      )}
+      {eyebrow && <span>{eyebrow}</span>}
+    </p>
+  )}
+  <h1>{title}</h1>
+  <div class="page-intro__lead lead">
+    <slot />
+  </div>
+</Section>
+
+<style>
+  /* .page-intro is on the Section root, which doesn't carry this component's scope. */
+  :global(.section.page-intro) {
+    padding-top: 40px;
+    padding-bottom: 8px;
+  }
+  @media (min-width: 768px) {
+    :global(.section.page-intro) {
+      padding-top: 72px;
+      padding-bottom: 16px;
+    }
+  }
+  .page-intro__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .page-intro__tile {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-image);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--link);
+  }
+  .page-intro__lead {
+    max-width: 40rem;
+    margin-top: 16px;
+  }
+  .page-intro__lead :global(p + p) {
+    margin-top: 0.6em;
+  }
+</style>

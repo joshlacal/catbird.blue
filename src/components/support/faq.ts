@@ -7,10 +7,11 @@
  * When something changes in the app, change the answer here:
  *   - "delete-account" must change when in-app account deletion ships (plan blocker B2).
  *   - "dm-notifications" must be removed when direct-message push works (LITE-001).
- *   - "requirements" switches to the App Store automatically when APP_STORE_LIVE is true.
+ *   - "requirements" follows config AVAILABILITY (in development / beta / App Store).
+ *     No price is stated: pricing is not decided.
  */
 import {
-  APP_STORE_LIVE,
+  AVAILABILITY,
   APP_STORE_URL,
   BLUESKY_HANDLE,
   BLUESKY_URL,
@@ -41,10 +42,14 @@ const contactLine = SUPPORT_EMAIL
   ? `email <a href="mailto:${SUPPORT_EMAIL}">${SUPPORT_EMAIL}</a> or message ${blueskyLink} on Bluesky`
   : `message ${blueskyLink} on Bluesky`;
 
-// Distribution: TestFlight until the App Store listing is live (config APP_STORE_LIVE).
-const getIt = APP_STORE_LIVE
-  ? `<p>Download Catbird from the ${ext(APP_STORE_URL, 'App Store')}. It’s free.</p>`
-  : `<p>Catbird is in beta and isn’t on the App Store yet. To try it, install Apple’s TestFlight app on your iPhone or iPad, then open the ${ext(TESTFLIGHT_URL, 'Catbird beta invitation')} and tap Accept. The beta is free.</p>`;
+// Distribution follows config AVAILABILITY. The beta wording is used only once the
+// TestFlight link is verified to serve the release build (BETA_VERIFIED).
+const getIt =
+  AVAILABILITY === 'app-store'
+    ? `<p>Download Catbird from the ${ext(APP_STORE_URL, 'App Store')}.</p>`
+    : AVAILABILITY === 'beta'
+      ? `<p>Catbird is in beta and isn’t on the App Store yet. To try it, install Apple’s TestFlight app on your iPhone or iPad, then open the ${ext(TESTFLIGHT_URL, 'Catbird beta invitation')} and tap Accept.</p>`
+      : `<p>Catbird is in development and isn’t on the App Store yet. Follow ${blueskyLink} on Bluesky to hear when you can try it.</p>`;
 
 export const FAQ: FaqGroup[] = [
   {
@@ -61,7 +66,12 @@ export const FAQ: FaqGroup[] = [
         // pbxproj IPHONEOS_DEPLOYMENT_TARGET = 18, TARGETED_DEVICE_FAMILY = "1,2" (Lite);
         // LoginView.swift:576,1008-1010 (Create Account); pbxproj:639-642 (English only).
         id: 'requirements',
-        question: 'What do I need, and how do I join the beta?',
+        question:
+          AVAILABILITY === 'beta'
+            ? 'What do I need, and how do I join the beta?'
+            : AVAILABILITY === 'app-store'
+              ? 'What do I need, and where do I get Catbird?'
+              : 'What do I need, and when can I try Catbird?',
         answer: `<p>You need an iPhone or iPad running iOS ${MIN_IOS} or iPadOS ${MIN_IOS}, or later, and a Bluesky account. If you don’t have an account yet, you can create one from Catbird’s sign-in screen. The app is in English.</p>${getIt}`,
       },
     ],
@@ -157,7 +167,7 @@ export const FAQ: FaqGroup[] = [
         // TestFlight's built-in feedback; github.com/joshlacal/Catbird has issues enabled (gh repo view).
         id: 'report-bug',
         question: 'How do I report a bug?',
-        answer: `<p>If you’re using the beta, the quickest way is TestFlight’s feedback. Take a screenshot in Catbird and choose Share Beta Feedback, or open the TestFlight app, choose Catbird and tap Send Beta Feedback.</p><p>You can also <a href="${githubIssues}">open an issue on GitHub</a>, where Catbird’s source code is published. Issues there are public, so leave out anything private. Or ${contactLine}.</p>`,
+        answer: `<p>If you’re testing Catbird through TestFlight, the quickest way is TestFlight’s feedback. Take a screenshot in Catbird and choose Share Beta Feedback, or open the TestFlight app, choose Catbird and tap Send Beta Feedback.</p><p>You can also <a href="${githubIssues}">open an issue on GitHub</a>, where Catbird’s source code is published. Issues there are public, so leave out anything private. Or ${contactLine}.</p>`,
       },
       {
         // docs/qa/catbird-lite-live-feedback.md:15-27 (LITE-001, needs verification, not delivered).

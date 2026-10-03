@@ -1,0 +1,130 @@
+---
+/**
+ * One promoted interaction on the home page: a picture of the app beside the copy that
+ * explains it. On narrow screens the copy comes first, directly above its picture.
+ *
+ * Props:
+ *   id            Section id (anchor) and heading id prefix.
+ *   eyebrow       Short area label ("Feeds").
+ *   title         The heading (sentence case).
+ *   reverse       Put the picture on the right on wide screens. Default false.
+ *   illustration  The picture is a temporary illustration, not a capture from the app.
+ *                 Adds a visible note so no one mistakes it for a screenshot. Default true.
+ *   wide          Picture column is wider (for the iPad picture). Default false.
+ * Slots:
+ *   media         The picture (a vignette or a captured screenshot/video).
+ *   default       The copy: paragraphs. Use <p class="interaction__why"> for the benefit
+ *                 line and <p class="interaction__how"> for where to find it.
+ */
+interface Props {
+  id: string;
+  eyebrow: string;
+  title: string;
+  reverse?: boolean;
+  illustration?: boolean;
+  wide?: boolean;
+}
+const { id, eyebrow, title, reverse = false, illustration = true, wide = false } = Astro.props;
+---
+<section
+  id={id}
+  class:list={['interaction', reverse && 'interaction--reverse', wide && 'interaction--wide']}
+  aria-labelledby={`${id}-title`}
+>
+  <div class="interaction__copy">
+    <p class="eyebrow">{eyebrow}</p>
+    <h2 id={`${id}-title`} class="interaction__title">{title}</h2>
+    <div class="interaction__body">
+      <slot />
+    </div>
+  </div>
+  <div class="interaction__media">
+    <slot name="media" />
+    {illustration && (
+      <p class="interaction__note">Illustration. A screenshot from the app will replace it.</p>
+    )}
+  </div>
+</section>
+
+<style>
+  .interaction {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+  }
+
+  /* Space between consecutive interactions. Kept here (both elements carry this
+     component's style scope) rather than on the page's Section wrapper. */
+  .interaction + .interaction {
+    margin-top: 96px;
+  }
+
+  .interaction__copy {
+    display: grid;
+    gap: 12px;
+    max-width: 34rem;
+  }
+
+  .interaction__title {
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+  }
+
+  .interaction__body {
+    display: grid;
+    gap: 14px;
+    font-size: 18px;
+    line-height: 1.55;
+  }
+
+  .interaction__body :global(.interaction__why) {
+    padding-top: 14px;
+    border-top: var(--stroke-1) solid var(--separator);
+    font-weight: 500;
+  }
+
+  .interaction__body :global(.interaction__how) {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text-muted);
+  }
+
+  .interaction__media {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .interaction__note {
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  @media (min-width: 900px) {
+    .interaction {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 64px;
+    }
+    .interaction + .interaction {
+      margin-top: 128px;
+    }
+    .interaction--wide {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    }
+    /* Picture first (left), copy second (right) by default; reverse swaps them. */
+    .interaction__media {
+      order: -1;
+    }
+    .interaction--reverse .interaction__media {
+      order: 1;
+    }
+    .interaction--reverse.interaction--wide {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    }
+  }
+</style>

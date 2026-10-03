@@ -1,0 +1,291 @@
+---
+/**
+ * TEMPORARY ILLUSTRATION of the new-post composer's character ring and reply-limit chip,
+ * drawn from the release source (build 6, 7c7b1742) until a release-build capture
+ * replaces it. Evidence (docs/homepage-evidence.md):
+ *   - CharacterLimitIndicator.swift:11-21 number shown only with 50 or fewer characters
+ *     left; :41-67 grey up to 260 characters, green 261-280, orange 281-290, red 291+;
+ *     :96-105 "!" when over 300
+ *   - ComposerAccessoryBar.swift:96-126 the bar: +, add to thread, the ring
+ *   - ComposerChipsStrip.swift:119-127 interaction chip (summary order Mentioned,
+ *     Following, Followers, Lists; PostInteractionSettingsState adds " · No quotes");
+ *     :139-156 "Detected: <language>" chip, shown by default while typing
+ * Runtime: a simulator UI test on identical composer files shows the grey ring with no
+ * number and the "Detected: English" chip. The chip with reply limits and the colour
+ * states have not been captured yet.
+ * The person and the draft are fictional.
+ */
+import PhoneFrame from '../ui/PhoneFrame.astro';
+import Icon from '../ui/Icon.astro';
+import './vignette.css';
+
+type Theme = 'light' | 'dim' | 'black' | 'hc-light' | 'hc-dark' | 'cvd-light' | 'cvd-dark';
+interface Props {
+  theme?: Theme;
+  width?: number;
+  height?: number;
+  class?: string;
+}
+const { theme, width, height = 560, class: className } = Astro.props;
+
+// Ring states for the legend: [characters used, label]. Colour and number follow
+// CharacterLimitIndicator's thresholds exactly.
+const R = 13;
+const C = 2 * Math.PI * R;
+const states = [
+  { used: 120, tone: 'quiet', label: 'Most of the time' },
+  { used: 255, tone: 'quiet', num: '45', label: 'Within 50' },
+  { used: 285, tone: 'orange', num: '15', label: 'Getting close' },
+  { used: 300, tone: 'red', num: '!', label: 'Over 300' },
+];
+---
+<div class="cq">
+  <PhoneFrame
+    label="Illustration of the Catbird composer: a short draft, a chip reading “Mentioned, Following · No quotes”, a “Detected: English” chip, and the bar with Add, Add to Thread and a small grey ring with no number."
+    theme={theme}
+    width={width}
+    class={className}
+  >
+    <div class="vg cq__screen" style={`--vg-h:${height}px`}>
+      <div class="cq__nav">
+        <span class="cq__navbtn cb-glass--regular"><Icon name="x" size={18} strokeWidth={2.4} /></span>
+        <span class="t-nav-inline-title">Post</span>
+        <span class="cq__navbtn cq__post"><Icon name="arrow-up" size={18} strokeWidth={2.6} /></span>
+      </div>
+
+      <div class="cq__editor">
+        <span class="cb-avatar" data-tone="aurora"></span>
+        <p class="cq__draft">The library is extending weekend hours from next month. Saturdays will run until 6.</p>
+      </div>
+
+      <div class="cq__bottom">
+        <div class="cq__chips">
+          <span class="cq__chip"><Icon name="messages-square" size={13} strokeWidth={2.2} />Mentioned, Following · No quotes</span>
+          <span class="cq__chip cq__chip--suggest"><Icon name="wand-sparkles" size={13} strokeWidth={2.2} />Detected: English</span>
+        </div>
+        <div class="cq__bar">
+          <span class="cq__circle cb-glass--regular"><Icon name="plus" size={18} strokeWidth={2.4} /></span>
+          <span class="cq__trail cb-glass--regular">
+            <Icon name="list-plus" size={18} strokeWidth={2.2} />
+            <svg class="cq__ring" viewBox="0 0 32 32" aria-hidden="true">
+              <circle cx="16" cy="16" r={R} class="cq__ring-track" />
+              <circle cx="16" cy="16" r={R} class="cq__ring-fill" stroke-dasharray={`${(C * 82) / 300} ${C}`} />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  </PhoneFrame>
+
+  <figure class="cq__legend">
+    <figcaption class="visually-hidden">How the character ring changes as a post gets closer to 300 characters</figcaption>
+    <ol class="cq__states" role="list">
+      {states.map((s) => (
+        <li class="cq__state" data-tone={s.tone}>
+          <span class="cq__state-ring">
+            <svg viewBox="0 0 32 32" aria-hidden="true">
+              <circle cx="16" cy="16" r={R} class="cq__ring-track" />
+              <circle cx="16" cy="16" r={R} class="cq__ring-fill" stroke-dasharray={`${(C * Math.min(s.used, 300)) / 300} ${C}`} />
+            </svg>
+            {s.num && <span class="cq__num">{s.num}</span>}
+          </span>
+          <span class="cq__state-label">{s.label}</span>
+        </li>
+      ))}
+    </ol>
+  </figure>
+</div>
+
+<style>
+  .cq {
+    display: grid;
+    justify-items: center;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .cq__screen {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cq__nav {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    padding: 2px var(--inset-screen) 10px;
+  }
+
+  .cq__nav .t-nav-inline-title {
+    text-align: center;
+  }
+
+  .cq__navbtn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
+
+  .cq__post {
+    background: var(--accent-fill, var(--accent));
+    color: var(--on-accent-fill, #fff);
+  }
+
+  .cq__editor {
+    display: flex;
+    gap: 12px;
+    padding: 6px var(--inset-screen);
+  }
+
+  .cq__editor .cb-avatar {
+    flex: none;
+    width: 40px;
+    height: 40px;
+  }
+
+  .cq__draft {
+    font-size: 17px;
+    line-height: 22px;
+    padding-top: 8px;
+  }
+
+  .cq__bottom {
+    margin-top: auto;
+    display: grid;
+    gap: 8px;
+    padding: 0 var(--inset-screen) 10px;
+  }
+
+  .cq__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .cq__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    box-shadow: inset 0 0 0 0.5px var(--border-prominent);
+  }
+
+  /* The glyph carries the tint; the label stays primary text so it holds AA on the tint. */
+  .cq__chip--suggest {
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    box-shadow: none;
+  }
+
+  .cq__chip--suggest :global(.icon) {
+    color: var(--link);
+  }
+
+  .cq__bar {
+    display: flex;
+    align-items: center;
+  }
+
+  .cq__circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
+
+  .cq__trail {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+
+  .cq__ring {
+    width: 32px;
+    height: 32px;
+    transform: rotate(-90deg);
+  }
+
+  .cq__ring-track,
+  .cq__ring-fill {
+    fill: none;
+    stroke-width: 2.5;
+  }
+
+  .cq__ring-track {
+    stroke: color-mix(in srgb, var(--ring, var(--text-secondary)) 20%, transparent);
+  }
+
+  .cq__ring-fill {
+    stroke: var(--ring, var(--text-secondary));
+    stroke-linecap: round;
+  }
+
+  /* ---- Legend ---- */
+  .cq__legend {
+    margin: 0;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .cq__states {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cq__state {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .cq__state[data-tone="green"] { --ring: var(--success); }
+  .cq__state[data-tone="orange"] { --ring: var(--warning); }
+  .cq__state[data-tone="red"] { --ring: var(--danger); }
+
+  .cq__state-ring {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+  }
+
+  .cq__state-ring svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .cq__num {
+    position: relative;
+    font-family: var(--font-rounded);
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+  }
+
+  .cq__state-label {
+    font-size: 12px;
+    line-height: 15px;
+    color: var(--text-muted);
+  }
+</style>

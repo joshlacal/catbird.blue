@@ -1,10 +1,11 @@
 ---
 /**
- * Sticky glass header: app icon + wordmark, primary nav, "Join the Beta".
+ * Sticky glass header: app icon + wordmark, primary nav, and the site-wide primary action
+ * (config PRIMARY_CTA: "Follow for Updates" while Catbird is in development).
  * Below 768px the nav collapses behind a Menu button (aria-expanded) when JS runs;
  * without JS the nav stays visible as a row under the brand.
  */
-import { NAV, TESTFLIGHT_URL } from '../../config';
+import { NAV, PRIMARY_CTA } from '../../config';
 import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
 import Wordmark from './Wordmark.astro';
@@ -58,7 +59,7 @@ const isCurrent = (href: string) => current === href || current.startsWith(href 
           </li>
         ))}
       </ul>
-      <Button href={TESTFLIGHT_URL} size="sm" class="site-nav__cta">Join the Beta</Button>
+      <Button href={PRIMARY_CTA.href} size="sm" class="site-nav__cta">{PRIMARY_CTA.label}</Button>
     </nav>
   </div>
 </header>

@@ -41,6 +41,8 @@ const maxW = width ?? (device === 'tablet' ? 720 : 375);
 <style is:global>
   .phone-frame {
     width: 100%;
+    /* A picture shrinks with its column; it never widens the page to fit its contents. */
+    min-width: 0;
     max-width: var(--frame-max);
     margin-inline: auto;
     padding: 10px;

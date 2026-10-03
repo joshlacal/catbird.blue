@@ -136,6 +136,17 @@ All components live in `src/components/`. Every prop is documented in the file h
 
 Global classes: `.prose` (long-form, 65ch, 17px/1.55), `.lead`, `.muted`, `.eyebrow`, `.fine`, `.display`, `.h1`–`.h3`, `.glass`, `.cluster`, `.stack`, `.visually-hidden`, `.js-only`, `.no-js-only`, `.t-*`, and the `cb-*` classes from `ds-components.css`.
 
+## Availability and price
+
+Every call to action comes from `config.ts`:
+- `AVAILABILITY` is derived from `APP_STORE_LIVE` and `BETA_VERIFIED`.
+- `PRIMARY_CTA` is "Follow for Updates" while Catbird is in development, "Join the Beta" once `BETA_VERIFIED` is true, and "Get Catbird" once the App Store listing is live.
+- Pages never hard-code "beta", TestFlight or App Store wording.
+
+Only set `BETA_VERIFIED` after confirming that the TestFlight link serves the release build this site describes.
+
+No page states a price; pricing is not decided.
+
 ## Never ship these paths
 
 `catbird.blue` is production. These paths are served by the origin today and must keep returning exactly what they return now (plan §2.3). The site must never contain a file at any of them, and the built-output test enforces this:
@@ -162,6 +173,7 @@ Also never ship:
 
 ## Assets still needed
 
+- **Homepage captures from the release build:** the three interactions on `/` use temporary illustrations, each marked as one on the page, until these arrive. The exact shots are in `docs/homepage-shot-list.md`; the evidence for every claim, and what each capture unlocks, is in `docs/homepage-evidence.md`.
 - **Real App Store screenshots:** 6.9" iPhone and 13" iPad, in unmodified Apple product bezels. The preview-fixture pipeline currently renders "Post format error" cards (plan §5.5).
 - **Wordmark SVG outlines:** horizontal and stacked lockups, drawn from Roboto Flex or custom lettering, never SF Pro. Plus a true vector bird. `public/favicon.svg` uses the Android drawable's traced silhouette as a stand-in.
 - **A full-bleed apple-touch-icon**, exported from Icon Composer (`Catbird/Catbird/Resources/AppIcon.icon`). The current `public/apple-touch-icon.png` is the pre-masked 1024 icon composited onto the icon gradient, so its glossy rim still shows inside iOS's own mask.

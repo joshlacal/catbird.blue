@@ -16,9 +16,41 @@ export const APP_STORE_ID = '6743628331';
 export const APP_STORE_LIVE = false;
 export const APP_STORE_URL = 'https://apps.apple.com/app/id6743628331';
 
+/**
+ * Flip to true only after confirming that TESTFLIGHT_URL serves the release build this
+ * site describes. On 2026-10-03 the public page was live ("Catbird for Bluesky beta"),
+ * but the build it serves could not be verified: release builds 5 and 6 were installed
+ * as development builds, not through TestFlight. Until then the site invites no one to
+ * the beta and describes Catbird as in development.
+ */
+export const BETA_VERIFIED = false;
+
 export const GITHUB_URL = 'https://github.com/joshlacal/Catbird';
 export const BLUESKY_HANDLE = 'catbird.blue';
 export const BLUESKY_URL = 'https://bsky.app/profile/catbird.blue';
+
+/** Where Catbird can be had today. Every page derives its call to action from this. */
+export type Availability = 'app-store' | 'beta' | 'in-development';
+export const AVAILABILITY: Availability = APP_STORE_LIVE
+  ? 'app-store'
+  : BETA_VERIFIED
+    ? 'beta'
+    : 'in-development';
+
+/** One-line availability statement, safe to show anywhere. */
+export const AVAILABILITY_TEXT: Record<Availability, string> = {
+  'app-store': 'On the App Store',
+  beta: 'In beta on TestFlight; not yet on the App Store',
+  'in-development': 'In development; not yet on the App Store',
+};
+
+/** The site-wide primary action for the current availability. */
+export const PRIMARY_CTA: { href: string; label: string; external: boolean } =
+  AVAILABILITY === 'app-store'
+    ? { href: APP_STORE_URL, label: 'Get Catbird', external: true }
+    : AVAILABILITY === 'beta'
+      ? { href: TESTFLIGHT_URL, label: 'Join the Beta', external: true }
+      : { href: BLUESKY_URL, label: 'Follow for Updates', external: true };
 
 /** Monitored support address. null until a mailbox exists. */
 export const SUPPORT_EMAIL: string | null = null;

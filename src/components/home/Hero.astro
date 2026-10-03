@@ -1,96 +1,94 @@
 ---
 /**
- * Home hero: app icon + wordmark lockup, headline, subhead, Join the Beta (TestFlight)
- * with requirements, View Source (GitHub), and the timeline vignette on a brand-gradient
- * stage with the catbird head artwork. No App Store badge until APP_STORE_LIVE.
+ * Home hero: what Catbird is, in one line, where it is today, and an index of the
+ * interactions the page shows (wide screens only; on phones the first one follows
+ * directly). Kept short so the product starts in the first screen.
+ *
+ * Availability comes from config (AVAILABILITY / PRIMARY_CTA): while Catbird is in
+ * development the page invites people to follow updates, not to install anything, and
+ * makes no App Store or beta claim. No price is stated anywhere until one is decided.
+ *
+ * Props:
+ *   highlights  The promoted interactions in page order: { id, eyebrow, title, icon }.
  */
 import Button from '../ui/Button.astro';
-import Wordmark from '../site/Wordmark.astro';
-import TimelineVignette from '../vignettes/TimelineVignette.astro';
-import { TESTFLIGHT_URL, GITHUB_URL, MIN_IOS, APP_STORE_LIVE, APP_STORE_URL } from '../../config';
+import Badge from '../ui/Badge.astro';
+import Icon from '../ui/Icon.astro';
+import { AVAILABILITY, PRIMARY_CTA, MIN_IOS } from '../../config';
+
+interface Highlight {
+  id: string;
+  eyebrow: string;
+  title: string;
+  icon: string;
+}
+interface Props {
+  highlights: readonly Highlight[];
+}
+const { highlights } = Astro.props;
+
+const statusBadge =
+  AVAILABILITY === 'in-development' ? 'In development' : AVAILABILITY === 'beta' ? 'Beta' : null;
+const statusText =
+  AVAILABILITY === 'app-store'
+    ? `On the App Store · iPhone and iPad · iOS ${MIN_IOS} or later`
+    : `Not on the App Store yet · iPhone and iPad · iOS ${MIN_IOS} or later`;
 ---
 <section class="hero" aria-labelledby="hero-title">
   <div class="hero__inner">
     <div class="hero__copy">
-      <div class="hero__lockup">
-        <img
-          class="hero__icon"
-          src="/images/app-icon-128.png"
-          srcset="/images/app-icon-128.png 1x, /images/app-icon-256.png 2x"
-          width="56"
-          height="56"
-          alt=""
-          decoding="async"
-        />
-        <Wordmark size={34} />
-      </div>
+      <img
+        class="hero__icon"
+        src="/images/app-icon-128.png"
+        srcset="/images/app-icon-128.png 1x, /images/app-icon-256.png 2x"
+        width="64"
+        height="64"
+        alt=""
+        decoding="async"
+      />
 
-      <h1 id="hero-title" class="hero__title">A Bluesky client for iPhone and iPad</h1>
+      <h1 id="hero-title" class="hero__title">A Bluesky app for iPhone and&nbsp;iPad</h1>
 
       <p class="hero__lead">
-        Catbird is a native SwiftUI app for Bluesky, with Liquid Glass on iOS&nbsp;26. It’s free,
-        and its source code is open under the MIT license.
+        Catbird uses the Bluesky account you already have. Below are three things it does its own
+        way, each shown next to what it explains.
+      </p>
+
+      <p class="hero__status">
+        {statusBadge && <Badge tone="accent" icon="hammer">{statusBadge}</Badge>}
+        <span>{statusText}</span>
       </p>
 
       <div class="hero__actions">
-        <div class="hero__primary">
-          {APP_STORE_LIVE ? (
-            <Button href={APP_STORE_URL} size="lg" iconEnd="arrow-up-right">Get Catbird</Button>
-          ) : (
-            <Button href={TESTFLIGHT_URL} size="lg" iconEnd="arrow-up-right">Join the Beta</Button>
-          )}
-          <p class="hero__req">iPhone and iPad · iOS {MIN_IOS} or later</p>
-        </div>
-        <Button href={GITHUB_URL} variant="secondary" size="lg" icon="code-xml">View Source</Button>
+        <Button href={PRIMARY_CTA.href} size="lg" iconEnd={PRIMARY_CTA.external ? 'arrow-up-right' : undefined}>
+          {PRIMARY_CTA.label}
+        </Button>
+        <Button href="/features" variant="secondary" size="lg" iconEnd="arrow-right">See All Features</Button>
       </div>
     </div>
 
-    <div class="hero__stage">
-      <div class="hero__stage-bg" aria-hidden="true">
-        <picture>
-          <source
-            type="image/webp"
-            srcset="/images/home/catbird-head-480.webp 480w, /images/home/catbird-head-960.webp 960w"
-            sizes="(min-width: 1024px) 420px, 70vw"
-          />
-          <img
-            class="hero__bird"
-            src="/images/home/catbird-head-480.webp"
-            width="480"
-            height="339"
-            alt=""
-            decoding="async"
-            fetchpriority="low"
-          />
-        </picture>
-      </div>
-      <TimelineVignette class="hero__phone" width={350} height={600} />
-    </div>
+    <nav class="hero__index" aria-label="On this page">
+      <ol class="hero__index-list" role="list">
+        {highlights.map((h, i) => (
+          <li>
+            <a class="hero__index-link" href={`#${h.id}`}>
+              <span class="hero__index-icon"><Icon name={h.icon} size={22} /></span>
+              <span class="hero__index-text">
+                <span class="hero__index-eyebrow">{i + 1}. {h.eyebrow}</span>
+                <span class="hero__index-title">{h.title}</span>
+              </span>
+              <Icon name="arrow-down" size={18} class="hero__index-arrow" />
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
   </div>
 </section>
 
 <style>
   .hero {
-    padding: 40px var(--gutter) 56px;
-    overflow: hidden;
-  }
-
-  /* On phones the timeline is shorter so the whole frame fits on screen. */
-  @media (max-width: 559px) {
-    .hero__stage :global(.hero__phone .vg) {
-      height: 500px;
-    }
-  }
-
-  /* Below 360px the frame is too narrow for the app's 17px text, so the whole picture is
-     drawn smaller instead of reflowing (names and handles were being cut off). */
-  @media (max-width: 359.98px) {
-    .hero .hero__stage {
-      padding-inline: 8px;
-    }
-    .hero__stage :global(.hero__phone) {
-      zoom: 0.8;
-    }
+    padding: 40px var(--gutter) 24px;
   }
 
   .hero__inner {
@@ -98,174 +96,145 @@ import { TESTFLIGHT_URL, GITHUB_URL, MIN_IOS, APP_STORE_LIVE, APP_STORE_URL } fr
     margin-inline: auto;
     display: grid;
     gap: 40px;
+    align-items: center;
   }
 
   .hero__copy {
     display: grid;
     justify-items: start;
-    align-content: center;
-    gap: 20px;
-  }
-
-  .hero__lockup {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    gap: 16px;
   }
 
   .hero__icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 13px;
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
   }
 
   .hero__title {
-    font-size: clamp(2.5rem, 1.55rem + 4vw, 4.25rem);
+    font-size: clamp(2.5rem, 1.7rem + 3vw, 3.75rem);
     line-height: 1.02;
     font-weight: 800;
     letter-spacing: -0.025em;
-    max-width: 12ch;
+    max-width: 16ch;
   }
 
   .hero__lead {
-    font-size: 1.25rem;
+    font-size: 1.1875rem;
     line-height: 1.45;
     color: var(--text-muted);
-    max-width: 34ch;
+    max-width: 40ch;
+  }
+
+  .hero__status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    font-size: 15px;
+    line-height: 20px;
+    color: var(--text-muted);
   }
 
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
     gap: 12px 16px;
-    margin-top: 8px;
+    margin-top: 4px;
   }
 
-  .hero__primary {
+  /* The index is a wide-screen aid; on phones the first interaction follows directly. */
+  .hero__index {
+    display: none;
+  }
+
+  .hero__index-list {
     display: grid;
-    justify-items: start;
-    gap: 8px;
+    gap: 12px;
+    margin: 0;
   }
 
-  .hero__req {
-    font-size: 14px;
-    line-height: 18px;
+  .hero__index-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    border-radius: var(--radius-card);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color var(--dur-instant) var(--ease-out);
+  }
+
+  .hero__index-link:hover {
+    background: color-mix(in srgb, var(--accent) 10%, var(--card-bg));
+  }
+
+  :global([data-theme^="hc-"]) .hero__index-link {
+    border: var(--stroke-1) solid var(--embed-stroke);
+  }
+
+  .hero__index-icon {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    color: var(--link);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+
+  .hero__index-text {
+    display: grid;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .hero__index-eyebrow {
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 600;
     color: var(--text-muted);
   }
 
-  /* ---- Stage: brand gradient (brand art only), bird artwork, phone vignette ---- */
-  .hero__stage {
-    position: relative;
-    isolation: isolate;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
-    padding: 32px 16px;
-    border-radius: 32px;
-    overflow: hidden;
+  .hero__index-title {
+    font-size: 18px;
+    line-height: 1.3;
+    font-weight: 600;
   }
 
-  .hero__stage-bg {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: var(--hero-gradient);
+  .hero__index-link :global(.hero__index-arrow) {
+    flex: none;
+    color: var(--text-muted);
   }
 
-  /* The bird peeks out from behind the phone's right edge, facing right as the brand requires
-     (docs/brand/08-components/app-icon.md: never mirror or rotate it). Its eye starts at 26% of
-     the artwork's width, so the width is sized for the visible 74% to fill the gap beside the
-     phone. Hidden where that gap is too narrow to show the eye and beak. */
-  .hero__bird {
-    display: none;
-    position: absolute;
-    left: auto;
-    right: 8px;
-    height: auto;
-    max-width: 240px;
-    filter: drop-shadow(0 18px 30px rgb(0 0 0 / 0.18));
-  }
-
-  .hero__stage :global(.hero__phone) {
-    position: relative;
-    z-index: 1;
-    margin-left: auto;
-    margin-right: 0;
-  }
-
-  /* Same side padding as .section and the header from 768px up, so edges line up. */
   @media (min-width: 768px) {
     .hero {
-      padding-inline: 32px;
-    }
-  }
-
-  @media (min-width: 560px) {
-    .hero__stage {
-      padding-block: 48px;
-    }
-    .hero__stage :global(.hero__phone) {
-      margin-inline: auto;
-      transform: translateX(-14%);
-    }
-    /* Phone is 350px wide, centred and shifted 49px left: its right edge is at 50% + 126px. */
-    .hero__bird {
-      display: block;
-      top: 34%;
-      width: calc((50% - 126px - 8px) / 0.74);
+      padding: 56px 32px 32px;
     }
   }
 
   @media (min-width: 1024px) {
-    .hero {
-      padding-block: 56px 80px;
-    }
     .hero__inner {
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-      gap: 48px;
-      align-items: center;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 64px;
     }
-    .hero__copy {
-      gap: 24px;
+    .hero__index {
+      display: block;
     }
-    .hero__stage {
-      padding: 48px 32px;
-    }
-    /* Two columns: the stage is narrower, so the phone sits against the right padding
-       instead of being nudged sideways (which clipped it at 1024px). */
-    .hero__stage :global(.hero__phone) {
-      margin-inline: 0 auto;
-      transform: none;
-    }
-    /* Phone sits against the left padding (32px), so its right edge is at 382px. */
-    .hero__bird {
-      top: 36%;
-      width: calc((100% - 382px - 8px) / 0.74);
-    }
-  }
-
-  @media (min-width: 1024px) and (max-width: 1179.98px) {
-    .hero__bird {
-      display: none;
-    }
-  }
-
-  /* High Contrast and forced colors: the gradient becomes flat, the artwork stays out of the way. */
-  :global([data-theme^="hc-"]) .hero__bird {
-    filter: none;
-  }
-
-  :global([data-theme="black"]) .hero__bird {
-    filter: none;
   }
 
   @media (forced-colors: active) {
-    .hero__stage {
+    .hero__index-link {
       border: 1px solid CanvasText;
     }
-    .hero__stage-bg {
-      background: Canvas;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__index-link {
+      transition: none;
     }
   }
 </style>

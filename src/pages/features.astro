@@ -13,7 +13,7 @@ import Badge from '../components/ui/Badge.astro';
 import ComposerVignette from '../components/vignettes/ComposerVignette.astro';
 import ThreadVignette from '../components/vignettes/ThreadVignette.astro';
 import AppearanceVignette from '../components/vignettes/AppearanceVignette.astro';
-import { TESTFLIGHT_URL, MIN_IOS, APP_STORE_LIVE, APP_STORE_URL } from '../config';
+import { MIN_IOS, PRIMARY_CTA } from '../config';
 
 interface Group {
   id: string;
@@ -252,8 +252,8 @@ const navItems = [
   { id: 'requirements', title: 'Requirements' },
 ];
 
-const ctaHref = APP_STORE_LIVE ? APP_STORE_URL : TESTFLIGHT_URL;
-const ctaLabel = APP_STORE_LIVE ? 'Get Catbird' : 'Join the Beta';
+const ctaHref = PRIMARY_CTA.href;
+const ctaLabel = PRIMARY_CTA.label;
 ---
 <BaseLayout
   title="Features"

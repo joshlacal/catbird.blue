@@ -1,0 +1,202 @@
+---
+/**
+ * TEMPORARY ILLUSTRATION of Catbird on iPad (landscape), drawn from the release source
+ * (build 6, 7c7b1742) until a release-build capture replaces it:
+ *   - build-6 archive Info.plist: UIDeviceFamily [1, 2], all iPad orientations,
+ *     multiple scenes, no UIRequiresFullScreen -> a native iPad app that fills the screen
+ *   - Catbird/App/ContentView.swift: TabView .sidebarAdaptable; tabs Home, Search,
+ *     Notifications, Profile (iPad only) and Messages, in that order; shown here in its
+ *     default tab-bar form at the top
+ *   - Catbird/Core/UI/HomeView.swift: feed name as the large title, grid (feed selector)
+ *     button at top leading
+ * The picture makes no claim about Messages' split view or multi-window behavior: neither
+ * has been captured on iPad yet. People, handles and posts are fictional (.test).
+ */
+import PhoneFrame from '../ui/PhoneFrame.astro';
+import Icon from '../ui/Icon.astro';
+import './vignette.css';
+
+type Theme = 'light' | 'dim' | 'black' | 'hc-light' | 'hc-dark' | 'cvd-light' | 'cvd-dark';
+interface Props {
+  theme?: Theme;
+  width?: number;
+  class?: string;
+}
+const { theme, width = 760, class: className } = Astro.props;
+
+const tabs = [
+  { label: 'Home', icon: 'house', selected: true },
+  { label: 'Search', icon: 'search' },
+  { label: 'Notifications', icon: 'bell' },
+  { label: 'Profile', icon: 'user' },
+  { label: 'Messages', icon: 'mail' },
+];
+const posts = [
+  { name: 'June Vale', handle: '@june.test · 2h', text: 'First frost on the allotment this morning. The kale doesn’t seem to mind at all.', tone: 'aurora', counts: ['4', '7', '52'] },
+  { name: 'Tomás Ruiz', handle: '@tomas.test · 3h', text: 'Wrote up the reservoir loop with the two best benches marked. About 6 km, mostly flat.', tone: 'twilight', counts: ['2', '11', '38'] },
+  { name: 'Noor Haddad', handle: '@noor.test · 5h', text: 'Library book sale is on until Sunday. Paperbacks are a dollar each.', tone: 'dusk', counts: ['1', '3', '19'] },
+];
+---
+<PhoneFrame
+  label="Illustration of Catbird on iPad in landscape, filling the screen: the tab bar with Home, Search, Notifications, Profile and Messages across the top, and the Timeline below."
+  device="tablet"
+  theme={theme}
+  width={width}
+  class={className}
+  bleed
+>
+  <div class="vg ip">
+    <div class="ip__top">
+      <span class="ip__btn"><Icon name="layout-grid" size={18} strokeWidth={2.2} /></span>
+      <nav class="ip__tabs" aria-hidden="true">
+        {tabs.map((t) => (
+          <span class:list={['ip__tab', t.selected && 'is-selected']}>
+            <Icon name={t.icon} size={16} strokeWidth={2.2} />
+            <span>{t.label}</span>
+          </span>
+        ))}
+      </nav>
+      <span class="ip__btn ip__btn--ghost" aria-hidden="true"></span>
+    </div>
+
+    <div class="ip__title t-nav-large-title">Timeline</div>
+
+    <div class="ip__feed">
+      {posts.map((p) => (
+        <div class="cb-post">
+          <div class="cb-post__col">
+            <span class="cb-avatar" style="width:var(--avatar-lg);height:var(--avatar-lg)" data-tone={p.tone}></span>
+          </div>
+          <div class="cb-post__body">
+            <div class="cb-header">
+              <span class="cb-header__name">{p.name}</span>
+              <span class="cb-header__meta">{p.handle}</span>
+              <span class="cb-header__more"><Icon name="ellipsis" size={18} /></span>
+            </div>
+            <p class="cb-text">{p.text}</p>
+            <div class="cb-actions">
+              <span class="cb-action"><Icon name="message-circle" /><span class="cb-count">{p.counts[0]}</span></span>
+              <span class="cb-action"><Icon name="repeat-2" /><span class="cb-count">{p.counts[1]}</span></span>
+              <span class="cb-action"><Icon name="heart" /><span class="cb-count">{p.counts[2]}</span></span>
+              <span class="cb-action"><Icon name="share" /></span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</PhoneFrame>
+
+<style>
+  .ip {
+    --vg-h: auto;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .ip__top {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 18px 4px;
+  }
+
+  .ip__btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--text-primary);
+    background: var(--glass-bg, var(--bg-secondary));
+    box-shadow: inset 0 0 0 0.5px var(--border-prominent);
+  }
+
+  .ip__btn--ghost {
+    visibility: hidden;
+  }
+
+  .ip__tabs {
+    justify-self: center;
+    display: flex;
+    gap: 2px;
+    padding: 4px;
+    border-radius: 999px;
+    background: var(--glass-bg, var(--bg-secondary));
+    box-shadow: inset 0 0 0 0.5px var(--border-prominent), var(--shadow-glass-fallback);
+    font-size: 13px;
+    line-height: 16px;
+  }
+
+  .ip__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  /* Selected tab: the glyph carries the tint; the label stays primary text (AA on the tint). */
+  .ip__tab.is-selected {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    font-weight: 600;
+  }
+
+  .ip__tab.is-selected :global(.icon) {
+    color: var(--link);
+  }
+
+  .ip__title {
+    padding: 8px 24px 6px;
+  }
+
+  .ip__feed {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .ip__feed :global(.cb-post) {
+    padding-inline: 10px;
+  }
+
+  /* Narrow pictures (phones): the tab bar shows icons only, as a scaled-down screen would. */
+  .ip {
+    container-type: inline-size;
+  }
+
+  @container (max-width: 600px) {
+    .ip__tab > span {
+      display: none;
+    }
+    .ip__tab {
+      padding: 6px 10px;
+    }
+    .ip__top {
+      padding: 12px 12px 2px;
+      grid-template-columns: 34px 1fr 34px;
+    }
+    .ip__btn {
+      width: 34px;
+      height: 34px;
+    }
+    .ip__title {
+      padding: 4px 16px 2px;
+      font-size: 22px;
+    }
+    .ip__feed :global(.cb-text),
+    .ip__feed :global(.cb-header) {
+      font-size: 13px;
+      line-height: 17px;
+    }
+    .ip__feed :global(.cb-avatar) {
+      width: 32px !important;
+      height: 32px !important;
+    }
+  }
+</style>

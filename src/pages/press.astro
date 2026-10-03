@@ -14,7 +14,8 @@ import tokens from '../../design/tokens.json';
 import { statSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  APP_STORE_LIVE,
+  AVAILABILITY,
+  AVAILABILITY_TEXT,
   APP_STORE_URL,
   BLUESKY_HANDLE,
   BLUESKY_URL,
@@ -54,11 +55,15 @@ const facts: { label: string; value: string; href?: string }[] = [
   { label: 'What it is', value: 'An independent app for Bluesky and the AT Protocol' },
   { label: 'Platforms', value: 'iPhone and iPad' },
   { label: 'Requirements', value: `iOS ${MIN_IOS} or iPadOS ${MIN_IOS}, or later` },
-  { label: 'Price', value: 'Free' },
+  // No price row: pricing is not decided.
   {
     label: 'Availability',
-    value: APP_STORE_LIVE ? 'App Store' : 'Beta on TestFlight; not yet on the App Store',
-    href: APP_STORE_LIVE ? APP_STORE_URL : TESTFLIGHT_URL,
+    value: AVAILABILITY_TEXT[AVAILABILITY],
+    ...(AVAILABILITY === 'app-store'
+      ? { href: APP_STORE_URL }
+      : AVAILABILITY === 'beta'
+        ? { href: TESTFLIGHT_URL }
+        : {}),
   },
   { label: 'Language', value: 'English' },
   { label: 'Built with', value: 'Swift and SwiftUI' },
@@ -120,14 +125,14 @@ const downloads = downloadList.map((d) => ({ ...d, size: fileSize(d.href) }));
     <div class="press__copy">
       <div class="press__block">
         <h3 class="press__h3">Short description</h3>
-        <p>Catbird is a free, open-source app for Bluesky on iPhone and iPad. It’s a native iOS app with custom feeds, threaded conversations, a composer for photos, video and GIFs, and Bluesky’s moderation tools.</p>
+        <p>Catbird is an open-source app for Bluesky on iPhone and iPad. It’s a native iOS app with custom feeds, threaded conversations, a composer for photos, video and GIFs, and Bluesky’s moderation tools.</p>
       </div>
       <div class="press__block">
         <h3 class="press__h3">Long description</h3>
         <p>Catbird is an independent app for Bluesky, the social network built on the AT Protocol. It runs on iPhone and iPad with iOS {MIN_IOS} or later, is written in SwiftUI, and uses Apple’s Liquid Glass design on iOS 26.</p>
         <p>Catbird supports the home timeline and custom, list and hashtag feeds, with local filters and muted words. Its composer handles threads of posts with up to 10 photos, video with captions, GIFs and alt text. Threads can be read in a tree or a linear layout, and posts can be translated in the app. It also includes Bluesky direct messages, multiple accounts, starter packs, lists, bookmarks, and Bluesky’s reporting, blocking, muting and labeler tools.</p>
         <p>On iOS 26 devices with Apple Intelligence, Ask Catbird answers questions about posts, threads and profiles using Apple’s on-device model, and any action it suggests runs only after the person confirms it.</p>
-        <p>Catbird is free. Its source code is published on GitHub under the MIT License. {APP_STORE_LIVE ? 'It is available on the App Store.' : 'It is in beta on TestFlight and is not yet on the App Store.'} Catbird is not affiliated with Bluesky Social, PBC.</p>
+        <p>Its source code is published on GitHub under the MIT License. {AVAILABILITY === 'app-store' ? 'It is available on the App Store.' : AVAILABILITY === 'beta' ? 'It is in beta on TestFlight and is not yet on the App Store.' : 'It is in development and is not yet on the App Store.'} Catbird is not affiliated with Bluesky Social, PBC.</p>
       </div>
     </div>
   </Section>

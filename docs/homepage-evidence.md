@@ -10,16 +10,16 @@ The research trail is in the workflow journals of the design-system session, `wf
 
 ## Hero lead
 
-"Use the Bluesky account you already have. Your pinned and saved feeds share one grid, the character count stays quiet until you're near the limit, and on iPad, Catbird fills the screen."
+Headline: "Explore Bluesky through your feeds". Lead: "Keep your pinned and saved feeds in one grid and switch between them with a tap. Write posts and threads with photos, video and alt text, and choose who can reply. Catbird uses the Bluesky account you already have."
 
 | Clause | Backed by |
 |---|---|
-| Use the Bluesky account you already have | Sign-in is OAuth with the user's existing AT Protocol account (the /privacy draft, "Signing in" on the homepage). Account creation is also offered, but the lead doesn't depend on it. |
-| Pinned and saved feeds share one grid | §1 (feeds drawer grid) |
-| The character count stays quiet until you're near the limit | §2 (the number appears only with 50 or fewer characters left) |
-| On iPad, Catbird fills the screen | §3 (native iPad app; the release archive lists iPhone and iPad as device families) |
+| Pinned and saved feeds in one grid; switch with a tap | §1 (feeds drawer grid; the tile-tap clip A3 is the publication gate) |
+| Posts and threads with photos, video and alt text | The /features composer list, fact-checked against the Lite build on 2026-10-02 (`PostComposerViewModel.swift`, `ComposerAccessoryBar.swift`, `MediaItemView.swift`) |
+| Choose who can reply | §2 (reply-limit chip; interaction settings in the composer) |
+| Uses the Bluesky account you already have | OAuth sign-in with the user's existing AT Protocol account (homepage "Signing in", /privacy draft) |
 
-The lead inherits each section's publication gate.
+Platforms are stated once, factually, in the status line under the lead ("iPhone and iPad · iOS 18 or later"). The quiet character count is a secondary detail in §2's section, not in the lead. The iPad section is titled "Also on iPad". Each clause keeps its section's publication gate.
 
 ## 1. Feeds drawer grid: promoted, with a caveat
 

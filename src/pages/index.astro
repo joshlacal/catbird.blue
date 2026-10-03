@@ -6,7 +6,7 @@
  * Promoted interactions and their evidence (release build 6, source 7c7b1742; see
  * docs/homepage-evidence.md in this repo):
  *   1. Feeds drawer grid         HomeView.swift, SideDrawer.swift, FeedsStartPage.swift
- *   2. Composer character ring   CharacterLimitIndicator.swift, ComposerChipsStrip.swift
+ *   2. Composer reply chip/ring  ComposerChipsStrip.swift, CharacterLimitIndicator.swift
  *   3. Native iPad app           build-6 archive Info.plist (UIDeviceFamily [1, 2])
  * Blocked-reply cards were the provisional second pick and were replaced: no runtime
  * evidence, "View this post" likely fails against Bluesky's AppView, and list-block
@@ -28,20 +28,20 @@ import { AVAILABILITY, PRIMARY_CTA, BLUESKY_HANDLE, MIN_IOS } from '../config';
 /** The promoted interactions, in page order. The hero's index and the sections share it. */
 const HIGHLIGHTS = [
   { id: 'feeds', eyebrow: 'Feeds', title: 'Your pinned and saved feeds, in one grid', icon: 'layout-grid' },
-  { id: 'composer', eyebrow: 'Writing', title: 'A character count that waits until it matters', icon: 'pen-line' },
-  { id: 'ipad', eyebrow: 'iPad', title: 'A full iPad app', icon: 'tablet' },
+  { id: 'composer', eyebrow: 'Writing', title: 'See who can reply before you post', icon: 'pen-line' },
+  { id: 'ipad', eyebrow: 'iPad', title: 'Also on iPad', icon: 'tablet' },
 ] as const;
 const [feeds, composer, ipad] = HIGHLIGHTS;
 ---
 <BaseLayout
-  title="Catbird: a Bluesky app for iPhone and iPad"
-  description="Catbird is a Bluesky app for iPhone and iPad, in development. See its feeds drawer, its composer’s character ring and its iPad app."
+  title="Catbird: explore Bluesky through your feeds"
+  description="Catbird is a Bluesky app in development for iPhone and iPad. Keep your pinned and saved feeds in one grid, and write posts and threads with reply settings spelled out."
   path="/"
 >
   <Hero highlights={HIGHLIGHTS} />
 
   <Section space="md" class="interactions" labelledby="interactions-title">
-    <h2 id="interactions-title" class="visually-hidden">Three things Catbird does its own way</h2>
+    <h2 id="interactions-title" class="visually-hidden">Feeds and writing in Catbird</h2>
 
     <Interaction id={feeds.id} eyebrow={feeds.eyebrow} title={feeds.title}>
       <FeedLauncherVignette slot="media" width={340} height={600} />
@@ -56,22 +56,19 @@ const [feeds, composer, ipad] = HIGHLIGHTS;
     <Interaction id={composer.id} eyebrow={composer.eyebrow} title={composer.title} reverse>
       <ComposerQuietVignette slot="media" width={340} height={540} />
       <p>
-        While you write, the character count is a small grey ring. The number appears only when
-        you’re within 50 characters of the 300-character limit, and the ring changes color as
-        you get closer.
-      </p>
-      <p>
         If you limit who can reply, the composer spells it out above the keyboard, for example
         “Mentioned, Following · No quotes”.
       </p>
-      <p class="interaction__why">You see the limit when it’s close, and who can reply before you post.</p>
+      <p>
+        The character count stays a small grey ring until you’re within 50 characters of the
+        300-character limit.
+      </p>
     </Interaction>
 
     <Interaction id={ipad.id} eyebrow={ipad.eyebrow} title={ipad.title} wide>
       <IPadVignette slot="media" width={760} />
-      <p>Catbird is built for iPad as well as iPhone, and it fills the iPad screen.</p>
-      <p class="interaction__why">If you read Bluesky on an iPad, Catbird uses the space you have.</p>
-      <p class="interaction__how">iPad with iPadOS&nbsp;{MIN_IOS} or later.</p>
+      <p>Catbird runs on iPad as well as iPhone and fills the iPad screen.</p>
+      <p class="interaction__how">iPadOS&nbsp;{MIN_IOS} or later.</p>
     </Interaction>
   </Section>
 
@@ -120,7 +117,7 @@ const [feeds, composer, ipad] = HIGHLIGHTS;
           <h2 id="closing-title">Catbird is in development</h2>
           <p class="lead">
             It isn’t on the App Store yet. Follow @{BLUESKY_HANDLE} on Bluesky to hear when you
-            can try it on your iPhone or iPad.
+            can try it.
           </p>
         </>
       ) : (

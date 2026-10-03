@@ -29,10 +29,7 @@ const { highlights } = Astro.props;
 
 const statusBadge =
   AVAILABILITY === 'in-development' ? 'In development' : AVAILABILITY === 'beta' ? 'Beta' : null;
-const statusText =
-  AVAILABILITY === 'app-store'
-    ? `On the App Store · iPhone and iPad · iOS ${MIN_IOS} or later`
-    : `Not on the App Store yet · iPhone and iPad · iOS ${MIN_IOS} or later`;
+const statusLead = AVAILABILITY === 'app-store' ? 'On the App Store' : 'Not on the App Store yet';
 ---
 <section class="hero" aria-labelledby="hero-title">
   <div class="hero__inner">
@@ -49,21 +46,23 @@ const statusText =
 
       <h1 id="hero-title" class="hero__title">A Bluesky app for iPhone and&nbsp;iPad</h1>
 
+      <!-- Each clause matches the evidence ledger (docs/homepage-evidence.md §1-3). -->
       <p class="hero__lead">
-        Catbird uses the Bluesky account you already have. Below are three things it does its own
-        way, each shown next to what it explains.
+        Use the Bluesky account you already have. Your pinned and saved feeds share one grid, the
+        character count stays quiet until you’re near the limit, and on iPad, Catbird fills the
+        screen.
       </p>
 
       <p class="hero__status">
         {statusBadge && <Badge tone="accent" icon="hammer">{statusBadge}</Badge>}
-        <span>{statusText}</span>
+        <span>{statusLead}<span class="hero__status-devices"> · iPhone and iPad</span> · iOS&nbsp;{MIN_IOS} or later</span>
       </p>
 
       <div class="hero__actions">
         <Button href={PRIMARY_CTA.href} size="lg" iconEnd={PRIMARY_CTA.external ? 'arrow-up-right' : undefined}>
           {PRIMARY_CTA.label}
         </Button>
-        <Button href="/features" variant="secondary" size="lg" iconEnd="arrow-right">See All Features</Button>
+        <Button href="/features" variant="secondary" size="lg" iconEnd="arrow-right" class="hero__secondary">See All Features</Button>
       </div>
     </div>
 
@@ -112,7 +111,7 @@ const statusText =
   }
 
   .hero__title {
-    font-size: clamp(2.5rem, 1.7rem + 3vw, 3.75rem);
+    font-size: clamp(2.25rem, 1.6rem + 3.2vw, 3.75rem);
     line-height: 1.02;
     font-weight: 800;
     letter-spacing: -0.025em;
@@ -208,6 +207,39 @@ const statusText =
   .hero__index-link :global(.hero__index-arrow) {
     flex: none;
     color: var(--text-muted);
+  }
+
+  /* Phones: the header already shows the icon, so the hero drops it; the lead is set a
+     step smaller; and the secondary action (also in the header menu and right after the
+     three interactions) gives way so the first picture arrives sooner. */
+  @media (max-width: 599.98px) {
+    .hero {
+      padding: 24px var(--gutter) 8px;
+    }
+    .hero__copy {
+      gap: 14px;
+    }
+    .hero__icon {
+      display: none;
+    }
+    .hero__lead {
+      font-size: 17px;
+      line-height: 1.45;
+    }
+    .hero__status {
+      font-size: 14px;
+      line-height: 18px;
+    }
+    /* The headline right above already says iPhone and iPad. */
+    .hero__status-devices {
+      display: none;
+    }
+  }
+
+  @media (max-width: 479.98px) {
+    .hero__actions :global(.hero__secondary) {
+      display: none;
+    }
   }
 
   @media (min-width: 768px) {

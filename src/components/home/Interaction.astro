@@ -1,7 +1,13 @@
 ---
 /**
  * One promoted interaction on the home page: a picture of the app beside the copy that
- * explains it. On narrow screens the copy comes first, directly above its picture.
+ * explains it.
+ *
+ * Layout:
+ *   - Narrow screens: heading, then the picture, then the explanation, so the picture
+ *     arrives early and the copy stays directly against it.
+ *   - Wide screens (900px+): the picture in one column, and the heading and explanation
+ *     in the other, meeting at the picture's vertical middle. `reverse` swaps the sides.
  *
  * Props:
  *   id            Section id (anchor) and heading id prefix.
@@ -31,12 +37,9 @@ const { id, eyebrow, title, reverse = false, illustration = true, wide = false }
   class:list={['interaction', reverse && 'interaction--reverse', wide && 'interaction--wide']}
   aria-labelledby={`${id}-title`}
 >
-  <div class="interaction__copy">
+  <div class="interaction__head">
     <p class="eyebrow">{eyebrow}</p>
     <h2 id={`${id}-title`} class="interaction__title">{title}</h2>
-    <div class="interaction__body">
-      <slot />
-    </div>
   </div>
   <div class="interaction__media">
     <slot name="media" />
@@ -44,23 +47,30 @@ const { id, eyebrow, title, reverse = false, illustration = true, wide = false }
       <p class="interaction__note">Illustration. A screenshot from the app will replace it.</p>
     )}
   </div>
+  <div class="interaction__body">
+    <slot />
+  </div>
 </section>
 
 <style>
   .interaction {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
-    align-items: center;
+    grid-template-areas:
+      "head"
+      "media"
+      "body";
+    gap: 20px;
   }
 
   /* Space between consecutive interactions. Kept here (both elements carry this
      component's style scope) rather than on the page's Section wrapper. */
   .interaction + .interaction {
-    margin-top: 96px;
+    margin-top: 72px;
   }
 
-  .interaction__copy {
+  .interaction__head {
+    grid-area: head;
     display: grid;
     gap: 12px;
     max-width: 34rem;
@@ -73,8 +83,11 @@ const { id, eyebrow, title, reverse = false, illustration = true, wide = false }
   }
 
   .interaction__body {
+    grid-area: body;
     display: grid;
+    align-content: start;
     gap: 14px;
+    max-width: 34rem;
     font-size: 18px;
     line-height: 1.55;
   }
@@ -92,6 +105,7 @@ const { id, eyebrow, title, reverse = false, illustration = true, wide = false }
   }
 
   .interaction__media {
+    grid-area: media;
     display: grid;
     justify-items: center;
     gap: 12px;
@@ -106,25 +120,40 @@ const { id, eyebrow, title, reverse = false, illustration = true, wide = false }
   }
 
   @media (min-width: 900px) {
+    /* Equal flexible rows above and below the copy centre the heading and explanation
+       on the picture as one block, as before the narrow-screen reorder. */
     .interaction {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 64px;
+      grid-template-rows: 1fr auto auto 1fr;
+      grid-template-areas:
+        "media ."
+        "media head"
+        "media body"
+        "media .";
+      column-gap: 64px;
+      row-gap: 0;
     }
-    .interaction + .interaction {
-      margin-top: 128px;
+    .interaction--reverse {
+      grid-template-areas:
+        ". media"
+        "head media"
+        "body media"
+        ". media";
     }
     .interaction--wide {
       grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
     }
-    /* Picture first (left), copy second (right) by default; reverse swaps them. */
-    .interaction__media {
-      order: -1;
-    }
-    .interaction--reverse .interaction__media {
-      order: 1;
-    }
     .interaction--reverse.interaction--wide {
       grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    }
+    .interaction__head {
+      padding-bottom: 14px;
+    }
+    .interaction__media {
+      align-self: center;
+    }
+    .interaction + .interaction {
+      margin-top: 128px;
     }
   }
 </style>

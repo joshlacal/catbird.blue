@@ -8,6 +8,19 @@ None of the pictures on the page are screenshots. They are temporary illustratio
 
 The research trail is in the workflow journals of the design-system session, `wf_29db6200-d81` (verification and challenge) and `wf_6f8e6901-194` (the original shortlist). The shortlist is in the workspace at `docs/research/2026-10-03-catbird-lite-distinctive-choices.md`. Its line numbers came from an older working copy (bookmark `lite`, `4065b2a2`), which is not an ancestor of the release. Where they differ, this file supersedes it.
 
+## Hero lead
+
+"Use the Bluesky account you already have. Your pinned and saved feeds share one grid, the character count stays quiet until you're near the limit, and on iPad, Catbird fills the screen."
+
+| Clause | Backed by |
+|---|---|
+| Use the Bluesky account you already have | Sign-in is OAuth with the user's existing AT Protocol account (the /privacy draft, "Signing in" on the homepage). Account creation is also offered, but the lead doesn't depend on it. |
+| Pinned and saved feeds share one grid | §1 (feeds drawer grid) |
+| The character count stays quiet until you're near the limit | §2 (the number appears only with 50 or fewer characters left) |
+| On iPad, Catbird fills the screen | §3 (native iPad app; the release archive lists iPhone and iPad as device families) |
+
+The lead inherits each section's publication gate.
+
 ## 1. Feeds drawer grid: promoted, with a caveat
 
 **On the page:**

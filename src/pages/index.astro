@@ -138,6 +138,15 @@ const [feeds, composer, ipad] = HIGHLIGHTS;
 </BaseLayout>
 
 <style>
+  /* ---- Interactions ---- */
+  /* Phones: the first interaction starts close under the hero. (Section's root doesn't
+     carry this page's style scope, hence :global with the section class.) */
+  @media (max-width: 767.98px) {
+    :global(.section.interactions) {
+      padding-top: 24px;
+    }
+  }
+
   /* ---- The rest ---- */
   .rest__card {
     display: grid;

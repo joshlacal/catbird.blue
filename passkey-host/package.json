@@ -1,0 +1,14 @@
+{
+  "name": "catbird-passkey-host",
+  "private": true,
+  "type": "module",
+  "description": "passkey.catbird.blue: serves the WebAuthn association files and nothing else.",
+  "scripts": {
+    "deploy": "cf deploy",
+    "check": "cf deploy --dry-run"
+  },
+  "devDependencies": {
+    "cf": "latest",
+    "wrangler": "latest"
+  }
+}

@@ -1,0 +1,12 @@
+# passkey.catbird.blue — WebAuthn relying-party host (association files only).
+# Deploy: `npx wrangler deploy` from this folder. The custom-domain route below
+# makes Cloudflare create the DNS record and certificate for the hostname.
+name = "catbird-passkey-host"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = false
+preview_urls = false
+
+routes = [
+  { pattern = "passkey.catbird.blue", custom_domain = true },
+]

@@ -10,8 +10,7 @@ import Section from '../components/ui/Section.astro';
 import Button from '../components/ui/Button.astro';
 import Icon from '../components/ui/Icon.astro';
 import Badge from '../components/ui/Badge.astro';
-import ComposerVignette from '../components/vignettes/ComposerVignette.astro';
-import ThreadVignette from '../components/vignettes/ThreadVignette.astro';
+import AppScreenshot from '../components/ui/AppScreenshot.astro';
 import AppearanceVignette from '../components/vignettes/AppearanceVignette.astro';
 import { MIN_IOS, PRIMARY_CTA } from '../config';
 
@@ -316,8 +315,8 @@ const ctaLabel = PRIMARY_CTA.label;
                 </ul>
                 {g.note && <p class="fx-group__note">{g.note}</p>}
               </div>
-              {g.vignette === 'composer' && <div class="fx-group__art"><ComposerVignette width={300} height={520} /></div>}
-              {g.vignette === 'thread' && <div class="fx-group__art"><ThreadVignette width={300} height={560} /></div>}
+              {g.vignette === 'composer' && <div class="fx-group__art"><AppScreenshot shot="composer" width={300} /></div>}
+              {g.vignette === 'thread' && <div class="fx-group__art"><AppScreenshot shot="thread" width={300} /></div>}
               {g.vignette === 'appearance' && <div class="fx-group__art"><AppearanceVignette width={300} height={540} /></div>}
             </section>
           </>

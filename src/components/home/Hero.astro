@@ -4,8 +4,8 @@
  * interactions the page shows (wide screens only; on phones the first one follows
  * directly). Kept short so the product starts in the first screen.
  *
- * Availability comes from config (AVAILABILITY / PRIMARY_CTA): while Catbird is in
- * development the page invites people to follow updates, not to install anything, and
+ * Availability comes from config (AVAILABILITY / PRIMARY_CTA): before public release
+ * the page invites people to follow updates, not to install anything, and
  * makes no App Store or beta claim. No price is stated anywhere until one is decided.
  *
  * Props:
@@ -27,8 +27,7 @@ interface Props {
 }
 const { highlights } = Astro.props;
 
-const statusBadge =
-  AVAILABILITY === 'in-development' ? 'In development' : AVAILABILITY === 'beta' ? 'Beta' : null;
+const statusBadge = AVAILABILITY === 'beta' ? 'Beta' : null;
 const statusLead = AVAILABILITY === 'app-store' ? 'On the App Store' : 'Not on the App Store yet';
 ---
 <section class="hero" aria-labelledby="hero-title">
@@ -44,13 +43,13 @@ const statusLead = AVAILABILITY === 'app-store' ? 'On the App Store' : 'Not on t
         decoding="async"
       />
 
-      <h1 id="hero-title" class="hero__title">Explore Bluesky through your&nbsp;feeds</h1>
+      <h1 id="hero-title" class="hero__title">Explore the open social web with&nbsp;Catbird.</h1>
 
-      <!-- Each clause matches the evidence ledger (docs/homepage-evidence.md, Hero lead). -->
+      <!-- Josh's October 7 direction; source notes in docs/homepage-evidence.md. -->
       <p class="hero__lead">
-        Keep your pinned and saved feeds in one grid and switch between them with a tap. Write
-        posts and threads with photos, video and alt text, and choose who can reply. Catbird uses
-        the Bluesky account you already have.
+        Find and save feeds that interest you, catch up with the people you care about, and
+        join the conversation. Post, reply, and chat in a Bluesky app that feels right at home
+        on iPhone and iPad.
       </p>
 
       <p class="hero__status">
@@ -62,7 +61,7 @@ const statusLead = AVAILABILITY === 'app-store' ? 'On the App Store' : 'Not on t
         <Button href={PRIMARY_CTA.href} size="lg" iconEnd={PRIMARY_CTA.external ? 'arrow-up-right' : undefined}>
           {PRIMARY_CTA.label}
         </Button>
-        <Button href="/features" variant="secondary" size="lg" iconEnd="arrow-right" class="hero__secondary">See All Features</Button>
+        <Button href="/features" variant="secondary" size="lg" iconEnd="arrow-right" class="hero__secondary">Explore Catbird</Button>
       </div>
     </div>
 

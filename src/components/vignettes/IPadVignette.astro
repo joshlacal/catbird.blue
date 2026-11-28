@@ -199,4 +199,20 @@ const posts = [
       height: 32px !important;
     }
   }
+
+  /* Keep all five tabs inside the illustration on narrow phones. */
+  @container (max-width: 320px) {
+    .ip__top {
+      grid-template-columns: 28px 1fr 28px;
+      gap: 4px;
+      padding-inline: 8px;
+    }
+    .ip__btn {
+      width: 28px;
+      height: 28px;
+    }
+    .ip__tab {
+      padding-inline: 5px;
+    }
+  }
 </style>

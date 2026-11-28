@@ -3,16 +3,10 @@
  * Home. Built around three interactions a Bluesky user can see in Catbird, each with its
  * copy beside the picture that shows it. Everything else Catbird does lives on /features.
  *
- * Promoted interactions and their evidence (release build 6, source 7c7b1742; see
- * docs/homepage-evidence.md in this repo):
- *   1. Feeds drawer grid         HomeView.swift, SideDrawer.swift, FeedsStartPage.swift
- *   2. Composer reply chip/ring  ComposerChipsStrip.swift, CharacterLimitIndicator.swift
- *   3. Native iPad app           build-6 archive Info.plist (UIDeviceFamily [1, 2])
- * Blocked-reply cards were the provisional second pick and were replaced: no runtime
- * evidence, "View this post" likely fails against Bluesky's AppView, and list-block
- * Unblock fails silently (docs/homepage-evidence.md).
- * The pictures are temporary illustrations drawn from that source until release-build
- * captures replace them (shot list: docs/homepage-shot-list.md).
+ * October 7 copy follows Josh's direction: feeds, conversations and composing,
+ * with iPad support below. Current source notes are in docs/homepage-evidence.md.
+ * Approved October 8 native app captures now illustrate the four interactions.
+ * Screenshot provenance is recorded in docs/website-screenshots-2026-10-09.md.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/ui/Section.astro';
@@ -20,54 +14,54 @@ import Button from '../components/ui/Button.astro';
 import Icon from '../components/ui/Icon.astro';
 import Hero from '../components/home/Hero.astro';
 import Interaction from '../components/home/Interaction.astro';
-import FeedLauncherVignette from '../components/vignettes/FeedLauncherVignette.astro';
-import ComposerQuietVignette from '../components/vignettes/ComposerQuietVignette.astro';
-import IPadVignette from '../components/vignettes/IPadVignette.astro';
+import AppScreenshot from '../components/ui/AppScreenshot.astro';
 import { AVAILABILITY, PRIMARY_CTA, BLUESKY_HANDLE, MIN_IOS } from '../config';
 
 /** The promoted interactions, in page order. The hero's index and the sections share it. */
 const HIGHLIGHTS = [
-  { id: 'feeds', eyebrow: 'Feeds', title: 'Your pinned and saved feeds, in one grid', icon: 'layout-grid' },
-  { id: 'composer', eyebrow: 'Writing', title: 'See who can reply before you post', icon: 'pen-line' },
-  { id: 'ipad', eyebrow: 'iPad', title: 'Also on iPad', icon: 'tablet' },
+  { id: 'feeds', eyebrow: 'Feeds', title: 'Explore feeds that interest you', icon: 'layout-grid' },
+  { id: 'threads', eyebrow: 'Conversations', title: 'Catch up with the conversation', icon: 'messages-square' },
+  { id: 'composer', eyebrow: 'Writing', title: 'A post, a reply, or a whole thread', icon: 'pen-line' },
 ] as const;
-const [feeds, composer, ipad] = HIGHLIGHTS;
+const [feeds, threads, composer] = HIGHLIGHTS;
 ---
 <BaseLayout
-  title="Catbird: explore Bluesky through your feeds"
-  description="Catbird is a Bluesky app in development for iPhone and iPad. Keep your pinned and saved feeds in one grid, and write posts and threads with reply settings spelled out."
+  title="Catbird: explore the open social web"
+  description="Find and save feeds, catch up with the people you care about, and join the conversation. Catbird is a Bluesky app for iPhone and iPad."
   path="/"
 >
   <Hero highlights={HIGHLIGHTS} />
 
   <Section space="md" class="interactions" labelledby="interactions-title">
-    <h2 id="interactions-title" class="visually-hidden">Feeds and writing in Catbird</h2>
+    <h2 id="interactions-title" class="visually-hidden">Feeds, conversations, and writing in Catbird</h2>
 
-    <Interaction id={feeds.id} eyebrow={feeds.eyebrow} title={feeds.title}>
-      <FeedLauncherVignette slot="media" width={340} height={600} />
+    <Interaction id={feeds.id} eyebrow={feeds.eyebrow} title={feeds.title} illustration={false}>
+      <AppScreenshot slot="media" shot="feeds" />
       <p>
-        Tap the grid button on Home to see your feeds together: your default feed at the top,
-        then the feeds you’ve pinned and the ones you’ve saved, as a grid of icons. Tap any one
-        to switch to it.
-      </p>
-      <p class="interaction__why">Every feed you’ve pinned or saved is in one place.</p>
-    </Interaction>
-
-    <Interaction id={composer.id} eyebrow={composer.eyebrow} title={composer.title} reverse>
-      <ComposerQuietVignette slot="media" width={340} height={540} />
-      <p>
-        If you limit who can reply, the composer spells it out above the keyboard, for example
-        “Mentioned, Following · No quotes”.
-      </p>
-      <p>
-        The character count stays a small grey ring until you’re within 50 characters of the
-        300-character limit.
+        There’s more to Bluesky than one timeline. Find feeds around the things you care
+        about, save your favorites, and keep your pinned and saved feeds together.
       </p>
     </Interaction>
 
-    <Interaction id={ipad.id} eyebrow={ipad.eyebrow} title={ipad.title} wide>
-      <IPadVignette slot="media" width={760} />
-      <p>Catbird runs on iPad as well as iPhone and fills the iPad screen.</p>
+    <Interaction id={threads.id} eyebrow={threads.eyebrow} title={threads.title} reverse illustration={false}>
+      <AppScreenshot slot="media" shot="thread" />
+      <p>
+        See the posts and replies around a discussion, with threaded and linear views to
+        help you follow along. Join in when you have something to add.
+      </p>
+    </Interaction>
+
+    <Interaction id={composer.id} eyebrow={composer.eyebrow} title={composer.title} illustration={false}>
+      <AppScreenshot slot="media" shot="composer" />
+      <p>
+        Share a quick thought or keep writing across several posts in the same composer.
+        Add photos, video, and alt text to give people more to read and see.
+      </p>
+    </Interaction>
+
+    <Interaction id="ipad" eyebrow="iPad" title="At home on iPad, too" wide illustration={false}>
+      <AppScreenshot slot="media" shot="ipad" width={560} />
+      <p>Read your feeds and write your next post with more room on iPad.</p>
       <p class="interaction__how">iPadOS&nbsp;{MIN_IOS} or later.</p>
     </Interaction>
   </Section>
@@ -76,26 +70,26 @@ const [feeds, composer, ipad] = HIGHLIGHTS;
   <Section space="sm" class="rest" labelledby="rest-title">
     <div class="rest__card">
       <div class="rest__text">
-        <h2 id="rest-title" class="rest__title">And the rest of Bluesky</h2>
+        <h2 id="rest-title" class="rest__title">And the rest of your Bluesky</h2>
         <p>
-          Posting with photos, video and alt text, threads, search, notifications, lists,
-          moderation tools and direct messages are all here too.
+          Direct messages, notifications, search, lists, and moderation tools help you keep
+          up with the people you care about.
         </p>
       </div>
-      <Button href="/features" variant="secondary" iconEnd="arrow-right">See All Features</Button>
+      <Button href="/features" variant="secondary" iconEnd="arrow-right">Explore All Features</Button>
     </div>
   </Section>
 
-  <!-- How sign-in and data work, condensed from /privacy (draft). Facts, not claims. -->
+  <!-- How sign-in and data work, condensed from the published Privacy Policy. -->
   <Section space="md" class="account" labelledby="account-title">
     <div class="account__grid">
       <h2 id="account-title" class="account__title">Signing in</h2>
       <ul class="account__list" role="list">
         <li><Icon name="key-round" size={20} /><span>You sign in with your Bluesky account in your browser, so Catbird never sees your password.</span></li>
         <li><Icon name="server" size={20} /><span>Catbird’s server keeps your sign-in session and passes your requests on to your Bluesky server.</span></li>
-        <li><Icon name="activity" size={20} /><span>Crash and performance reports go to Sentry, a crash-reporting service.</span></li>
+        <li><Icon name="activity" size={20} /><span>When enabled, crash and error reports go to Catbird’s self-hosted GlitchTip service.</span></li>
       </ul>
-      <p class="account__more"><a href="/privacy">How Catbird handles your data</a> (draft privacy policy)</p>
+      <p class="account__more"><a href="/privacy">How Catbird handles your data</a></p>
     </div>
   </Section>
 
@@ -114,7 +108,7 @@ const [feeds, composer, ipad] = HIGHLIGHTS;
       />
       {AVAILABILITY === 'in-development' ? (
         <>
-          <h2 id="closing-title">Catbird is in development</h2>
+          <h2 id="closing-title">Follow Catbird</h2>
           <p class="lead">
             It isn’t on the App Store yet. Follow @{BLUESKY_HANDLE} on Bluesky to hear when you
             can try it.

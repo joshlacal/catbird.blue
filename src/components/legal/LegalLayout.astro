@@ -19,7 +19,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Pending from './Pending.astro';
 import PendingNotice from './PendingNotice.astro';
 import { LEGAL } from '../../config';
-import { effectiveDate, missingLegalItems, type LegalPageKind, type TocEntry } from './legal';
+import { effectiveDate, formatEffectiveDate, missingLegalItems, type LegalPageKind, type TocEntry } from './legal';
 
 interface Props {
   kind: LegalPageKind;
@@ -30,22 +30,35 @@ interface Props {
   toc: TocEntry[];
   extras?: string[];
   draftDetail: string;
+  /** Explicit page state; omitted pages retain the existing draft behavior. */
+  publication?: { status: string; effectiveDate: string | null };
+  showPendingNotice?: boolean;
 }
 
 const { kind, title, description, path, lede, toc, extras = [], draftDetail } = Astro.props;
+const { publication, showPendingNotice = true } = Astro.props;
 const missing = missingLegalItems(kind);
+if (publication && !['draft', 'published'].includes(publication.status)) {
+  throw new Error('Legal publication status must be draft or published.');
+}
+const isDraft = publication ? publication.status === 'draft' : true;
+const dateISO = publication ? publication.effectiveDate : LEGAL.effectiveDate;
+const dateLabel = publication ? formatEffectiveDate(dateISO) : effectiveDate;
+if (!isDraft && !dateLabel) {
+  throw new Error('A published legal page requires an effective date.');
+}
 ---
-<BaseLayout title={title} description={description} path={path} noindex draft draftDetail={draftDetail}>
+<BaseLayout title={title} description={description} path={path} noindex={isDraft} draft={isDraft} draftDetail={draftDetail}>
   <div class="legal">
     <header class="legal__header">
-      <p class="eyebrow">Draft for review</p>
+      {isDraft && <p class="eyebrow">Draft for review</p>}
       <h1>{title}</h1>
       <p class="lead">{lede}</p>
       <p class="legal__date">
         <span class="legal__date-label">Effective date:</span>{' '}
-        {effectiveDate ? <time datetime={LEGAL.effectiveDate ?? undefined}>{effectiveDate}</time> : <Pending label="effective date" />}
+        {dateLabel ? <time datetime={dateISO ?? undefined}>{dateLabel}</time> : publication ? <span>Not yet in effect</span> : <Pending label="effective date" />}
       </p>
-      <PendingNotice items={missing} extras={extras} />
+      {showPendingNotice && <PendingNotice items={missing} extras={extras} />}
     </header>
 
     <div class="legal__body">

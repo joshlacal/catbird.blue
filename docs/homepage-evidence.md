@@ -1,3 +1,25 @@
+# Homepage evidence — current October 7 copy
+
+Josh's October 7 wording is the editorial direction: “Explore the open social web with Catbird.” The lead explicitly identifies Catbird as a Bluesky app for iPhone and iPad. This does not claim support for other social networks.
+
+The homepage now leads with feeds, conversations, and composing, followed by a short iPad section. Existing illustrations stay visibly labeled; they are not app screenshots. Availability remains driven by the existing config. No release or email-delivery claim was added.
+
+Current source checked read-only in `.workspaces/appstore-polish-1005/Catbird`:
+
+| Claim | Source |
+|---|---|
+| Find/save feeds; keep pinned and saved feeds together | `Features/Feed/Views/FeedsStartPage.swift`: Add Feed at 338; Discover more feeds at 1374; pinned/saved grids at 1384–1393; feed selection at 378–385. |
+| Read conversation context, with threaded or linear replies | `Features/Feed/Views/Thread/ThreadView.swift`: layout options at 49–52; `UIKitThreadView.swift`: parent/anchor/reply rows at 1039–1050; `Features/Feed/Models/ThreadReplyLayout.swift`: linear/tree models at 10–39. |
+| Posts, replies and threads in the composer | `Features/Feed/Views/Components/PostComposer/PostComposerViewUIKit/PostComposerViewUIKit.swift`: source post/editor at 438–473, add-thread action at 770–787; `PostComposerViewUIKit+Thread.swift`: multiple entries at 13–111. |
+| Photos, video and alt text | Same composer directory, `PostComposerViewUIKit+Sheets.swift`: photo/video alt-text editors at 239–252; media attachment routes. |
+| iPhone/iPad and native feel | Existing iPhone/iPad app scope; SwiftUI/UIKit navigation and adaptive layouts. “Feels right at home” is Josh's design description, not a performance or multitasking guarantee. |
+
+These are source checks, not a claim that a particular final binary has been captured. Use the October 7 section of `homepage-shot-list.md` for the current capture plan. Discovery's changing UI is not a promoted screenshot or a separate recommendation/AI claim.
+
+## Historical October 3 evidence
+
+The material below is retained for provenance. Its build numbers, workspace, open issues, and long capture gates describe the October 3 state; they are not today's release baseline or required validation process.
+
 # Homepage evidence (local revision, 2026-10-03)
 
 The homepage promotes three interactions a Bluesky user can see in Catbird. Each one was checked against the release build. That build is 1.0 build 6, installed on Josh's iPhone from sealed source `7c7b1742baa5d863cba54d9546c9417601822f1a` in the Lite workspace (`~/Developer/.workspaces/catbird-lite/Catbird`). Each was also checked against the runtime evidence the iOS lanes have recorded, then challenged by an adversarial reviewer.

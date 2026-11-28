@@ -1,3 +1,24 @@
+# Homepage shot list — October 7
+
+The current local homepage follows Josh's copy: explore feeds, catch up with conversations, post/reply/chat, and feel at home on iPhone and iPad. Four existing illustrations remain labeled until actual captures are available.
+
+The app coordinator owns builds, phone/simulator access, and capture readiness. Use the identified installed build and record its source snapshot, version/build, device, OS, date, and original capture dimensions. Do not start a competing build or interrupt another active session for this list.
+
+| Section | Capture to replace the illustration |
+|---|---|
+| Feeds | A populated real feed picker with pinned and saved feeds. A loaded custom-feed capture can accompany it when available; choose content that gives the visitor a reason to read. |
+| Conversations | A real post and its surrounding replies, showing the thread structure. Use the same topic/post as the reading example when practical. |
+| Composing | A real draft post or reply, preferably with a second thread entry visible. Photos, video, alt text, and reply settings are supporting details; do not cram every control into one image. Keep the draft unpublished. |
+| iPad | The actual iPad Home/feed layout with readable content, from the identified build. Do not infer iPad readiness from compact-phone screenshots. |
+
+Use Josh's own content or material suitable for public promotion. Keep original app captures intact. Replace the `Interaction` media slots and set `illustration={false}` only when a real capture is present. Discovery and other changing UI wait for their final state.
+
+The optional Apple Header/Search/Universal creative templates are separate from these homepage captures and required App Store screenshots.
+
+## Historical October 3 list
+
+The list below is preserved as historical context. Its build-6/build-7 directions and extensive gates are not the current capture plan.
+
 # Homepage shot list, for the iOS owner
 
 The homepage currently uses temporary illustrations for its three interactions. These captures replace them, and they are also the gates before those claims can be published (`homepage-evidence.md`). Nothing here should interrupt the build-7 reply and rendering work.

@@ -18,10 +18,7 @@ export const APP_STORE_URL = 'https://apps.apple.com/app/id6743628331';
 
 /**
  * Flip to true only after confirming that TESTFLIGHT_URL serves the release build this
- * site describes. On 2026-10-03 the public page was live ("Catbird for Bluesky beta"),
- * but the build it serves could not be verified: release builds 5 and 6 were installed
- * as development builds, not through TestFlight. Until then the site invites no one to
- * the beta and describes Catbird as in development.
+ * site describes. Until then the site directs people to follow Catbird for updates.
  */
 export const BETA_VERIFIED = false;
 
@@ -41,7 +38,7 @@ export const AVAILABILITY: Availability = APP_STORE_LIVE
 export const AVAILABILITY_TEXT: Record<Availability, string> = {
   'app-store': 'On the App Store',
   beta: 'In beta on TestFlight; not yet on the App Store',
-  'in-development': 'In development; not yet on the App Store',
+  'in-development': 'Not on the App Store yet',
 };
 
 /** The site-wide primary action for the current availability. */

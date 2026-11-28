@@ -1,0 +1,67 @@
+---
+/**
+ * Approved native app captures. iPhone captures sit in the official iPhone 17 Pro Max bezel,
+ * exported from the App Store Sketch compositions without their headline text. The iPad
+ * capture is unframed. No crop or reconstructed UI.
+ */
+interface Props {
+  shot: 'feeds' | 'thread' | 'composer' | 'ipad';
+  width?: number;
+}
+const { shot, width = 340 } = Astro.props;
+const captures = {
+  feeds: {
+    filename: 'catbird-feeds-framed-2026-10-09.webp',
+    width: 1481,
+    height: 3066,
+    framed: true,
+    alt: 'Catbird on iPhone with the feed picker open, showing the default timeline and pinned and saved feeds.',
+  },
+  thread: {
+    filename: 'catbird-thread-framed-2026-10-09.webp',
+    width: 1481,
+    height: 3066,
+    framed: true,
+    alt: 'Catbird on iPhone showing a post with two replies and a reply field beneath the conversation.',
+  },
+  composer: {
+    filename: 'catbird-composer-framed-2026-10-09.webp',
+    width: 1481,
+    height: 3066,
+    framed: true,
+    alt: 'Catbird’s iPhone composer with a two-post thread draft, the add-to-thread control, and the keyboard.',
+  },
+  ipad: {
+    filename: 'catbird-ipad-reading-2026-10-08.webp',
+    width: 2064,
+    height: 2752,
+    framed: false,
+    alt: 'Catbird on iPad showing the Good company feed, the top navigation bar, and the new-post button.',
+  },
+} as const;
+const capture = captures[shot];
+---
+<img
+  class:list={['app-screenshot', { 'app-screenshot--framed': capture.framed }]}
+  src={`/images/screenshots/${capture.filename}`}
+  width={capture.width}
+  height={capture.height}
+  alt={capture.alt}
+  style={`--screenshot-width: ${width}px`}
+  loading="lazy"
+  decoding="async"
+/>
+
+<style>
+  .app-screenshot {
+    display: block;
+    width: min(100%, var(--screenshot-width));
+    height: auto;
+    border: var(--hairline) solid var(--separator);
+    box-shadow: var(--shadow-soft);
+  }
+  .app-screenshot--framed {
+    border: 0;
+    box-shadow: none;
+  }
+</style>

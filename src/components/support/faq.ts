@@ -5,9 +5,9 @@
  * the FAQPage JSON-LD uses the same text with tags stripped.
  *
  * When something changes in the app, change the answer here:
- *   - "delete-account" must change when in-app account deletion ships (plan blocker B2).
+ *   - "delete-account" follows the hosting-provider options in Account settings.
  *   - "dm-notifications" must be removed when direct-message push works (LITE-001).
- *   - "requirements" follows config AVAILABILITY (in development / beta / App Store).
+ *   - "requirements" follows config AVAILABILITY (pre-release / beta / App Store).
  *     No price is stated: pricing is not decided.
  */
 import {
@@ -49,7 +49,7 @@ const getIt =
     ? `<p>Download Catbird from the ${ext(APP_STORE_URL, 'App Store')}.</p>`
     : AVAILABILITY === 'beta'
       ? `<p>Catbird is in beta and isn’t on the App Store yet. To try it, install Apple’s TestFlight app on your iPhone or iPad, then open the ${ext(TESTFLIGHT_URL, 'Catbird beta invitation')} and tap Accept.</p>`
-      : `<p>Catbird is in development and isn’t on the App Store yet. Follow ${blueskyLink} on Bluesky to hear when you can try it.</p>`;
+      : `<p>Catbird isn’t on the App Store yet. Follow ${blueskyLink} on Bluesky to hear when you can try it.</p>`;
 
 export const FAQ: FaqGroup[] = [
   {
@@ -109,11 +109,11 @@ export const FAQ: FaqGroup[] = [
         answer: `<p>Open your profile, tap the More button (the circle with three dots) at the top, and choose Sign Out. On iPad, your profile is the Profile tab. On iPhone, open the feeds menu from Home and tap Profile.</p><p>Signing out deletes your session from Catbird’s server and asks your account server to revoke Catbird’s access.</p>`,
       },
       {
-        // AccountSettingsView.swift:245-273,342-352 (Deactivate Account, type DEACTIVATE, Reactivate);
-        // no account-deletion call in the app (plan blocker B2).
+        // appstore-polish-1005, October 7: AccountSettingsView.swift shows
+        // Account Deletion Options, opening the provider instructions via AccountDeletionSheet.
         id: 'delete-account',
         question: 'How do I delete my account?',
-        answer: `<p>Catbird can’t delete a Bluesky account yet. You can deactivate it instead: go to Settings, then Account, tap Deactivate Account and type DEACTIVATE to confirm. A deactivated account can be reactivated from the same screen.</p><p>To delete your account permanently, use the server that hosts it. For accounts hosted by Bluesky, that’s the account settings in Bluesky’s own app or at <a href="https://bsky.app">bsky.app</a>. If your account is on another server, ask that server’s operator.</p>`,
+        answer: `<p>In Catbird, go to Settings, then Account, and tap Account Deletion Options to find instructions from the provider that hosts your account. Opening the provider’s website does not delete your account; follow its instructions to complete the request.</p><p>For accounts hosted by Bluesky, you can also use the account settings in Bluesky’s own app or at <a href="https://bsky.app">bsky.app</a>. If your account is on another server, follow that provider’s instructions. Deleting Catbird from your device does not delete your account.</p>`,
       },
       {
         // Logout path above; push records and preferences are not removed on logout

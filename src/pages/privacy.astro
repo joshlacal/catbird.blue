@@ -1,424 +1,133 @@
 ---
-/**
- * /privacy — DRAFT privacy policy for Catbird 1.0 (iPhone and iPad) and catbird.blue.
- *
- * Every statement is grounded in docs/research/2026-10-02-catbird-website-research.md
- * (privacy-truth report and its fact-check) and re-checked against the 1.0 source.
- * Undecided details (identity, address, contact email, effective date) come from
- * LEGAL / PRIVACY_EMAIL in src/config.ts and render as "to be completed" markers.
- * Open items for Josh: website/docs/legal-open-questions.md.
- */
+/** Published release Privacy Policy, October 9, 2026. */
 import LegalLayout from '../components/legal/LegalLayout.astro';
-import Pending from '../components/legal/Pending.astro';
-import { privacyContactEmail, type TocEntry } from '../components/legal/legal';
-import { LEGAL, BLUESKY_URL, BLUESKY_HANDLE, MIN_IOS } from '../config';
-
-const email = privacyContactEmail;
-
-const toc: TocEntry[] = [
-  { id: 'in-short', label: 'In short' },
-  { id: 'who-we-are', label: 'Who we are' },
-  { id: 'what-catbird-is', label: 'What Catbird is and isn’t' },
-  { id: 'on-your-device', label: 'Data on your device' },
-  { id: 'catbird-servers', label: 'Data on Catbird’s servers' },
-  { id: 'push-notifications', label: 'Push notifications' },
-  { id: 'crash-reports', label: 'Crash and performance reports' },
-  { id: 'third-parties', label: 'Other services' },
-  { id: 'on-device-ai', label: 'On-device AI' },
-  { id: 'website', label: 'Visiting this website' },
-  { id: 'retention', label: 'How long data is kept' },
-  { id: 'choices', label: 'Your choices and rights' },
-  { id: 'deletion', label: 'Deleting your data' },
-  { id: 'children', label: 'Children' },
-  { id: 'international-transfers', label: 'International transfers' },
-  { id: 'changes', label: 'Changes to this policy' },
-  { id: 'contact', label: 'Contact' },
+import privacyPolicy from '../privacy-policy.json';
+const toc = [
+  {
+    "id": "who-we-are-and-what-this-policy-covers",
+    "label": "Who we are and what this policy covers"
+  },
+  {
+    "id": "sign-in-and-account-requests",
+    "label": "Sign in and account requests"
+  },
+  {
+    "id": "information-used-to-provide-catbird",
+    "label": "Information used to provide Catbird"
+  },
+  {
+    "id": "notifications-and-background-access",
+    "label": "Notifications and background access"
+  },
+  {
+    "id": "feeds-and-optional-features",
+    "label": "Feeds and optional features"
+  },
+  {
+    "id": "server-logs-and-automatic-diagnostics",
+    "label": "Server logs and automatic diagnostics"
+  },
+  {
+    "id": "other-services-and-the-website",
+    "label": "Other services and the website"
+  },
+  {
+    "id": "security-and-retention",
+    "label": "Security and retention"
+  },
+  {
+    "id": "your-choices-and-privacy-requests",
+    "label": "Your choices and privacy requests"
+  },
+  {
+    "id": "sign-out-and-provider-account-deletion",
+    "label": "Sign out and provider account deletion"
+  },
+  {
+    "id": "eligibility-and-policy-changes",
+    "label": "Eligibility and policy changes"
+  }
 ];
-
-const extras = [
-  'Where the data center that hosts Catbird’s servers is located',
-  'How long server logs, crash reports, website logs and server backups are kept (marked “not yet defined”)',
-];
-
-const BSKY_PRIVACY = 'https://bsky.social/about/support/privacy-policy';
-const BSKY_TOS = 'https://bsky.social/about/support/tos';
 ---
 <LegalLayout
   kind="privacy"
   title="Privacy Policy"
-  description="How the Catbird app and catbird.blue handle your data: what stays on your device, what Catbird’s servers keep, who else is involved, and the choices you have."
+  description="How Catbird handles account requests, diagnostics, notifications and your privacy choices."
   path="/privacy"
-  lede={`How the Catbird app for iPhone and iPad (iOS ${MIN_IOS} or later) and this website handle your data.`}
+  lede="How the release version of Catbird for iPhone and iPad, its supporting services and this website handle your data."
   toc={toc}
-  extras={extras}
-  draftDetail="This privacy policy is being reviewed and does not apply yet."
+  publication={privacyPolicy.publication}
+  showPendingNotice={false}
+  draftDetail=""
 >
-  <section class="legal-summary" aria-labelledby="in-short">
-    <h2 id="in-short">In short</h2>
-    <ul>
-      <li>You sign in on your own account server, in your browser. Catbird never sees your password.</li>
-      <li>Catbird’s server, called Nest, keeps your sign-in tokens (encrypted) and relays most of what the app does with your account, including Bluesky direct messages.</li>
-      <li>If you turn on notifications, Nest stores your device token and notification settings. Alerts can include up to 160 characters of public post text and are delivered through Apple.</li>
-      <li>Crash and performance reports go to Sentry in the United States and can include your account ID. There’s no setting to turn them off yet.</li>
-      <li>You can sign out, change notification and embed settings, and ask for the data on Catbird’s servers to be deleted. See <a href="#choices">your choices</a>.</li>
-    </ul>
-  </section>
+<h2 id="who-we-are-and-what-this-policy-covers">Who we are and what this policy covers</h2>
+<p>Catbird is an independent app for Bluesky and the AT Protocol network. This policy covers the release version of Catbird for iPhone and iPad, Catbird’s supporting services and catbird.blue. “Catbird,” “we” and “us” mean <strong>Josh LaCalamito, United States</strong>. For privacy requests, support or abuse involving Catbird’s services, contact <strong><a href="mailto:hi@catbird.blue">hi@catbird.blue</a></strong>.</p>
+<p>Your account provider, also called a Personal Data Server or PDS, hosts your account. Bluesky and other network services handle feeds, ordinary Bluesky messages and other network functions under their own policies. For Bluesky-hosted services, see <a href="https://bsky.social/about/support/privacy-policy">Bluesky’s Privacy Policy</a>. This policy does not govern every independent service or person who receives public network content.</p>
+<h2 id="sign-in-and-account-requests">Sign in and account requests</h2>
+<p>Nest is Catbird’s server. In the normal OAuth sign-in flow, Catbird opens your account provider’s authorization page. You enter your password there and authorize access; your password goes to that provider. Nest receives the upstream OAuth session credentials. Your device keeps a separate credential for its Nest session.</p>
+<p>Most authenticated actions pass through Nest to the relevant account or network service. Nest can read the requests and responses it forwards, including posts, uploads and ordinary Bluesky direct messages. This processing does not mean that every request or message is saved in a Catbird database. Your account and network content remain hosted by the relevant upstream services, while Catbird keeps the records described below.</p>
+<p><strong>Ordinary Bluesky direct messages are not end-to-end encrypted.</strong> Nest can read messages it relays. This version of Catbird does not include MLS encrypted chat or Circles.</p>
+<p>Some requests go directly from your device to other services, including media and image servers, identity discovery, public account lookups, link-card extraction and video upload. Direct video upload can use a short-lived service authorization token on your device. GIF searches use Catbird’s forwarding service. When you load an embedded player or follow a link, the destination service receives that request. A direct recipient can receive your IP address and the information sent with the request.</p>
+<h2 id="information-used-to-provide-catbird">Information used to provide Catbird</h2>
+<table class="legal-table">
+<thead>
+<tr>
+<th scope="col">Information</th>
+<th scope="col">How it is used and where it is handled</th>
+</tr>
+</thead>
+<tbody>
+<tr><th scope="row">Account and session information</th><td data-label="How it is used and where it is handled">Account identifiers such as your DID, handle and provider address; OAuth authorization state; upstream session credentials; and the Nest session binding support sign-in, authenticated actions and access revocation. Nest holds the normal upstream session credentials.</td></tr>
+<tr><th scope="row">Account actions and content</th><td data-label="How it is used and where it is handled">Posts, messages, media, searches, reactions, profile changes and other requested actions pass through the services needed to perform them. Nest processes the content it relays; direct recipients receive their own requests.</td></tr>
+<tr><th scope="row">Device and notification information</th><td data-label="How it is used and where it is handled">Apple push tokens, account/device associations, notification preferences, subscriptions, thread/conversation mutes and delivery information support notifications and routing. These records are separate from the OAuth session.</td></tr>
+<tr><th scope="row">Preferences and feed feedback</th><td data-label="How it is used and where it is handled">Selected interests, feed preferences and supported interaction feedback help provide suggestions and personalize relevant feeds. Some preferences are synchronized with account services.</td></tr>
+<tr><th scope="row">Local app information</th><td data-label="How it is used and where it is handled">The app keeps credentials, settings, caches and drafts on your device. Optional remote draft synchronization sends draft information to the upstream draft service through the authenticated request path.</td></tr>
+<tr><th scope="row">Technical information</th><td data-label="How it is used and where it is handled">Network requests, errors, rate-limit/security information, operational metrics and app diagnostics help operate and diagnose Catbird. Server logs, automatic diagnostics and local logs are described below.</td></tr>
+<tr><th scope="row">Support information</th><td data-label="How it is used and where it is handled">If you contact us, we receive your message, email address, account information you supply and any attachments. Do not send a password or session token.</td></tr>
+</tbody>
+</table>
+<p>Catbird uses this information to perform your requested actions, keep sessions working, deliver enabled features, protect its services, diagnose problems and handle support or privacy requests.</p>
+<h2 id="notifications-and-background-access">Notifications and background access</h2>
+<p>If you allow notifications, Catbird registers a device and stores the account/device information and preferences needed to route them. Your iOS notification permission and Catbird’s notification preferences affect alerts. Device registration or a saved preference does not make every alert type available.</p>
+<p>Nest can use stored authorization while the app is closed for enabled notification processing, including authenticated moderation checks. Apple receives the push token and alert payload needed for Apple Push Notification service delivery. Social alerts can include an actor’s display information, a public post excerpt and routing identifiers.</p>
+<p><strong>Direct-message push notifications are currently disabled by a release gate.</strong> You can still read and send ordinary Bluesky messages in the app. This gate is separate from social push notifications. It does not establish that stored notification registrations, preferences or earlier delivery records have been deleted.</p>
+<p>Notification registrations, preferences, queues, caches and earlier delivery state have separate lifecycles. Removing a pending queue entry does not necessarily remove those other records. Notification delivery can be delayed or fail.</p>
+<h2 id="feeds-and-optional-features">Feeds and optional features</h2>
+<p>Catbird uses your interest choices and feed/account information to provide suggestions. Supported feed generators can receive post identifiers, interaction events, feed context and request identifiers through authenticated requests. Feedback can include seen, like, repost, reply, quote and show-more/show-less events. This feedback path is used for Discover, Video and custom feeds that declare support; ordinary timelines, lists and author feeds do not use it.</p>
+<p>Remote draft synchronization is off by default. Enabling it sends draft information through the authenticated path to the upstream draft service. Disabling synchronization stops new synchronization; it does not itself delete earlier remote copies.</p>
+<p>Ask Catbird, generated alt text and other supported Apple Intelligence features depend on device and system support. Account actions you approve can still use the ordinary authenticated network services described above. Review generated output before posting or relying on it.</p>
+<h2 id="server-logs-and-automatic-diagnostics">Server logs and automatic diagnostics</h2>
+<p>Catbird’s services process technical connection information when serving requests. Nest’s standard logs for relayed account requests record query-parameter names rather than their values. Those logs can still include account identifiers, request paths, upstream error details and rate-limit or other technical information. This does not make every log field anonymous.</p>
+<p>The reverse proxy that serves Catbird’s website, API and YouTube wrapper keeps separate access logs. These may include IP information and requested URLs, including query strings. Nest’s query-parameter filtering does not apply to every infrastructure log.</p>
+<p>Catbird’s sole diagnostics service for this release is <strong>GlitchTip</strong>, operated by Catbird on Netcup-hosted servers, with Cloudflare providing network delivery. Reporting remains disabled in an app build until Catbird’s GlitchTip destination is configured. When enabled, reports go to that service. This describes the release configuration; earlier development builds may retain their original diagnostics settings.</p>
+<p>Reports can contain the app version and build, operating-system and device information, diagnostic identifiers, and technical crash, error or app-hang details, including stack traces and binary information. The release configuration removes user identity fields, request details, breadcrumbs and free-form messages. Performance tracing, profiling, session tracking and replay are disabled. These limits reduce the information collected but do not make reports anonymous. The services receiving a report also process technical connection information, which can include an IP address.</p>
+<p>Reporting starts automatically when configured, with no in-app diagnostics off switch. A build with reporting disabled sends no app diagnostic reports to GlitchTip. Sharing exported local logs is a separate choice.</p>
+<p>On supported systems, Catbird’s MetricKit manager logs technical summaries locally; that manager does not upload the received payloads. Apple/OS storage and other diagnostic SDK storage are separate.</p>
+<p>You can choose to export local system logs and select a sharing destination. These exports are separate from automatic diagnostics and do not use the same diagnostic filtering. Check exported text before sharing it. Clearing the log viewer clears its displayed entries, not the underlying OS log storage.</p>
+<h2 id="other-services-and-the-website">Other services and the website</h2>
+<p>Catbird works with your PDS, Bluesky services, feed generators and the moderation services you use. Direct connections can include media/CDN servers, video.bsky.app, cardyb.bsky.app, public account and identity services, and chosen embedded-media providers. GIF searches pass through Catbird’s Klipy forwarding route. These services process the requests sent to them under their own practices.</p>
+<p>Catbird uses Netcup to host its website, supporting servers and GlitchTip diagnostics service, Cloudflare for network delivery, and Apple for push delivery. Where optional one-time support tips are available, Apple processes purchases through the App Store. Catbird does not operate Apple’s payment flow. Purchase-related support messages and information you voluntarily send are separate from Apple’s billing records.</p>
+<p>The website uses browser local storage to remember the selected theme. Cloudflare receives requests for the website and its proxied services, and Catbird’s web server keeps the separate access logs described above. These infrastructure requests and logs can contain identifying information.</p>
+<p>Information may be processed outside your country by the services involved. Your account provider, Bluesky, Netcup, Cloudflare and Apple handle information in the locations used to provide their services. GlitchTip is operated by Catbird on its Netcup-hosted infrastructure.</p>
+<h2 id="security-and-retention">Security and retention</h2>
+<p>Catbird’s production connection to Nest uses HTTPS. Encryption in transit protects the connection; a server receiving the connection can still read its contents.</p>
+<p>Nest stores OAuth session secrets encrypted with AES-256-GCM and can decrypt them to perform authorized actions. Account and routing indexes are separate. New notification-session references use one-way fingerprints, but historical copies of raw session identifiers remain in the notification database until those records are cleaned up. This does not mean that all notification records, logs, disks or backups are encrypted in the same way. No system can guarantee absolute security.</p>
+<p>OAuth sessions expire after 30 days without use; using a session renews that period. A successful server sign-out deletes the stored OAuth session and its indexes, as described below. Notification records, logs, persistent snapshots and any backup copies have separate lifecycles.</p>
+<p>Nest’s system journal currently uses storage-size limits rather than a configured maximum number of days. Separate web access logs, notification records, diagnostic reports and support messages do not share the OAuth session’s 30-day expiry. The session store also writes periodic disk snapshots; deleting a live record is separate from removal of snapshot or backup copies.</p>
+<p>Push registrations, preferences, subscriptions, mutes, queues, caches and earlier delivery state can remain after sign-out. Disabling notifications or uninstalling the app does not submit a request to remove all of these records. You can contact us about the information Catbird holds using the request process below.</p>
+<h2 id="your-choices-and-privacy-requests">Your choices and privacy requests</h2>
+<p>You can manage notification permission in iOS Settings and notification preferences in Catbird. You can choose your feeds and moderation services, keep remote draft synchronization off, and decide whether to share local logs or support attachments. Automatic diagnostics have the controls described above. Account-provider authorization and provider privacy settings remain separate.</p>
+<p>For access, correction or removal of information held by Catbird, email <strong><a href="mailto:hi@catbird.blue">hi@catbird.blue</a></strong> with enough information to identify your account and request. Do not send a password or session token. We may need to verify that you control the account before handling an account-related request.</p>
+<p>Contacting Catbird does not itself delete your provider account or every public copy held by other services. Requests concern information held by Catbird; provider-held account data and content must also be addressed through the relevant provider.</p>
+<p>Depending on your location, you may have rights concerning access, correction, deletion, restriction or other handling of personal information. Contact us so your request can be assessed under the rules that apply.</p>
+<h2 id="sign-out-and-provider-account-deletion">Sign out and provider account deletion</h2>
+<p>To sign out, open Settings → Account &amp; Security → Sign Out. When Nest successfully handles that request, it deletes your stored OAuth session and its indexes and attempts to revoke its access at your account provider. If upstream revocation fails, Nest can keep an encrypted retry job for a maximum of seven days, with up to eight attempts including the initial attempt. Those limits do not guarantee successful revocation. The app can clear local authentication even if the server request fails, so appearing signed out does not confirm server cleanup.</p>
+<p>Signing out does not delete your provider account or all Catbird-held information. Notification settings, some device and delivery records, local caches and drafts, diagnostic reports, logs, snapshots and backup copies have separate removal rules. Uninstalling the app does not itself submit a server data-removal request; Keychain items may remain separately from the app’s files.</p>
+<p>Settings → Account &amp; Security → Delete Account opens a provider account-management website. Complete permanent account deletion through your provider’s supported process. Opening a website does not itself delete the account, and Catbird cannot confirm completion. If that link does not offer the needed deletion route, use the provider’s own app, website or support instructions.</p>
+<p>Account deactivation is reversible. Deleting only a chat account is narrower than deleting the provider account. A provider request is separate from a Catbird-held-data request. Public content may remain with other people or independent network services.</p>
+<h2 id="eligibility-and-policy-changes">Eligibility and policy changes</h2>
+<p>You must meet your account provider’s eligibility rules and the requirements that apply where you live. An App Store age rating is not itself an account-eligibility rule.</p>
+<p>Revised policies will be published with an updated effective date. Any additional notice or consent required for a change will be handled under the applicable requirements.</p>
+<p>Operator: <strong>Josh LaCalamito, United States</strong>. Contact: <strong><a href="mailto:hi@catbird.blue">hi@catbird.blue</a></strong>. General announcements: <strong><a href="https://bsky.app/profile/catbird.blue">@catbird.blue</a></strong>. Use email for private account-related information rather than a public mention or issue.</p>
 
-  <h2 id="who-we-are">Who we are</h2>
-  <p>
-    Catbird is an independent, open-source app for using Bluesky on iPhone and iPad. This policy covers the Catbird app, the servers Catbird runs to make the app work, and this website, catbird.blue. When it says “we” or “Catbird”, it means the person responsible for Catbird.
-  </p>
-  <p>
-    The person responsible for your data (the data controller) is{' '}
-    {LEGAL.controllerName ? <strong>{LEGAL.controllerName}</strong> : <Pending label="legal name" />}
-    {LEGAL.postalAddress ? <>, {LEGAL.postalAddress}</> : <>, at <Pending label="postal address" /></>}.
-    You can reach us using the details in <a href="#contact">Contact</a>.
-  </p>
-  <p>Catbird is not affiliated with, endorsed by, or officially connected to Bluesky Social, PBC.</p>
-
-  <h2 id="what-catbird-is">What Catbird is and isn’t</h2>
-  <p>
-    Catbird is an app for the AT Protocol, the open network Bluesky runs on. Your account, posts, follows, likes and lists live on your account’s server (its <abbr title="Personal Data Server">PDS</abbr>), which for most people is run by Bluesky, and Bluesky direct messages are kept by Bluesky’s chat service. They don’t live with Catbird. Anything you post publicly is public on the whole network, whichever app you use.
-  </p>
-  <p>
-    Your account server’s own privacy policy covers what it does with your account. For accounts hosted by Bluesky, that’s <a href={BSKY_PRIVACY}>Bluesky’s Privacy Policy</a>. Deleting Catbird doesn’t delete your account.
-  </p>
-  <p>
-    This policy describes Catbird 1.0. If a future version adds features that handle data differently, we’ll update this policy before that version ships.
-  </p>
-
-  <h2 id="on-your-device">Data on your device</h2>
-  <h3>Sign-in</h3>
-  <p>
-    Your iPhone or iPad’s Keychain stores a session ID that lets the app talk to Catbird’s server, an account record with your account ID (your <abbr title="Decentralized Identifier">DID</abbr>) and handle, and short-lived details while a sign-in is in progress. These items are kept on this device only, are available after you first unlock the device, and aren’t synced to iCloud Keychain. Your Bluesky sign-in tokens are not stored on your device; Catbird’s server holds them (see <a href="#catbird-servers">Data on Catbird’s servers</a>).
-  </p>
-  <h3>Local storage</h3>
-  <p>
-    The app keeps a local database with cached feed posts, your place in each feed, your settings and your drafts, so it opens quickly. It isn’t synced to iCloud. Deleting the app removes it. Keychain items can remain on a device after the app is deleted.
-  </p>
-  <h3>Spotlight and Siri</h3>
-  <p>
-    Posts from the feed pages you load, and profiles you view, are added to your device’s Spotlight index so you can find them in Search and so Siri can understand what’s on screen. The index stays on your device and holds up to 2,000 recent items.
-  </p>
-  <h3>Translation</h3>
-  <p>
-    Translating a post uses Apple’s Translation framework. Catbird doesn’t send the text to its own servers or to another translation service.
-  </p>
-  <h3>Age</h3>
-  <p>
-    Catbird asks iOS whether age-related rules apply where you are. It doesn’t ask for your age or age range, and it doesn’t store one.
-  </p>
-  <h3>Diagnostics that stay on your device</h3>
-  <p>
-    Daily performance summaries from iOS (MetricKit) are saved inside the app and aren’t uploaded. The app’s system log leaves your device only if you share it yourself from Settings.
-  </p>
-  <h3>Location</h3>
-  <p>Catbird doesn’t use location services.</p>
-
-  <h2 id="catbird-servers">Data on Catbird’s servers</h2>
-  <p>
-    Catbird runs a server called Nest at <code>api.catbird.blue</code>. It handles sign-in and relays the app’s requests to your account server. Nest and Catbird’s notification service are hosted by Netcup.
-  </p>
-
-  <h3>Your sign-in session</h3>
-  <p>
-    When you sign in, the app opens your account server’s sign-in page in your browser. Your password goes only to that server. After you approve Catbird, Nest receives and keeps your sign-in tokens (an access token and a refresh token), the private key used to prove those tokens belong to Catbird’s session, the permissions you granted, your DID, your handle and your account server’s address.
-  </p>
-  <p>
-    Nest encrypts each of these records (AES-256-GCM) before storing it. Your DID appears unencrypted in the names of these stored records so Nest can find them. A session ends 30 days after it was last used, and each use extends it.
-  </p>
-  <p>
-    At sign-in, Catbird asks for full access to your account, including Bluesky direct messages, because it’s a complete Bluesky app. It asks for extra permissions only when you use a feature that needs them, such as changing your handle, managing your email address or deactivating your account. Catbird never asks for permission to delete your account.
-  </p>
-
-  <h3>Requests Nest relays</h3>
-  <p>
-    Most of what the app does with your account goes through Nest, which forwards it to your account server. That includes loading feeds and profiles, posting, following, uploading images (up to about 10 MB), reporting content, and Bluesky direct messages. Some requests go from your device straight to other services; see <a href="#third-parties">Other services</a>.
-  </p>
-  <p>
-    Nest sees your IP address when the app connects. It uses it in memory to limit request rates and doesn’t pass it on to your account server.
-  </p>
-  <p>
-    Nest’s logs record each request’s type and its query parameters (for example, a search term or an account ID), and your DID when you sign in or out (with your handle at sign-in). The contents of what you post or send are logged only as field names and types, not their values. How long these logs are kept is not yet defined.
-  </p>
-
-  <h3>Settings Nest keeps</h3>
-  <p>Nest also stores the following, linked to your DID. These records are not encrypted in Catbird’s database.</p>
-  <ul>
-    <li>Your push notification registration and settings (see <a href="#push-notifications">Push notifications</a>).</li>
-    <li>Threads you mute. Nest reads your mute request as it passes through, so it can stop notifications for that thread.</li>
-    <li>Bluesky direct-message conversations you mute, and, while the chat screen is open, a signal every 60 seconds that you’re viewing your messages.</li>
-    <li>
-      A short-lived check of your relationship with the account behind a notification (both DIDs, its display name and whether you block or mute it), so you aren’t notified about accounts you’ve blocked or muted. Each check is deleted after 1 hour.
-    </li>
-  </ul>
-
-  <h3>GIFs and YouTube</h3>
-  <p>
-    GIF searches go to Catbird’s server at <code>catbird.blue</code>, which passes them to Klipy, the GIF service. If you allow YouTube videos to play, they play inside a Catbird page at <code>youtube.catbird.blue</code> that loads YouTube’s player, so that server sees the video ID and your IP address.
-  </p>
-
-  <h3>What signing out does</h3>
-  <p>
-    Signing out deletes your session from Nest and asks your account server to revoke Catbird’s tokens. If that request fails, Nest keeps a retry record containing the session ID for up to 7 days. Signing out also marks your device as no longer registered for notifications.
-  </p>
-  <p>
-    Signing out does not delete your notification registration record, notification settings, activity subscriptions, thread mutes, muted conversations, or older inactive device records (up to 20 per account). We delete these when you ask; see <a href="#deletion">Deleting your data</a>.
-  </p>
-
-  <h2 id="push-notifications">Push notifications</h2>
-  <p>
-    Catbird asks before sending notifications. If you allow them, the app registers your device with Nest, not with Bluesky. Nest stores your DID, your device’s push token with the technical details Apple needs to deliver to it, the notification types you’ve chosen, and any accounts you’ve asked to be notified about when they post (activity subscriptions).
-  </p>
-  <p>
-    Catbird’s notification service reads Bluesky’s public stream of new posts, likes, follows and other activity, and picks out events that concern you. It caches public post text for up to 60 minutes and account identity details for up to 24 hours. Each pending notification is deleted once it’s delivered.
-  </p>
-  <p>
-    Notifications are delivered by Apple’s push notification service. An alert can include the other account’s display name and, for mentions, replies, quotes and new posts from accounts you’ve subscribed to, up to 160 characters of the public post’s text, along with the account IDs and post links the app needs to open it.
-  </p>
-  <p>
-    Notifications for Bluesky direct messages aren’t turned on yet. Registering for notifications does record your DID and account server address in a list Nest would use for message notifications. Before message notifications are turned on, this policy will be updated to explain how they work.
-  </p>
-
-  <h2 id="crash-reports">Crash and performance reports</h2>
-  <p>
-    The app sends crash and performance reports to Sentry, a monitoring service, at its United States location. Reporting is on by default, and there is no setting in Catbird to turn it off today.
-  </p>
-  <p>Reports include:</p>
-  <ul>
-    <li>crash reports and reports of the app freezing;</li>
-    <li>a sample of performance measurements: 5% of performance traces and 2% of profiles;</li>
-    <li>sign-out, account-switching and sign-in error events, which include your full DID;</li>
-    <li>recent log messages from the app’s networking code. Query values are removed from the web addresses it logs, but other log text is sent as written;</li>
-    <li>the app version, and other technical details Sentry’s software attaches by default.</li>
-  </ul>
-  <p>How long Sentry keeps reports is not yet defined. We use these reports only to find and fix problems.</p>
-
-  <h2 id="third-parties">Other services involved</h2>
-  <p>
-    Besides Catbird’s own servers, these services receive data when you use Catbird. Each handles it under its own privacy policy.
-  </p>
-  <table class="legal-table">
-    <caption class="visually-hidden">Services that receive data when you use Catbird</caption>
-    <thead>
-      <tr><th scope="col">Service</th><th scope="col">When</th><th scope="col">What it receives</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">Your account server (PDS), usually Bluesky’s</th>
-        <td data-label="When">When you sign in in your browser, and for every request Nest relays</td>
-        <td data-label="What">Your sign-in and everything you do with your account</td>
-      </tr>
-      <tr>
-        <th scope="row">Bluesky’s app services, moderation service, and labelers you subscribe to</th>
-        <td data-label="When">When your account server passes on feed, profile, message and report requests</td>
-        <td data-label="What">Those requests. Reports go to Bluesky’s moderation service or to the labeler you choose.</td>
-      </tr>
-      <tr>
-        <th scope="row">Bluesky’s media servers</th>
-        <td data-label="When">When you view images and videos</td>
-        <td data-label="What">Your IP address and which media you load</td>
-      </tr>
-      <tr>
-        <th scope="row"><code>video.bsky.app</code></th>
-        <td data-label="When">When you post a video</td>
-        <td data-label="What">The video and a short-lived token that authorizes the upload</td>
-      </tr>
-      <tr>
-        <th scope="row"><code>cardyb.bsky.app</code></th>
-        <td data-label="When">When you add a link to a new post</td>
-        <td data-label="What">The link, to build its preview card</td>
-      </tr>
-      <tr>
-        <th scope="row"><code>public.api.bsky.app</code></th>
-        <td data-label="When">When you open a starter pack or Bluesky link before signing in</td>
-        <td data-label="What">The starter pack or handle being looked up</td>
-      </tr>
-      <tr>
-        <th scope="row"><code>plc.directory</code> and account domains</th>
-        <td data-label="When">When the app looks up an account’s identity</td>
-        <td data-label="What">The account ID being looked up</td>
-      </tr>
-      <tr>
-        <th scope="row">Klipy, Tenor and GIPHY</th>
-        <td data-label="When">When you search for or view GIFs</td>
-        <td data-label="What">Klipy receives your GIF searches through Catbird’s server. GIF images load directly from Klipy, or from Tenor or GIPHY for older GIFs, so those services see your IP address.</td>
-      </tr>
-      <tr>
-        <th scope="row">Embedded media: YouTube, Vimeo, Twitch, Spotify, Apple Music, SoundCloud, GIPHY, Tenor, Klipy, Flickr and Bandcamp</th>
-        <td data-label="When">Only after you allow that provider. Each starts as Ask Before Playing.</td>
-        <td data-label="What">Your IP address and what you play</td>
-      </tr>
-      <tr>
-        <th scope="row">Apple</th>
-        <td data-label="When">Notifications, Siri and Shortcuts, Spotlight, translation, Apple Intelligence, TestFlight and the App Store</td>
-        <td data-label="What">Notification contents (see <a href="#push-notifications">Push notifications</a>) and what Apple’s own services need</td>
-      </tr>
-      <tr>
-        <th scope="row">Sentry</th>
-        <td data-label="When">When the app sends a crash or performance report</td>
-        <td data-label="What">See <a href="#crash-reports">Crash and performance reports</a></td>
-      </tr>
-      <tr>
-        <th scope="row">Cloudflare</th>
-        <td data-label="When">For every connection to <code>catbird.blue</code> and its subdomains</td>
-        <td data-label="What">Your IP address and the requests passing through its network</td>
-      </tr>
-      <tr>
-        <th scope="row">Netcup</th>
-        <td data-label="When">Always, as the host of Catbird’s servers</td>
-        <td data-label="What">Stores the data described in <a href="#catbird-servers">Data on Catbird’s servers</a></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2 id="on-device-ai">On-device AI</h2>
-  <p>
-    Ask Catbird, Generate Alt Text, Smart Filters, post classification and topic summaries use Apple’s on-device language model. They need iOS 26 and Apple Intelligence. Apple’s Private Cloud Compute is turned off in Catbird, and no third-party AI service is used, so your prompts and the posts these features read are processed on your device.
-  </p>
-  <p>
-    When Ask Catbird needs Bluesky data, it fetches it through Nest like any other request. It proposes actions, and nothing happens until you confirm.
-  </p>
-
-  <h2 id="website">Visiting this website</h2>
-  <p>
-    catbird.blue doesn’t use cookies, analytics or tracking scripts, and your browser loads everything from catbird.blue itself. If you choose a theme, your choice is saved in your browser’s local storage and never sent to us. Because the site doesn’t track you, it works the same whether or not your browser sends a Do Not Track signal.
-  </p>
-  <p>
-    Like any website, the servers that deliver it (Cloudflare and Catbird’s web server) receive your IP address, the page you asked for, the time and your browser’s description of itself, and may log them. How long these logs are kept is not yet defined.
-  </p>
-
-  <h2 id="retention">How long data is kept</h2>
-  <table class="legal-table">
-    <caption class="visually-hidden">Retention periods for data Catbird handles</caption>
-    <thead>
-      <tr><th scope="col">Data</th><th scope="col">Where</th><th scope="col">How long</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">Sign-in session and tokens</th>
-        <td data-label="Where">Nest</td>
-        <td data-label="How long">Until you sign out, or 30 days after last use</td>
-      </tr>
-      <tr>
-        <th scope="row">Sign-in in progress</th>
-        <td data-label="Where">Nest</td>
-        <td data-label="How long">10 minutes</td>
-      </tr>
-      <tr>
-        <th scope="row">Token revocation retry (only if revocation fails at sign-out)</th>
-        <td data-label="Where">Nest</td>
-        <td data-label="How long">Up to 7 days</td>
-      </tr>
-      <tr>
-        <th scope="row">Markers for ended sessions (no account details)</th>
-        <td data-label="Where">Nest</td>
-        <td data-label="How long">90 days</td>
-      </tr>
-      <tr>
-        <th scope="row">Notification registration, settings, activity subscriptions, thread mutes and muted conversations</th>
-        <td data-label="Where">Nest</td>
-        <td data-label="How long">Until you ask us to delete them. Inactive device records beyond the 20 most recent are deleted.</td>
-      </tr>
-      <tr>
-        <th scope="row">Block and mute checks for notifications</th>
-        <td data-label="Where">Nest</td>
-        <td data-label="How long">Up to 1 hour</td>
-      </tr>
-      <tr>
-        <th scope="row">Public post text and identity details used for notifications</th>
-        <td data-label="Where">Catbird’s notification service</td>
-        <td data-label="How long">60 minutes for post text, 24 hours for identity details</td>
-      </tr>
-      <tr>
-        <th scope="row">Pending notifications</th>
-        <td data-label="Where">Catbird’s notification service</td>
-        <td data-label="How long">Until delivered</td>
-      </tr>
-      <tr>
-        <th scope="row">Server logs</th>
-        <td data-label="Where">Nest</td>
-        <td data-label="How long" class="legal-table__note">Not yet defined</td>
-      </tr>
-      <tr>
-        <th scope="row">Backups of Catbird’s servers</th>
-        <td data-label="Where">Not yet defined</td>
-        <td data-label="How long" class="legal-table__note">Not yet defined</td>
-      </tr>
-      <tr>
-        <th scope="row">Crash and performance reports</th>
-        <td data-label="Where">Sentry (United States)</td>
-        <td data-label="How long" class="legal-table__note">Not yet defined</td>
-      </tr>
-      <tr>
-        <th scope="row">Website access logs</th>
-        <td data-label="Where">Cloudflare and Catbird’s web server</td>
-        <td data-label="How long" class="legal-table__note">Not yet defined</td>
-      </tr>
-      <tr>
-        <th scope="row">Cache, settings and drafts</th>
-        <td data-label="Where">Your device</td>
-        <td data-label="How long">Until you delete the app</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2 id="choices">Your choices and rights</h2>
-  <ul>
-    <li><strong>Sign out.</strong> In Settings, choose Sign Out. This ends your session on Nest and asks your account server to revoke Catbird’s access.</li>
-    <li><strong>App lock.</strong> Turn on Face ID or Touch ID in Settings &gt; Privacy &amp; Security to require it when you open Catbird. It’s off by default.</li>
-    <li><strong>Embedded media.</strong> In Settings &gt; Content &amp; Media &gt; External Media Preferences, choose Ask Before Playing, Always Allow or Always Block for each provider.</li>
-    <li><strong>Notifications.</strong> Choose which notifications you get in Settings &gt; Notifications, or turn them off in the iOS Settings app.</li>
-    <li><strong>Search.</strong> You can hide Catbird’s content from Search in the iOS Settings app.</li>
-    <li>
-      <strong>Requests about your data.</strong> You can ask us for a copy of the data Catbird’s servers hold about you, to correct it, or to delete it. Email{' '}
-      {email ? <a href={`mailto:${email}`}>{email}</a> : <Pending label="contact email" />}{' '}
-      and tell us your handle. We may ask you to confirm that you control the account.
-    </li>
-  </ul>
-  <p>
-    Depending on where you live, you may also have the right to restrict or object to how your data is used, to receive it in a portable format, to withdraw consent, and to complain to your local data protection authority.
-  </p>
-  <p>
-    Your posts, follows and profile are managed by your account server, and your direct messages by Bluesky’s chat service, not by Catbird. You can change or delete them in Catbird or any other Bluesky app.
-  </p>
-
-  <h2 id="deletion">Deleting your data</h2>
-  <h3>Your Bluesky account</h3>
-  <p>
-    Your account belongs to your account server, so deleting it is done there; Catbird can’t do it for you. For accounts hosted by Bluesky, you can delete your account in Bluesky’s own app. In Catbird you can deactivate your account in Settings &gt; Account, and delete your Bluesky chat account with Delete Chat Account in Chat Settings, from the menu in the Messages tab.
-  </p>
-  <h3>Data on Catbird’s servers</h3>
-  <p>
-    To delete what Catbird’s servers hold about you (your sign-in sessions, notification registrations and settings, activity subscriptions, thread mutes and muted conversations), email us at{' '}
-    {email ? <a href={`mailto:${email}`}>{email}</a> : <Pending label="contact email" />}.
-    Deletion is handled by hand when you ask, and we’ll reply when it’s done.
-  </p>
-  <h3>The app</h3>
-  <p>
-    Deleting the app removes its local data. It doesn’t sign you out of Nest or delete anything from Catbird’s servers or your account server, and some Keychain items can remain on the device.
-  </p>
-
-  <h2 id="children">Children</h2>
-  <p>
-    To use Catbird you need an account on an account server, so you must meet that server’s minimum age. For accounts hosted by Bluesky, that’s set in <a href={BSKY_TOS}>Bluesky’s Terms of Service</a>. Catbird doesn’t collect anyone’s age. If you believe Catbird’s servers hold data about a child who shouldn’t have an account, contact us and we’ll delete it.
-  </p>
-
-  <h2 id="international-transfers">International transfers</h2>
-  <p>
-    Catbird’s servers are hosted by Netcup. The location of the data center is{' '}
-    <Pending label="data center location" />. Crash and performance reports are processed by Sentry in the United States. Your account server, Bluesky’s services, Apple and Cloudflare may process data in other countries under their own policies. Using Catbird means your data may be handled outside the country you live in.
-  </p>
-
-  <h2 id="changes">Changes to this policy</h2>
-  <p>
-    When this policy changes, we’ll publish the new version on this page with a new effective date. We’ll announce significant changes in the app or on Bluesky at <a href={BLUESKY_URL}>@{BLUESKY_HANDLE}</a> before they take effect. Features that handle data differently from what’s described here will be added to this policy before they ship.
-  </p>
-
-  <h2 id="contact">Contact</h2>
-  <ul>
-    <li>Email: {email ? <a href={`mailto:${email}`}>{email}</a> : <Pending label="contact email" />}</li>
-    <li>Post: {LEGAL.controllerName && LEGAL.postalAddress ? <>{LEGAL.controllerName}, {LEGAL.postalAddress}</> : <Pending label="legal name and postal address" />}</li>
-    <li>Bluesky: <a href={BLUESKY_URL}>@{BLUESKY_HANDLE}</a> (for general questions; send data requests by email)</li>
-  </ul>
 </LegalLayout>

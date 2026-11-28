@@ -1,12 +1,13 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import termsPolicy from './src/terms-policy.json' with { type: 'json' };
+import privacyPolicy from './src/privacy-policy.json' with { type: 'json' };
 
-// Pages that must not appear in the sitemap. /privacy and /terms render with
-// <meta name="robots" content="noindex"> while they are drafts (LegalLayout), and a
-// noindex URL in a sitemap is a contradictory signal to search engines. Remove them from
-// this list in the same change that drops noindex from LegalLayout.
-const EXCLUDED = ['/styleguide', '/404', '/privacy', '/terms'];
+// Each legal page follows its own publication state.
+const EXCLUDED = ['/styleguide', '/404'];
+if (privacyPolicy.publication.status !== 'published') EXCLUDED.push('/privacy');
+if (termsPolicy.publication.status !== 'published') EXCLUDED.push('/terms');
 
 export default defineConfig({
   site: 'https://catbird.blue',
